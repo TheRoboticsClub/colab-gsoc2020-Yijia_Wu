@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+<loc>http://localhost:4000/colab-gsoc2020-Yijia_Wu/2020-05-17-community_bonding_week1_2/</loc>
+<lastmod>2020-05-17T00:00:00-07:00</lastmod>
+</url>
+<url>
+<loc>http://localhost:4000/colab-gsoc2020-Yijia_Wu/aboutme/</loc>
+</url>
+<url>
+<loc>http://localhost:4000/colab-gsoc2020-Yijia_Wu/aboutproject/</loc>
+</url>
+<url>
+<loc>http://localhost:4000/colab-gsoc2020-Yijia_Wu/</loc>
+</url>
+<url>
+<loc>http://localhost:4000/colab-gsoc2020-Yijia_Wu/progress/</loc>
+</url>
+<url>
+<loc>http://localhost:4000/colab-gsoc2020-Yijia_Wu/tags/</loc>
+</url>
+</urlset>
