@@ -7,8 +7,8 @@
     
     <description>GSoC progress</description>
     
-    <link>http://localhost:4000/colab-gsoc2020-Yijia_Wu</link>
-    <atom:link href="http://localhost:4000/colab-gsoc2020-Yijia_Wu/feed.xml" rel="self" type="application/rss+xml" />
+    <link>http://localhost:4000/</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
         <title>Community Bonding week1-2</title>
@@ -17,8 +17,8 @@
           Migrate the Industrial Robotics repo to Ubuntu 18.04 and ROS Melodic Previous repo has been tested in Ubuntu 16.04 and ROS kinetic. Except for getting familiar with Jderobot Academy, the first task of my Community Boning period is to migrate it to Ubuntu 18.04 and ROS Melodic. There are mainly...
         </description>
         <pubDate>Sun, 17 May 2020 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/colab-gsoc2020-Yijia_Wu/2020-05-17-community_bonding_week1_2/</link>
-        <guid isPermaLink="true">http://localhost:4000/colab-gsoc2020-Yijia_Wu/2020-05-17-community_bonding_week1_2/</guid>
+        <link>http://localhost:4000/2020-05-17-community_bonding_week1_2/</link>
+        <guid isPermaLink="true">http://localhost:4000/2020-05-17-community_bonding_week1_2/</guid>
       </item>
     
   </channel>

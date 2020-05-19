@@ -22,7 +22,7 @@ These errors come from both two denpendency packages(irb120, robotiq85) we are u
 
 Details of what has been changed can be found in [this document](https://docs.google.com/document/d/1mr-7raS8BLSoqvEta3IAGYJPkirJy0Zlb8rE7lFaCbs/edit?usp=sharing). Current Industrial Robotics package can be seen in my [IndustrialRobotics repo](https://github.com/sixer51/IndustrialRobotics) which contains all necessary parts. The video of it running in Ubuntu 18.04 and ROS Melodic can be seen by clicking below image:
 
-[![example of new repo](https://i9.ytimg.com/vi/DbnKhs-6n84/mq2.jpg?sqp=CKquhvYF&rs=AOn4CLCyYOTXh_qtr2QRnHgGURI5ucq2eg){: .mx-auto.d-block :}](https://youtu.be/DbnKhs-6n84)
+[![example of new repo](https://img.youtube.com/vi/DbnKhs-6n84/0.jpg){: .mx-auto.d-block :}](https://youtu.be/DbnKhs-6n84)
 
 ## How to use it
 
