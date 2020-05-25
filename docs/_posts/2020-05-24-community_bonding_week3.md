@@ -34,7 +34,7 @@ ARIAC 2018, consisting of order fulfillment in a simulated shipping container
 ![ARIAC 2018, consisting of order fulfillment in a simulated shipping container](https://bytebucket.org/osrf/ariac/wiki/2018/img/ariac_2018.jpg?rev=b866d999f664497bac55adbb51a13068c87a1b9d){: .mx-auto.d-block :}
 
 ARIAC 2017, consisting of kit building in a simulated warehouse
-![ARIAC 2017, consisting of kit building in a simulated warehouse](https://bitbucket.org/repo/pB4bBb/images/1577073220-ARIAC_full.png){: .mx-auto.d-block :}
+![ARIAC 2017, consisting of kit building in a simulated2020-05-24-community_bonding_week3 warehouse](https://bitbucket.org/repo/pB4bBb/images/1577073220-ARIAC_full.png){: .mx-auto.d-block :}
 
 
 ## Test MoveIt Grasp package
