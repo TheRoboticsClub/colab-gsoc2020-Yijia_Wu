@@ -11,6 +11,17 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Community Bonding week3</title>
+        <description>
+          
+          Test available arm manipulator, gripper, AGV and world for ROS and Gazebo9 In our industrial robot repo, we provided model, related configuration files and example usage of manipulator abb irb 120 and gripper robotiq 85 in Gazebo and Rviz. Users can already use it to do some manipulation simulations. However,...
+        </description>
+        <pubDate>Sun, 24 May 2020 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/2020-05-24-community_bonding_week3/</link>
+        <guid isPermaLink="true">http://localhost:4000/2020-05-24-community_bonding_week3/</guid>
+      </item>
+    
+      <item>
         <title>Community Bonding week1-2</title>
         <description>
           
