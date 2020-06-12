@@ -11,6 +11,17 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Week1-2</title>
+        <description>
+          
+          First GUI template Because of the final exams in the first week, I actually started working since this Tuesday. Thanks for my mentor’s understanding again! In last meeting, we planed to start with making a GUI template for all the exercises I am going to develop for this project. This...
+        </description>
+        <pubDate>Thu, 11 Jun 2020 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/2020-06-11-week1_2/</link>
+        <guid isPermaLink="true">http://localhost:4000/2020-06-11-week1_2/</guid>
+      </item>
+    
+      <item>
         <title>Community Bonding week4</title>
         <description>
           
