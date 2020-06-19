@@ -1,12 +1,20 @@
 ## Weekly tasks 
 
-#### WEEK 3.  June 12 - June 19  
+#### WEEK 4.  June 20 - June 26
 
 |      | Tasks                                                        | State   |
 | ---- | ------------------------------------------------------------ | ------- |
-| 1    | Make the draft GUI for Industrial Robotics exercises work. Implement a new *industrial_wrapper* node to connect our GUI with MoveIt, and to build a new Industrial Robotics API. We'll develop the infrastructure similarly to what we did with our [drone_wrapper](https://github.com/JdeRobot/drones) for drone exercises | ONGOING |
-| 2    | Test the modified Gazebo grasp fix grasp plugin with rectangular, cylindrical and spherical parts. Record and upload a demo video. If it doesn't work, see Note below. | ONGOING |
-| 3    | Prepare a new Gazebo gripper model for ABB IRB120 for a parallel two-finger gripper based on our lab [Schunk KGG gripper](https://schunk.com/es_en/gripping-systems/series/kgg/) (CAD files will be uploaded shortly) |         |
+| 1    | Test other kinematic solvers in OMPL library rather than the default RRT to avoid the *ABORTED: Solution found but controller failed during execution* fails | ONGOING |
+| 2    | Finish the pending functionalities of the GUI and wrapper for Industrial Robotics exercises. | ONGOING |
+| 3    | Start coding the new *Exercise 1: pick and place with industrial robotic manipulator*. Define API and build Gazebo world. The descriptions for both API and exercise will be described in separate files. | ONGOING |
+
+#### [WEEK 3.  June 12 - June 19 ](https://theroboticsclub.github.io/colab-gsoc2020-Yijia_Wu/2020-06-18-week3/)
+
+|      | Tasks                                                        | State   |
+| ---- | ------------------------------------------------------------ | ------- |
+| 1    | Make the draft GUI for Industrial Robotics exercises work. Implement a new *industrial_wrapper* node to connect our GUI with MoveIt, and to build a new Industrial Robotics API. We'll develop the infrastructure similarly to what we did with our [drone_wrapper](https://github.com/JdeRobot/drones) for drone exercises | DONE    |
+| 2    | Test the modified Gazebo grasp fix grasp plugin with rectangular, cylindrical and spherical parts. Test also irregularly shaped objects. Record and upload a demo video. If it doesn't work, see Note below. | DONE    |
+| 3    | Prepare a new Gazebo gripper model for ABB IRB120 for a parallel two-finger gripper based on our lab [Schunk KGG gripper](https://schunk.com/es_en/gripping-systems/series/kgg/) (CAD files will be uploaded shortly) | PENDING |
 
 **Note:** Is [this Gazebo set of tools](https://github.com/jsbruglie/grasp)  for grasping a good alternative?
 
