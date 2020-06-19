@@ -49,70 +49,75 @@ def move_joint_hand(gripper_finger1_joint):
     hand_group.go(joint_goal, wait=True)
     hand_group.stop() # To guarantee no residual movement
 
-rospy.loginfo("Opening gripper")	
-move_joint_hand(0)
-rospy.sleep(1)
 
-# Move to HOME before start
-rospy.loginfo("Moving arm to HOME point")	
-move_pose_arm(0,1.57,0,0.4,0,0.6)
-rospy.sleep(1)
+if __name__ == "__main__":
+     # Move to HOME before start
+    rospy.loginfo("Moving arm to HOME point")	
+    move_pose_arm(0,1.57,0,0.4,0,0.6)
+    rospy.sleep(1)
 
-# Linear trajectory creation (Point by Point)
-waypoints = []
+    rospy.loginfo("Opening gripper")	
+    move_joint_hand(0)
+    rospy.sleep(1)	
 
-wpose = arm_group.get_current_pose().pose
-wpose.position.z = 0.35
-wpose.position.x = 0.4
-waypoints.append(copy.deepcopy(wpose))
+    #Linear trajectory creation (Point by Point)
+    waypoints = []
 
-wpose.position.z = 0.23
-waypoints.append(copy.deepcopy(wpose))
+    wpose = arm_group.get_current_pose().pose
+    wpose.position.z = 0.35
+    wpose.position.x = 0.4
+    waypoints.append(copy.deepcopy(wpose))
 
-
-(plan, fraction) = arm_group.compute_cartesian_path(
-                                   waypoints,   # waypoints to follow
-                                   0.01,        # eef_step
-                                   0.0)         # jump_threshold
-rospy.loginfo("Cartesian path planned")	
-
-# Complete trajectory execution
-arm_group.execute(plan, wait=True)
-rospy.loginfo("Cartesian path finished. Shutting down")	
+    wpose.position.z = 0.23
+    waypoints.append(copy.deepcopy(wpose))
 
 
-rospy.loginfo("Closing gripper")	
-move_joint_hand(0.48)
-rospy.sleep(3)
+    (plan, fraction) = arm_group.compute_cartesian_path(
+                                    waypoints,   # waypoints to follow
+                                    0.01,        # eef_step
+                                    0.0)         # jump_threshold
+    rospy.loginfo("Cartesian path planned")	
 
-# move up
-waypoints = []
-
-wpose = arm_group.get_current_pose().pose
-wpose.position.z = 0.4
-wpose.position.y = 0.2
-waypoints.append(copy.deepcopy(wpose))
-
-wpose.position.z = 0.23
-waypoints.append(copy.deepcopy(wpose))
+    # Complete trajectory execution
+    arm_group.execute(plan, wait=True)
+    rospy.loginfo("Cartesian path finished. Shutting down")	
 
 
-(plan, fraction) = arm_group.compute_cartesian_path(
-                                   waypoints,   # waypoints to follow
-                                   0.01,        # eef_step
-                                   0.0)         # jump_threshold
-rospy.loginfo("Cartesian path planned")	
+    rospy.loginfo("Closing gripper")	
+    move_joint_hand(0.46)
+    rospy.sleep(1)
 
-# Complete trajectory execution
-arm_group.execute(plan, wait=True)
-rospy.loginfo("Cartesian path finished. Shutting down")	
+    # move up
+    waypoints = []
 
-rospy.loginfo("Opening gripper")	
-move_joint_hand(0)
-rospy.sleep(1)
+    wpose = arm_group.get_current_pose().pose
 
-rospy.loginfo("Moving arm to HOME point")	
-move_pose_arm(0,0.8,0,0.4,0,0.6)
-rospy.sleep(1)
+    wpose.position.z = 0.4
+    waypoints.append(copy.deepcopy(wpose))
 
-moveit_commander.roscpp_shutdown()
+    # wpose.position.y = 0.2
+    # waypoints.append(copy.deepcopy(wpose))
+
+    wpose.position.z = 0.23
+    waypoints.append(copy.deepcopy(wpose))
+
+
+    (plan, fraction) = arm_group.compute_cartesian_path(
+                                    waypoints,   # waypoints to follow
+                                    0.01,        # eef_step
+                                    0.0)         # jump_threshold
+    rospy.loginfo("Cartesian path planned")	
+
+    # Complete trajectory execution
+    arm_group.execute(plan, wait=True)
+    rospy.loginfo("Cartesian path finished. Shutting down")	
+
+    rospy.loginfo("Opening gripper")	
+    move_joint_hand(0)
+    rospy.sleep(1)
+
+    rospy.loginfo("Moving arm to HOME point")	
+    move_pose_arm(0,0.8,0,0.4,0,0.6)
+    rospy.sleep(1)
+
+    moveit_commander.roscpp_shutdown()

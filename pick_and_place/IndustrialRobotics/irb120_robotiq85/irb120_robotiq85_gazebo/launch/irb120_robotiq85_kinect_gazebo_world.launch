@@ -51,5 +51,11 @@
   <!-- launch rviz to check TF data -->
   <node type="rviz" name="rviz" pkg="rviz" args="-d $(find irb120_robotiq85_gazebo)/rviz/irb120.rviz" />
 
+  <!-- MOVEIT: LAUNCH MOVEIT_COMMANDER from CONFIG PACKAGE -->
+
+  <!-- Run the main MoveIt! executable  -->
+  <include file="$(find irb120_robotiq85_moveit_config)/launch/move_group.launch">
+    <arg name="info" value="true"/>
+  </include>
 
 </launch>

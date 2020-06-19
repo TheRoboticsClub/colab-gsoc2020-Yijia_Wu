@@ -14,7 +14,7 @@
 
   <!-- startup simulated world -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find irb120_robotiq85_gazebo)/worlds/wall_object.world"/>
+    <arg name="world_name" value="$(find irb120_robotiq85_gazebo)/worlds/object.world"/>
     <arg name="gui" value="true"/>
     <arg name="paused" value="$(arg paused)"/>
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
@@ -47,6 +47,9 @@
   <!-- load the GRIPPER controller (command interface) -->
   <rosparam file="$(find irb120_robotiq85_gazebo)/config/robotiq_gripper_controller.yaml" command="load"/> 
   <node name="robotiq_gripper_controller_spawner" pkg="controller_manager" type="spawner" args="gripper_controller" />
+
+  <!-- launch rviz to check TF data -->
+  <!-- <node type="rviz" name="rviz" pkg="rviz" args="-d $(find irb120_robotiq85_gazebo)/rviz/irb120.rviz" /> -->
 
   <!-- MOVEIT: LAUNCH MOVEIT_COMMANDER from CONFIG PACKAGE -->
 

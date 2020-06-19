@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
 <sdf version='1.6'>
   <world name='default'>
     <light name='sun' type='directional'>
@@ -59,6 +58,7 @@
         <self_collide>0</self_collide>
         <kinematic>0</kinematic>
         <gravity>1</gravity>
+        <enable_wind>0</enable_wind>
       </link>
     </model>
     <gravity>0 0 -9.8</gravity>
@@ -94,6 +94,7 @@
             <iyz>0</iyz>
             <izz>0.166667</izz>
           </inertia>
+          <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <collision name='collision'>
           <geometry>
@@ -109,8 +110,8 @@
             <bounce/>
             <friction>
               <ode>
-                <mu>1000000</mu>
-                <mu2>5000000</mu2>
+                <mu>1e+06</mu>
+                <mu2>5e+06</mu2>
               </ode>
               <torsional>
                 <ode/>
@@ -135,13 +136,14 @@
         <self_collide>0</self_collide>
         <kinematic>0</kinematic>
         <gravity>1</gravity>
+        <enable_wind>0</enable_wind>
       </link>
     </model>
     <state world_name='default'>
-      <sim_time>607 573000000</sim_time>
-      <real_time>595 975398776</real_time>
-      <wall_time>1582777478 310770412</wall_time>
-      <iterations>298807</iterations>
+      <sim_time>758 887000000</sim_time>
+      <real_time>170 109706542</real_time>
+      <wall_time>1591932344 744371802</wall_time>
+      <iterations>151314</iterations>
       <model name='ground_plane'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <scale>1 1 1</scale>
@@ -153,25 +155,15 @@
         </link>
       </model>
       <model name='unit_box_0'>
-        <pose frame=''>0.6 0.21 0.14046 0 0 0</pose>
-        <scale>0.1 0.04 0.10</scale>
+        <pose frame=''>0.4 -0 0.05 0 0 0</pose>
+        <scale>0.1 0.04 0.1</scale>
         <link name='link'>
-          <pose frame=''>0.4 2e-06 0.14046 -1e-06 0 0</pose>
+          <pose frame=''>0.4 -0 0.05 0 0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>-2.65677 0.106607 6.3456 -0.758809 -0.065095 -0.000128</acceleration>
-          <wrench>-2.65677 0.106607 6.3456 0 -0 0</wrench>
+          <acceleration>0.142358 0.056945 -0.167026 2.0027 0.294425 -3.14159</acceleration>
+          <wrench>0.142358 0.056945 -0.167026 0 -0 0</wrench>
         </link>
       </model>
-      <!-- <model name='unit_box_1'>
-        <pose frame=''>0.499855 -0.2 0.105461 -2e-06 -2e-05 -3.2e-05</pose>
-        <scale>0.024005 0.026702 0.210922</scale>
-        <link name='link'>
-          <pose frame=''>0.499855 -0.299983 0.105461 -2e-06 -2e-05 -3.2e-05</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0.069635 0.077466 -0.017733 -0.734555 0.660293 -0</acceleration>
-          <wrench>0.069635 0.077466 -0.017733 0 -0 0</wrench>
-        </link>
-      </model> -->
       <light name='sun'>
         <pose frame=''>0 0 10 0 -0 0</pose>
       </light>
@@ -183,57 +175,6 @@
         <projection_type>perspective</projection_type>
       </camera>
     </gui>
-    <!-- <model name='unit_box_1'>
-      <pose frame=''>0.232214 -1.16821 0.5 0 -0 0</pose>
-      <link name='link'>
-        <inertial>
-          <mass>1</mass>
-          <inertia>
-            <ixx>0.166667</ixx>
-            <ixy>0</ixy>
-            <ixz>0</ixz>
-            <iyy>0.166667</iyy>
-            <iyz>0</iyz>
-            <izz>0.166667</izz>
-          </inertia>
-        </inertial>
-        <collision name='collision'>
-          <geometry>
-            <box>
-              <size>0.999988 1.00001 0.999996</size>
-            </box>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
-        <visual name='visual'>
-          <geometry>
-            <box>
-              <size>0.999988 1.00001 0.999996</size>
-            </box>
-          </geometry>
-          <material>
-            <script>
-              <name>Gazebo/Red</name>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-            </script>
-          </material>
-        </visual>
-        <self_collide>0</self_collide>
-        <kinematic>0</kinematic>
-        <gravity>1</gravity>
-      </link>
-    </model> -->
+    <wind/>
   </world>
 </sdf>
