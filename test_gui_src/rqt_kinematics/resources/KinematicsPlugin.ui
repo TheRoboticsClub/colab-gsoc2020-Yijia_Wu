@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>868</width>
+    <height>517</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>720</x>
+     <y>90</y>
+     <width>111</width>
+     <height>207</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
+     <number>20</number>
+    </property>
+    <item>
+     <widget class="QPushButton" name="planButton">
+      <property name="text">
+       <string>Plan</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="executeButton">
+      <property name="text">
+       <string>Execute</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="planexeButton">
+      <property name="text">
+       <string>Plan &amp;&amp; Execute</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="stopexeButton">
+      <property name="text">
+       <string>Stop</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="homeButton">
+      <property name="text">
+       <string>Back to home</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QLabel" name="label_9">
+   <property name="geometry">
+    <rect>
+     <x>511</x>
+     <y>31</y>
+     <width>153</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Inverse Kinematic</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="layoutWidget_2">
+   <property name="geometry">
+    <rect>
+     <x>520</x>
+     <y>70</y>
+     <width>158</width>
+     <height>271</height>
+    </rect>
+   </property>
+   <layout class="QFormLayout" name="formLayout_2">
+    <property name="horizontalSpacing">
+     <number>10</number>
+    </property>
+    <property name="verticalSpacing">
+     <number>22</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_10">
+      <property name="text">
+       <string>x</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="xEdit"/>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_11">
+      <property name="text">
+       <string>y</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLineEdit" name="yEdit"/>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_12">
+      <property name="text">
+       <string>z</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QLineEdit" name="zEdit"/>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_13">
+      <property name="text">
+       <string>roll</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QLineEdit" name="rollEdit"/>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="label_14">
+      <property name="text">
+       <string>pitch</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1">
+     <widget class="QLineEdit" name="pitchEdit"/>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLabel" name="label_15">
+      <property name="text">
+       <string>yaw</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1">
+     <widget class="QLineEdit" name="yawEdit"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QPushButton" name="updateikButton">
+   <property name="geometry">
+    <rect>
+     <x>730</x>
+     <y>31</y>
+     <width>80</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Update</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="stop_button">
+   <property name="geometry">
+    <rect>
+     <x>315</x>
+     <y>400</y>
+     <width>91</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Stop</string>
+   </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/images/stop.png</normaloff>:/images/stop.png</iconset>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="start_button">
+   <property name="geometry">
+    <rect>
+     <x>125</x>
+     <y>400</y>
+     <width>91</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Start</string>
+   </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/images/play.png</normaloff>:/images/play.png</iconset>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="rvizButton">
+   <property name="geometry">
+    <rect>
+     <x>165</x>
+     <y>450</y>
+     <width>201</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Launch Rviz</string>
+   </property>
+  </widget>
+  <widget class="QTextBrowser" name="browser">
+   <property name="geometry">
+    <rect>
+     <x>520</x>
+     <y>400</y>
+     <width>321</width>
+     <height>81</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>42</x>
+     <y>69</y>
+     <width>441</width>
+     <height>281</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="horizontalSpacing">
+     <number>12</number>
+    </property>
+    <property name="verticalSpacing">
+     <number>10</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Joint1</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QSlider" name="jointSlider_1">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QTextBrowser" name="joint1Browser">
+      <property name="maximumSize">
+       <size>
+        <width>70</width>
+        <height>25</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>Joint2</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QSlider" name="jointSlider_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QTextBrowser" name="joint2Browser">
+      <property name="maximumSize">
+       <size>
+        <width>70</width>
+        <height>25</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_3">
+      <property name="text">
+       <string>Joint3</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QSlider" name="jointSlider_3">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="2">
+     <widget class="QTextBrowser" name="joint3Browser">
+      <property name="maximumSize">
+       <size>
+        <width>70</width>
+        <height>25</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_4">
+      <property name="text">
+       <string>Joint4</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QSlider" name="jointSlider_4">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="2">
+     <widget class="QTextBrowser" name="joint4Browser">
+      <property name="maximumSize">
+       <size>
+        <width>70</width>
+        <height>25</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="label_5">
+      <property name="text">
+       <string>Joint5</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1">
+     <widget class="QSlider" name="jointSlider_5">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="2">
+     <widget class="QTextBrowser" name="joint5Browser">
+      <property name="maximumSize">
+       <size>
+        <width>70</width>
+        <height>25</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLabel" name="label_6">
+      <property name="text">
+       <string>Joint6</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1">
+     <widget class="QSlider" name="jointSlider_6">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="2">
+     <widget class="QTextBrowser" name="joint6Browser">
+      <property name="maximumSize">
+       <size>
+        <width>70</width>
+        <height>25</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0">
+     <widget class="QLabel" name="label_7">
+      <property name="text">
+       <string>Gripper</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="1">
+     <widget class="QSlider" name="gripperSlider">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="2">
+     <widget class="QTextBrowser" name="gripperBrowser">
+      <property name="maximumSize">
+       <size>
+        <width>70</width>
+        <height>25</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>30</y>
+     <width>345</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <property name="spacing">
+     <number>100</number>
+    </property>
+    <item>
+     <widget class="QLabel" name="label_8">
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Forward Kinematic</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="updatefkButton">
+      <property name="text">
+       <string>Update</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QLabel" name="label_16">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>390</y>
+     <width>81</width>
+     <height>81</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="resources.qrc">:/images/jderobot.png</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+  </widget>
+ </widget>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>
