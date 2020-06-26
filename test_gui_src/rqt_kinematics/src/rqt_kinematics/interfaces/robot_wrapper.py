@@ -180,7 +180,4 @@ class RobotWrapper:
 
     def pick_and_place(self, event):
         self.pick_place = Pick_Place(self.arm, self.gripper)
-        self.pick_place.start(event)
-
-    def stop_pick_and_place(self):
-        self.pick_place.stop()
+        self.pick_place.MyAlgorithm(event)

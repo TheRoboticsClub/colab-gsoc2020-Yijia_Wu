@@ -53,6 +53,7 @@ class Kinematics(Plugin):
         context.add_widget(self._widget)
 
         self.robot = RobotWrapper()
+        self.start_pick_place = False
 
         self._widget.xEdit.editingFinished.connect(self.set_x)
         self._widget.yEdit.editingFinished.connect(self.set_y)
@@ -154,7 +155,7 @@ class Kinematics(Plugin):
         self._widget.yawEdit.setText(str(round(yaw,4)))
 
     def launchrviz(self):
-        os.system("roslaunch rqt_kinematics rviz.launch")
+        os.system("gnome-terminal -x sh -c \"roslaunch rqt_kinematics rviz.launch\"")
 
     def playClicked(self):
         self._widget.browser.append("start")
@@ -164,6 +165,7 @@ class Kinematics(Plugin):
         self.t2 = threading.Thread(target = self.stopChecked)
         self.t1.start()
         self.t2.start()
+        self.start_pick_place = True
 
     def stopChecked(self):
         while self.event.isSet():
@@ -187,13 +189,15 @@ class Kinematics(Plugin):
 
     def stopexe(self):
         self.robot.stop_execution()
-        if self.t1:
+        
+        if self.start_pick_place == True:
             self.event.clear()
             self.t1.join()
-        if self.t2:
             self.t2.join()
             self._widget.browser.append("stop")
             self._widget.stop_button.toggle()
+            self.start_pick_place = False
+
         self.updatefk()
         self.updateik()
         # cursor = self._widget.browser.textCursor()

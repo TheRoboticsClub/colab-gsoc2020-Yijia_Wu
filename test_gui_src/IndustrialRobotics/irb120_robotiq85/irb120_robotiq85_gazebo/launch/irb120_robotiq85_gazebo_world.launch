@@ -14,7 +14,7 @@
 
   <!-- startup simulated world -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find irb120_robotiq85_gazebo)/worlds/object.world"/>
+    <arg name="world_name" value="$(find irb120_robotiq85_gazebo)/worlds/object_with_table.world"/>
     <arg name="gui" value="true"/>
     <arg name="paused" value="$(arg paused)"/>
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
@@ -25,7 +25,7 @@
   <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find irb120_robotiq85_gazebo)/urdf/irb120_robotiq85_macro.xacro'"/>
 
   <!-- push robot_description to factory and spawn robot in gazebo -->
-  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model irb120_robotiq85" respawn="false" output="screen" />
+  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model irb120_robotiq85 -z 0.9" respawn="false" output="screen" />
 
   <!-- convert joint states to TF transforms for rviz, etc -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen" />

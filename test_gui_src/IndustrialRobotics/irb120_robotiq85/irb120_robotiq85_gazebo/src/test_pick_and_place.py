@@ -32,6 +32,9 @@ class Pick_Place:
         self.arm = moveit_commander.MoveGroupCommander("irb_120")
         self.gripper = moveit_commander.MoveGroupCommander("robotiq_85")
 
+        self.arm.set_goal_tolerance(0.2)
+        self.gripper.set_goal_tolerance(0.05)
+
         self.scene = PlanningSceneInterface()
         self.robot = RobotCommander()
         self.add_ground()
@@ -61,6 +64,7 @@ class Pick_Place:
             # Pick
             grasps = self.generate_grasps(self.object_name, self.pose_object)
             self.arm.pick(self.object_name, grasps)
+            self.gripper.stop()
 
             rospy.loginfo('Pick up successfully')
             self.arm.detach_object(self.object_name)
@@ -71,33 +75,52 @@ class Pick_Place:
             x = curr_pose.position.x
             y = curr_pose.position.y
             z = curr_pose.position.z
-            quaternion = (curr_pose.orientation.x,
-                        curr_pose.orientation.y,
-                        curr_pose.orientation.z,
-                        curr_pose.orientation.w)
-            euler = euler_from_quaternion(quaternion)
-            roll = euler[0]
-            pitch = euler[1]
-            yaw = euler[2]
+            # quaternion = (curr_pose.orientation.x,
+            #             curr_pose.orientation.y,
+            #             curr_pose.orientation.z,
+            #             curr_pose.orientation.w)
+            # euler = euler_from_quaternion(quaternion)
+            # roll = euler[0]
+            # pitch = euler[1]
+            # yaw = euler[2]
+            roll = 0.0
+            pitch = numpy.deg2rad(90.0)
+            yaw = 0.0
 
             z += 0.1
             self.move_pose_arm(roll, pitch, yaw, x, y, z)
 
             x = -curr_pose.position.y
-            y = curr_pose.position.x
-            #z -= 0.1
-            z = self.pose_object.position.z+0.005
-            if self.object_name == "cylinder":
-                yaw = numpy.deg2rad(90.0)
+            y = 0.6
+            z -= 0.1
+            #z = self.pose_object.position.z+0.05
+            # if self.object_name == "cylinder":
+            #     yaw = numpy.deg2rad(90.0)
                 #z+= 0.001
 
             self.move_pose_arm(roll, pitch, yaw, x, y, z)
             rospy.sleep(0.5)
+
+            z -= 0.1
+            self.move_pose_arm(roll, pitch, yaw, x, y, z)
             self.move_joint_hand(0)
             
             #if self.object_name == "cylinder":
             z += 0.1
             self.move_pose_arm(roll, pitch, yaw, x, y, z)
+
+            # target_pose = curr_pose
+            # target_pose.position.x = x
+            # target_pose.position.y = y
+            # target_pose.position.z = z
+            # q = quaternion_from_euler(roll, pitch, yaw)
+            # target_pose.orientation = Quaternion(*q)
+
+            # place = self.generate_places(target_pose)
+            # self.arm.place(self.object_name, place)
+
+            # self.arm.detach_object(self.object_name)
+            # self.clean_scene(self.object_name)
 
             rospy.loginfo('Place successfully')
 
@@ -131,7 +154,7 @@ class Pick_Place:
         if name == "box":
             p.pose.position.x = 0.5
             p.pose.position.y = 0.0
-            p.pose.position.z = 0.015
+            p.pose.position.z = 0.015+0.115
 
             q = quaternion_from_euler(0.0, 0.0, 0.0)
             p.pose.orientation = Quaternion(*q)
@@ -141,9 +164,9 @@ class Pick_Place:
             dz = 0.16
 
         elif name == "cylinder":
-            p.pose.position.x = 0.6
+            p.pose.position.x = 0.5
             p.pose.position.y = 0.2
-            p.pose.position.z = 0.05
+            p.pose.position.z = 0.05+0.115
 
             q = quaternion_from_euler(0.0, 0.0, 0.0)
             p.pose.orientation = Quaternion(*q)
@@ -152,13 +175,13 @@ class Pick_Place:
             radius = 0.03
 
             self.scene.add_cylinder(name, p, height, radius)
-            #dz = 0.19
-            dx = -0.14
+            dz = 0.16
+            #dx = -0.135
 
         elif name == "sphere":
             p.pose.position.x = 0.5
             p.pose.position.y = -0.2
-            p.pose.position.z = 0.03
+            p.pose.position.z = 0.03+0.115
 
             q = quaternion_from_euler(0.0, 0.0, 0.0)
             p.pose.orientation = Quaternion(*q)
@@ -182,7 +205,7 @@ class Pick_Place:
         pose_goal.position.z = z
         self.arm.set_pose_target(pose_goal)
 
-        plan = self.arm.go(wait=True)
+        self.arm.go(wait=True)
 
         self.arm.stop() # To guarantee no residual movement
         self.arm.clear_pose_targets()
@@ -223,34 +246,35 @@ class Pick_Place:
         grasp.post_grasp_retreat.desired_distance = self.approach_retreat_desired_dist
 
 
-        if name != "cylinder":
-            q = quaternion_from_euler(0.0, numpy.deg2rad(90.0), angle)
-            grasp.grasp_pose.pose.orientation = Quaternion(*q)
-        else:
-            #grasp.pre_grasp_approach.direction.vector.z = -0.05
-            grasp.pre_grasp_approach.direction.vector.x = 0.1
-            #grasp.post_grasp_retreat.direction.vector.z = 0.05
-            grasp.post_grasp_retreat.direction.vector.x = -0.1
+        # if name != "cylinder":
+        q = quaternion_from_euler(0.0, numpy.deg2rad(90.0), angle)
+        grasp.grasp_pose.pose.orientation = Quaternion(*q)
+        # else:
+        #     #grasp.pre_grasp_approach.direction.vector.z = -0.05
+        #     grasp.pre_grasp_approach.direction.vector.x = 0.1
+        #     #grasp.post_grasp_retreat.direction.vector.z = 0.05
+        #     grasp.post_grasp_retreat.direction.vector.x = -0.1
 
         grasp.max_contact_force = 100
 
         grasp.pre_grasp_posture.joint_names.append("gripper_finger1_joint")
         traj = JointTrajectoryPoint()
-        traj.positions.append(0)
+        traj.positions.append(0.03)
         traj.time_from_start = rospy.Duration.from_sec(0.5)
         grasp.pre_grasp_posture.points.append(traj)
 
         grasp.grasp_posture.joint_names.append("gripper_finger1_joint")
         traj = JointTrajectoryPoint()
         if name == "box":
-            traj.positions.append(0.58)
+            traj.positions.append(0.57)
         elif name == "sphere":
             traj.positions.append(0.3)
         else:
             traj.positions.append(0.3)
 
-        #traj.effort.append(100)
-        traj.time_from_start = rospy.Duration.from_sec(1.0)
+        #traj.velocities.append(0.2)
+        traj.effort.append(800)
+        traj.time_from_start = rospy.Duration.from_sec(5.0)
         grasp.grasp_posture.points.append(traj)
 
         grasps.append(grasp)
@@ -271,8 +295,8 @@ class Pick_Place:
         place.place_pose.pose = copy.deepcopy(target)
 
         # Generate orientation (wrt Z axis):
-        q = quaternion_from_euler(0.0, 0, 0.0)
-        place.place_pose.pose.orientation = Quaternion(*q)
+        # q = quaternion_from_euler(0.0, 0, 0.0)
+        # place.place_pose.pose.orientation = Quaternion(*q)
 
         # Generate pre place approach:
         place.pre_place_approach.desired_distance = self.approach_retreat_desired_dist
