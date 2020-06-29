@@ -1,12 +1,21 @@
 ## Weekly tasks 
 
-#### WEEK 4.  June 20 - June 26
+#### WEEK 5.  June 27 - July 3
 
 |      | Tasks                                                        | State   |
 | ---- | ------------------------------------------------------------ | ------- |
-| 1    | Test other kinematic solvers in OMPL library rather than the default RRT to avoid the *ABORTED: Solution found but controller failed during execution* fails | ONGOING |
-| 2    | Finish the pending functionalities of the GUI and wrapper for Industrial Robotics exercises. | ONGOING |
-| 3    | Start coding the new *Exercise 1: pick and place with industrial robotic manipulator*. Define API and build Gazebo world. The descriptions for both API and exercise will be described in separate files. | ONGOING |
+| 1    | Check and update the way the *grasp quality* parameter in the grasp message is computed for the pick() method. | ONGOING |
+| 2    | Update GUI to include *joints angle limits* read from yaml file. Show  those limits in GUI. | ONGOING |
+| 3    | Refine proposed API to include three *approach and retreat* options for grasping, and its related input parameters: <br />a) **vertical** (yaw angle at grasp point, distance from approach/retreat point) <br/>b) **horizontal** (roll angle at grasp point, distance from appr./retreat point)<br />c) **user defined** (roll, pitch, yaw angles at grasp point, distances from approach/retreat point, vectors for approach/retreat) | ONGOING |
+| 4    | Complete the new *Exercise 1: pick and place with industrial robotic manipulator*. Finish Gazebo world. Prepare documentation. Record a demo video | ONGOING |
+
+#### [WEEK 4.  June 20 - June 26](https://theroboticsclub.github.io/colab-gsoc2020-Yijia_Wu/2020-06-25-week4/)
+
+|      | Tasks                                                        | State |
+| ---- | ------------------------------------------------------------ | ----- |
+| 1    | Test other kinematic solvers in OMPL library rather than the default RRT to avoid the *ABORTED: Solution found but controller failed during execution* fails | DONE  |
+| 2    | Finish the pending functionalities of the GUI and wrapper for Industrial Robotics exercises. | DONE  |
+| 3    | Start coding the new *Exercise 1: pick and place with industrial robotic manipulator*. Define API and build Gazebo world. The descriptions for both API and exercise will be described in separate files. | DONE  |
 
 #### [WEEK 3.  June 12 - June 19 ](https://theroboticsclub.github.io/colab-gsoc2020-Yijia_Wu/2020-06-18-week3/)
 
