@@ -4,7 +4,7 @@ As the new Industrial Robotic exercises are quite different than the rest of the
 
 #### 1. Robot arm state + teleoperator
 
-- Show angle value of each joint (including end effector if its articulated). 
+- Show angle value of each joint (including end effector if its articulated). Include angle limits, read from yaml file.
 - Show position and orientation of end effector.
 - Operate arm by **Forward Kinematics**, via sliders or similar for each joint. Something similar to what is implemented in the *Joints* tab of the *MotionPlanning* panel in RViz
 - Operate arm by **Inverse Kinematics**, being able to set the position (x,y,z) and orientation (r,p,y) of the end effector. Button to plan and execute trajectory.
