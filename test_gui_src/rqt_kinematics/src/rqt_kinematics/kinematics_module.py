@@ -9,6 +9,8 @@ from python_qt_binding.QtWidgets import QWidget
 from python_qt_binding import QtGui
 from python_qt_binding.QtCore import pyqtSignal
 from interfaces.robot_wrapper import RobotWrapper
+from interfaces.MyAlgorithm import Algorithm
+from interfaces.pick_and_place import Pick_Place
 import threading
 import time
 import resources_rc
@@ -36,12 +38,6 @@ class Kinematics(Plugin):
             print('arguments: ', args)
             print('unknowns: ', unknowns)
 
-        filename = os.path.join(rospkg.RosPack().get_path('rqt_kinematics'), 'src','rqt_kinematics', 'joints_limit.yaml')
-        with open(filename) as file:
-            jointslimit = yaml.load(file)
-        
-        self.event = threading.Event()
-
         # Create QWidget
         self._widget = QWidget()
         # Get path to UI file which should be in the "resource" folder of this package
@@ -61,7 +57,27 @@ class Kinematics(Plugin):
         context.add_widget(self._widget)
 
         self.robot = RobotWrapper()
-        self.start_pick_place = False
+
+        filename = os.path.join(rospkg.RosPack().get_path('rqt_kinematics'), 'src','rqt_kinematics', 'joints_setup.yaml')
+        with open(filename) as file:
+            joints_setup = yaml.load(file)
+            jointslimit = joints_setup["joints_limit"]
+
+            home_value = joints_setup["home_value"]
+            j1 = home_value["joint_1"]
+            j2 = home_value["joint_2"]
+            j3 = home_value["joint_3"]
+            j4 = home_value["joint_4"]
+            j5 = home_value["joint_5"]
+            j6 = home_value["joint_6"]
+            g = home_value["gripper"]
+            self.robot.set_home_value([j1, j2, j3, j4, j5, j6, g])
+        
+        self.event = threading.Event()
+
+        self.algorithm = Algorithm()
+        self.algorithm.set_pick_and_place(Pick_Place(self.robot.arm, self.robot.gripper))
+        self.start_algorithm = False
 
         self._widget.xEdit.editingFinished.connect(self.set_x)
         self._widget.yEdit.editingFinished.connect(self.set_y)
@@ -80,7 +96,7 @@ class Kinematics(Plugin):
         self._widget.jointSlider_1.valueChanged.connect(self.viewjoint1)
         self._widget.jointSlider_1.setMinimum(jointslimit["joint_1"]["low"])
         self._widget.jointSlider_1.setMaximum(jointslimit["joint_1"]["high"])
-        self._widget.joint1Browser.append(str(round(numpy.rad2deg(self.robot.get_joints_value(1)),2))+DEG)
+        self._widget.joint1Browser.append(str(round(numpy.rad2deg(self.robot.get_joint_value(1)),2))+DEG)
         self._widget.joint1_low.setText(str(jointslimit["joint_1"]["low"])+DEG)
         self._widget.joint1_high.setText(str(jointslimit["joint_1"]["high"])+DEG)
 
@@ -88,7 +104,7 @@ class Kinematics(Plugin):
         self._widget.jointSlider_2.valueChanged.connect(self.viewjoint2)
         self._widget.jointSlider_2.setMinimum(jointslimit["joint_2"]["low"])
         self._widget.jointSlider_2.setMaximum(jointslimit["joint_2"]["high"])
-        self._widget.joint2Browser.append(str(round(numpy.rad2deg(self.robot.get_joints_value(2)),2))+DEG)
+        self._widget.joint2Browser.append(str(round(numpy.rad2deg(self.robot.get_joint_value(2)),2))+DEG)
         self._widget.joint2_low.setText(str(jointslimit["joint_2"]["low"])+DEG)
         self._widget.joint2_high.setText(str(jointslimit["joint_2"]["high"])+DEG)
 
@@ -96,7 +112,7 @@ class Kinematics(Plugin):
         self._widget.jointSlider_3.valueChanged.connect(self.viewjoint3)
         self._widget.jointSlider_3.setMinimum(jointslimit["joint_3"]["low"])
         self._widget.jointSlider_3.setMaximum(jointslimit["joint_3"]["high"])
-        self._widget.joint3Browser.append(str(round(numpy.rad2deg(self.robot.get_joints_value(3)),2))+DEG)
+        self._widget.joint3Browser.append(str(round(numpy.rad2deg(self.robot.get_joint_value(3)),2))+DEG)
         self._widget.joint3_low.setText(str(jointslimit["joint_3"]["low"])+DEG)
         self._widget.joint3_high.setText(str(jointslimit["joint_3"]["high"])+DEG)
 
@@ -104,7 +120,7 @@ class Kinematics(Plugin):
         self._widget.jointSlider_4.valueChanged.connect(self.viewjoint4)
         self._widget.jointSlider_4.setMinimum(jointslimit["joint_4"]["low"])
         self._widget.jointSlider_4.setMaximum(jointslimit["joint_4"]["high"])
-        self._widget.joint4Browser.append(str(round(numpy.rad2deg(self.robot.get_joints_value(4)),2))+DEG)
+        self._widget.joint4Browser.append(str(round(numpy.rad2deg(self.robot.get_joint_value(4)),2))+DEG)
         self._widget.joint4_low.setText(str(jointslimit["joint_4"]["low"])+DEG)
         self._widget.joint4_high.setText(str(jointslimit["joint_4"]["high"])+DEG)
 
@@ -112,7 +128,7 @@ class Kinematics(Plugin):
         self._widget.jointSlider_5.valueChanged.connect(self.viewjoint5)
         self._widget.jointSlider_5.setMinimum(jointslimit["joint_5"]["low"])
         self._widget.jointSlider_5.setMaximum(jointslimit["joint_5"]["high"])
-        self._widget.joint5Browser.append(str(round(numpy.rad2deg(self.robot.get_joints_value(5)),2))+DEG)
+        self._widget.joint5Browser.append(str(round(numpy.rad2deg(self.robot.get_joint_value(5)),2))+DEG)
         self._widget.joint5_low.setText(str(jointslimit["joint_5"]["low"])+DEG)
         self._widget.joint5_high.setText(str(jointslimit["joint_5"]["high"])+DEG)
 
@@ -120,7 +136,7 @@ class Kinematics(Plugin):
         self._widget.jointSlider_6.valueChanged.connect(self.viewjoint6)
         self._widget.jointSlider_6.setMinimum(jointslimit["joint_6"]["low"])
         self._widget.jointSlider_6.setMaximum(jointslimit["joint_6"]["high"])
-        self._widget.joint6Browser.append(str(round(numpy.rad2deg(self.robot.get_joints_value(6)),2))+DEG)
+        self._widget.joint6Browser.append(str(round(numpy.rad2deg(self.robot.get_joint_value(6)),2))+DEG)
         self._widget.joint6_low.setText(str(jointslimit["joint_6"]["low"])+DEG)
         self._widget.joint6_high.setText(str(jointslimit["joint_6"]["high"])+DEG)
 
@@ -143,25 +159,28 @@ class Kinematics(Plugin):
         self.updatefk()
         self.updateik()
 
+        # self.t_update = threading.Thread(target = self.update)
+        # self.t_update.start()
+
     def updatefk(self):
         self._widget.joint1Browser.clear()
-        self._widget.joint1Browser.append(str(round(numpy.rad2deg(self.robot.get_joints_value(1)),2))+DEG)
-        self._widget.jointSlider_1.setValue(numpy.rad2deg(self.robot.get_joints_value(1)))
+        self._widget.joint1Browser.append(str(round(numpy.rad2deg(self.robot.get_joint_value(1)),2))+DEG)
+        self._widget.jointSlider_1.setValue(numpy.rad2deg(self.robot.get_joint_value(1)))
         self._widget.joint2Browser.clear()
-        self._widget.joint2Browser.append(str(round(numpy.rad2deg(self.robot.get_joints_value(2)),2))+DEG)
-        self._widget.jointSlider_2.setValue(numpy.rad2deg(self.robot.get_joints_value(2)))
+        self._widget.joint2Browser.append(str(round(numpy.rad2deg(self.robot.get_joint_value(2)),2))+DEG)
+        self._widget.jointSlider_2.setValue(numpy.rad2deg(self.robot.get_joint_value(2)))
         self._widget.joint3Browser.clear()
-        self._widget.joint3Browser.append(str(round(numpy.rad2deg(self.robot.get_joints_value(3)),2))+DEG)
-        self._widget.jointSlider_3.setValue(numpy.rad2deg(self.robot.get_joints_value(3)))
+        self._widget.joint3Browser.append(str(round(numpy.rad2deg(self.robot.get_joint_value(3)),2))+DEG)
+        self._widget.jointSlider_3.setValue(numpy.rad2deg(self.robot.get_joint_value(3)))
         self._widget.joint4Browser.clear()
-        self._widget.joint4Browser.append(str(round(numpy.rad2deg(self.robot.get_joints_value(4)),2))+DEG)
-        self._widget.jointSlider_4.setValue(numpy.rad2deg(self.robot.get_joints_value(4)))
+        self._widget.joint4Browser.append(str(round(numpy.rad2deg(self.robot.get_joint_value(4)),2))+DEG)
+        self._widget.jointSlider_4.setValue(numpy.rad2deg(self.robot.get_joint_value(4)))
         self._widget.joint5Browser.clear()
-        self._widget.joint5Browser.append(str(round(numpy.rad2deg(self.robot.get_joints_value(5)),2))+DEG)
-        self._widget.jointSlider_5.setValue(numpy.rad2deg(self.robot.get_joints_value(5)))
+        self._widget.joint5Browser.append(str(round(numpy.rad2deg(self.robot.get_joint_value(5)),2))+DEG)
+        self._widget.jointSlider_5.setValue(numpy.rad2deg(self.robot.get_joint_value(5)))
         self._widget.joint6Browser.clear()
-        self._widget.joint6Browser.append(str(round(numpy.rad2deg(self.robot.get_joints_value(6)),2))+DEG)
-        self._widget.jointSlider_6.setValue(numpy.rad2deg(self.robot.get_joints_value(6)))
+        self._widget.joint6Browser.append(str(round(numpy.rad2deg(self.robot.get_joint_value(6)),2))+DEG)
+        self._widget.jointSlider_6.setValue(numpy.rad2deg(self.robot.get_joint_value(6)))
         self._widget.gripperBrowser.clear()
         self._widget.gripperBrowser.append(str(round(self.robot.get_gripper_joint_value(),3)))
         self._widget.gripperSlider.setValue(self.robot.get_gripper_joint_value()*100)
@@ -172,9 +191,9 @@ class Kinematics(Plugin):
         self._widget.xEdit.setText(str(round(x,4)))
         self._widget.yEdit.setText(str(round(y,4)))
         self._widget.zEdit.setText(str(round(z,4)))
-        self._widget.rollEdit.setText(str(round(roll,4)))
-        self._widget.pitchEdit.setText(str(round(pitch,4)))
-        self._widget.yawEdit.setText(str(round(yaw,4)))
+        self._widget.rollEdit.setText(str(round(numpy.rad2deg(roll),2)))
+        self._widget.pitchEdit.setText(str(round(numpy.rad2deg(pitch),2)))
+        self._widget.yawEdit.setText(str(round(numpy.rad2deg(yaw),2)))
 
     def launchrviz(self):
         os.system("gnome-terminal -x sh -c \"roslaunch rqt_kinematics rviz.launch\"")
@@ -182,12 +201,12 @@ class Kinematics(Plugin):
     def playClicked(self):
         self._widget.browser.append("start")
         self.event.set()
-        self.t1 = threading.Thread(target = self.robot.pick_and_place, 
+        self.t1 = threading.Thread(target = self.algorithm.myalgorithm, 
                                     args = (self.event,))
         self.t2 = threading.Thread(target = self.stopChecked)
         self.t1.start()
         self.t2.start()
-        self.start_pick_place = True
+        self.start_algorithm = True
 
     def stopChecked(self):
         while self.event.isSet():
@@ -195,30 +214,79 @@ class Kinematics(Plugin):
                 self.event.clear()
                 break
 
+    def update(self):
+        while True:
+            self.updatefk()
+            self.updateik()
+            print("updating")
+            time.sleep(1)
+
     def plan(self):
         self.robot.plan()
 
     def execute(self):
+        last_joints = self.robot.get_joints_value()
         self.robot.execute()
+
+        print("start moving")
+        # update after robot stops moving
+        while abs(sum(last_joints)-sum(self.robot.get_joints_value()) > 1e-10):
+            last_joints = self.robot.get_joints_value()
+            #print(last_joints)
+            time.sleep(0.5)
+
+        self.updatefk()
+        self.updateik()
+
+        time.sleep(1.5)
+        print("double check movement")
+
+        # update after robot stops moving
+        while abs(sum(last_joints)-sum(self.robot.get_joints_value()) > 1e-10):
+            last_joints = self.robot.get_joints_value()
+            #print(last_joints)
+            time.sleep(0.5)
+
         self.updatefk()
         self.updateik()
     
     def planexe(self):
+        last_joints = self.robot.get_joints_value()
         self.robot.plan()
         self.robot.execute()
+
+        print("start moving")
+        # update after robot stops moving
+        while abs(sum(last_joints)-sum(self.robot.get_joints_value()) > 1e-10):
+            last_joints = self.robot.get_joints_value()
+            #print(last_joints)
+            time.sleep(0.5)
+
+        self.updatefk()
+        self.updateik()
+        
+        time.sleep(1.5)
+        print("double check movement")
+
+        # update after robot stops moving
+        while abs(sum(last_joints)-sum(self.robot.get_joints_value()) > 1e-10):
+            last_joints = self.robot.get_joints_value()
+            #print(last_joints)
+            time.sleep(0.5)
+
         self.updatefk()
         self.updateik()
 
     def stopexe(self):
         self.robot.stop_execution()
         
-        if self.start_pick_place == True:
+        if self.start_algorithm == True:
             self.event.clear()
             self.t1.join()
             self.t2.join()
             self._widget.browser.append("stop")
             self._widget.stop_button.toggle()
-            self.start_pick_place = False
+            self.start_algorithm = False
 
         self.updatefk()
         self.updateik()
@@ -229,6 +297,7 @@ class Kinematics(Plugin):
 
     def backtohome(self):
         self.robot.back_to_home()
+        
         self.updatefk()
         self.updateik()
 
@@ -242,13 +311,13 @@ class Kinematics(Plugin):
         self.robot.set_z(float(self._widget.zEdit.text()))
 
     def set_roll(self):
-        self.robot.set_roll(float(self._widget.rollEdit.text()))
+        self.robot.set_roll(numpy.deg2rad(float(self._widget.rollEdit.text())))
 
     def set_pitch(self):
-        self.robot.set_pitch(float(self._widget.pitchEdit.text()))
+        self.robot.set_pitch(numpy.deg2rad(float(self._widget.pitchEdit.text())))
 
     def set_yaw(self):
-        self.robot.set_yaw(float(self._widget.yawEdit.text()))
+        self.robot.set_yaw(numpy.deg2rad(float(self._widget.yawEdit.text())))
 
     def viewjoint1(self):
         self._widget.joint1Browser.clear()
@@ -284,7 +353,6 @@ class Kinematics(Plugin):
         self.updateik()
 
     def setjoint2(self):
-    
         angle = numpy.deg2rad(self._widget.jointSlider_2.value())
         self.robot.set_arm_joint(2, angle)
         self.updateik()

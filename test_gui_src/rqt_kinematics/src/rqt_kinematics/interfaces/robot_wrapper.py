@@ -23,6 +23,7 @@ from tf.transformations import euler_from_quaternion, quaternion_from_euler
 
 from geometry_msgs.msg import Pose, PoseStamped, PoseArray, Quaternion
 from pick_and_place import Pick_Place
+from MyAlgorithm import Algorithm
 
 
 class RobotWrapper:
@@ -47,6 +48,8 @@ class RobotWrapper:
         self.yaw = euler[2]
 
         self.event = threading.Event()
+
+        self.movement_finish = False
 
         #self.joints = self.arm.get_current_joint_values()
         #self.gripper_joint = self.gripper.get_current_joint_values()
@@ -74,9 +77,13 @@ class RobotWrapper:
         self.arm.go(joint_goal, wait=True)
         self.arm.stop() # To guarantee no residual movement
 
-    def get_joints_value(self, joint_id):
+    def get_joint_value(self, joint_id):
         joints = self.arm.get_current_joint_values()
         return joints[joint_id-1]
+
+    def get_joints_value(self):
+        joints = self.arm.get_current_joint_values()
+        return joints
 
     def set_x(self, value):
         self.x = value
@@ -115,12 +122,19 @@ class RobotWrapper:
         yaw = euler[2]
         return roll, pitch, yaw
 
+    def get_arm_pose(self):
+        return self.arm.get_current_pose().pose
+
     def set_random_pose(self):
         self.arm.set_random_target()
 
+    def set_home_value(self, home_value):
+        self.home_value = home_value
+
     def back_to_home(self):
-        self.move_joint_arm(0,0,0,0,0,0)
-        self.move_joint_hand(0)
+        j1, j2, j3, j4, j5, j6, g = self.home_value
+        self.move_joint_arm(j1, j2, j3, j4, j5, j6)
+        self.move_joint_hand(g)
         
     # Inverse Kinematics (IK): move TCP to given position and orientation
     def move_pose_arm(self, roll, pitch, yaw, x, y, z):
@@ -135,7 +149,7 @@ class RobotWrapper:
         pose_goal.position.z = z
         self.arm.set_pose_target(pose_goal)
 
-        self.arm.go(wait=False)
+        self.arm.go(wait=True)
 
         self.arm.stop() # To guarantee no residual movement
         self.arm.clear_pose_targets()
@@ -145,7 +159,7 @@ class RobotWrapper:
         joint_goal = self.gripper.get_current_joint_values()
         joint_goal[2] = gripper_finger1_joint # Gripper master axis
 
-        self.gripper.go(joint_goal, wait=False)
+        self.gripper.go(joint_goal, wait=True)
         self.gripper.stop() # To guarantee no residual movement
 
     def get_gripper_joint_value(self):
@@ -175,8 +189,10 @@ class RobotWrapper:
 
     def execute(self):
         self.arm.go(wait=False)
+
         self.arm.stop() # To guarantee no residual movement
         self.arm.clear_pose_targets()
+        self.movement_finish = True
 
     def pick_and_place(self, event):
         self.pick_place = Pick_Place(self.arm, self.gripper)

@@ -1,7 +1,0 @@
-joint_1: {low: -165, high: 165}
-joint_2: {low: -110, high: 110}
-joint_3: {low: -110, high: 70}
-joint_4: {low: -160, high: 160}
-joint_5: {low: -120, high: 120}
-joint_6: {low: -180, high: 180}
-gripper: {low: 0, high: 0.8}
