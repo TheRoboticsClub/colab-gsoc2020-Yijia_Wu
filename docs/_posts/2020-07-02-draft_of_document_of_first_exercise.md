@@ -1,4 +1,9 @@
-This is a draft of the document of first exercise.
+---
+layout: post
+title: Draft of document of first exercise
+---
+
+**This is a draft of the document of first exercise.**
 
 The goal of this exercise is to learn the underlying infrastructure of Industrial Robot exercises(ROS + MoveIt + our own industrial robotics API) and get familiar with the key components needed for more complex exercises by completing the task of pick and place multiple objects and sorting them by color or shape.
 
@@ -32,7 +37,6 @@ Two different windows will pop up:
 
 ## How should I solve the exercise
 To solve the exercise, you must edit the MyAlgorithm.py file and insert control logic in myalgorithm() function.
-
 ```python
 def myalgorithm(self, event):
 	############## Insert your code here ###############
@@ -45,10 +49,10 @@ def myalgorithm(self, event):
         return
 
 	####################################################
-```
+```  
+Multiple APIs can be used to implement your algorithm. They are provided in Pick_Place class, so you should allways add "self.pick_place." as a prefix to following introduced APIs in your algorithm.
 
 ## API
-API are provided in Pick_Place class, so you should add "self.pick_place." as a prefix to following introduced API in your algorithm.
 ### Environment Information
 * `get_object_list()` - Return the name list of all objects.
 * `get_object_pose(object_name)` - Return the pose of the object.
@@ -87,6 +91,7 @@ TO BE DONE
 
 ### Difference between MoveIt(Rviz) and Gazebo
 Rviz can show the planning scene of MoveIt.
+
 #### Objects visualization
 When we start Gazebo with a world file, the objects in Gazebo will not be automatically added in the planning scene of MoveIt, so we can only see the robot in Rviz without any other objects. If we want MoveIt to know there are some objects in the environment, we should manually add them into the planning scene, but you don't need to worry about it in this exercise as it has been done by us. 
 
@@ -110,11 +115,9 @@ TO DO: Draw a flow chart
 
 ### Why does the robot cannot move to some desired pose?
 The most possible reason is that your specified pose is unreachable for the robot arm, so MoveIt cannot plan a trajectory from current pose to desired pose in limited time. You will see such a warning when this problem happened:
-
 ```bash
 Fail: ABORTED: No motion plan found. No execution attempted.
 ```
-
 ### Ignorable ERROR and WARNING
 - `No p gain specified for pid.`
 - `Controller is taking too long to execute trajectory`

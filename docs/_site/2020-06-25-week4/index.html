@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>Week3</title>
+  <title>Week4</title>
   
   
   <meta name="author" content="Yijia Wu">
@@ -62,19 +62,19 @@
   
 
   
-  <meta property="og:title" content="Week3">
+  <meta property="og:title" content="Week4">
   
 
    
-  <meta property="og:description" content="Stable pick and place in Gazebo In this week, the robot can finally grasp the objects stably. I mentioned in last blog that when using MoveIt move group pick function, the gripper can grasp the object in Rviz, but cannot grasp it in Gazebo. However, if I set the grasping...">
+  <meta property="og:description" content="Improve pick and place in Gazebo Because the robot arm and gripper still sometimes cannot grasp the object, I spent some more time to try to improve it. Some works I have done are listed below. The main challenge is that the fail pick and place doesn’t happen each time,...">
   
 
 
   <meta property="og:type" content="website">
 
   
-  <meta property="og:url" content="http://localhost:4000/2020-06-18-week3/">
-  <link rel="canonical" href="http://localhost:4000/2020-06-18-week3/">
+  <meta property="og:url" content="http://localhost:4000/2020-06-25-week4/">
+  <link rel="canonical" href="http://localhost:4000/2020-06-25-week4/">
   
 
   
@@ -88,11 +88,11 @@
   <meta name="twitter:creator" content="@">
 
   
-  <meta name="twitter:title" content="Week3">
+  <meta name="twitter:title" content="Week4">
   
 
   
-  <meta name="twitter:description" content="Stable pick and place in Gazebo In this week, the robot can finally grasp the objects stably. I mentioned in last blog that when using MoveIt move group pick function, the gripper can grasp the object in Rviz, but cannot grasp it in Gazebo. However, if I set the grasping...">
+  <meta name="twitter:description" content="Improve pick and place in Gazebo Because the robot arm and gripper still sometimes cannot grasp the object, I spent some more time to try to improve it. Some works I have done are listed below. The main challenge is that the fail pick and place doesn’t happen each time,...">
   
 
   
@@ -161,11 +161,11 @@
     <div class="row">
       <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1">
         <div class="post-heading">
-          <h1>Week3</h1>
+          <h1>Week4</h1>
       
       
       
-          <span class="post-meta">Posted on June 18, 2020</span>
+          <span class="post-meta">Posted on June 25, 2020</span>
           
       
         </div>
@@ -186,41 +186,91 @@
       
 
       <article role="main" class="blog-post">
-        <h2 id="stable-pick-and-place-in-gazebo">Stable pick and place in Gazebo</h2>
+        <h2 id="improve-pick-and-place-in-gazebo">Improve pick and place in Gazebo</h2>
 
-<p>In this week, the robot can finally grasp the objects stably. I mentioned in last blog that when using <a href="http://docs.ros.org/melodic/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html">MoveIt move group pick function</a>, the gripper can grasp the object in Rviz, but cannot grasp it in Gazebo. However, if I set the grasping distance properly, larger but not much larger than what the gripper need to go, then when the execution time is out of tolerance, the gripper will stop moving and do next task.  Compared with the method I used last week, the new method makes the gripper doesn’t shake even if the given gripping distance is larger than needed, which provides a bigger tolerance range to tune the gripping distance. With this method, though ROS controller takes it as an error, but the gripper can stably grasp the objects. The following example warning and error won’t influence the behavior of grasping.</p>
+<p>Because the robot arm and gripper still sometimes cannot grasp the object, I spent some more time to try to improve it. Some works I have done are listed below. The main challenge is that the fail pick and place doesn’t happen each time, so I need to test multiple times to check does it truly works better after some modification. Sometime, even if it successfully finishs the task(pick and place three objects) for over three times which seems promising, it might fails after a while, so it is kind of hard for me to evaluate the result of modification without a benchmark testing tool.</p>
+
+<h3 id="change-controller-parameters">Change controller parameters</h3>
+
+<p>I mainly changed three kinds of parameters in ros controller: goal_time, stopped_velocity_tolerance, trajectory and goal tolerance. The most useful one is to change the trajectory and goal tolerance for each joints.</p>
+
+<p>Because I can always see some warnings as below, it seems that the controller violated the goal tolerence a lot, so I increased the goal tolerance for each joints at first, but the robot worked even worse after this modification and the warnings kept coming out with a larger goal tolerance. However, with a smaller tolerance, though the warning is still spawning, it actually provides a better start pose for next motion.</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span> WARN]: Controller  failed with error GOAL_TOLERANCE_VIOLATED: 
 <span class="o">[</span> WARN]: Controller handle  reports status ABORTED
 
-<span class="o">[</span>ERROR]: Controller is taking too long to execute trajectory <span class="o">(</span>the expected upper bound <span class="k">for </span>the trajectory execution was 1.231552 seconds<span class="o">)</span><span class="nb">.</span> Stopping trajectory.
-
-<span class="o">[</span> WARN]: Fail: ABORTED: Timeout reached
+<span class="o">[</span> WARN]: Fail: ABORTED: Solution found but controller failed during execution
 </code></pre></div></div>
 
-<p>This method still has some limitations with planning and control. Each time I call the pick function, MoveIt plans a different trajectory to grasp the object. Sometimes the planned trajectory cannot be execute. An error as below can be seen in terminal. Then the robot will not be able to grasp the object. When I tried to use place function, this probelm also always happens, so I directly move the robot arm to desired position and place it by opening the gripper.</p>
+<h3 id="add-multiple-grasp-messages-to-pickup-function">Add multiple grasp messages to pickup() function</h3>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span> WARN]: Fail: ABORTED: Solution found but controller failed during execution
-</code></pre></div></div>
+<p>For box object, I specified four possible grasp poses with 90 degree step in yaw. For sphere and cylinder objects, I specified 12 possible grasps with 30 degree step in yaw. After this modification, the pickup() function can choose the one with highest success rate to execute.</p>
 
-<p>Three different kinds of objects: cube, sphere and cylider, are tested with this picking methods. The result can be seen by clicking the following image. To show that the robot can also grasp from different direction, I made it to grasp the cylinder with the gripper parallel to the ground instead of gripping from above, but it is still more promising to pick objects from above.</p>
+<h3 id="provide-more-time-for-the-gripper-to-grasp-the-object">Provide more time for the gripper to grasp the object</h3>
 
-<p><a href="https://youtu.be/HEDsM0PatiU"><img src="https://img.youtube.com/vi/HEDsM0PatiU/0.jpg" alt="pick and place" class="mx-auto d-block" /></a></p>
+<p>Sometimes the gripper seems to stop after moving to the grasping position. However, when I zoom in to the gripper, I found that it is moving but in a very slow speed, so giving it more time to close the gripper can also contribute to stability.</p>
 
-<h2 id="industrial-robot-wrapper">Industrial Robot Wrapper</h2>
+<h3 id="change-planner-in-moveit">Change planner in Moveit</h3>
 
-<p>To use GUI to control the robot arm and gripper, I made a Industrial Robot Wrapper which includes necessary functionality to move robot arm and gripper. It is also connected with the template GUI I made last week, so now we can use GUI to do forward kinematic(move robot joints to given joint angle) and inverse kinematic(given desired end effector pose, MoveIt will plan a trajectory for robot arm to go there).</p>
+<p>The default planner in MoveIt is RRT. There are 23 palnning methods can be choosed in the Open Motion Planning Library(OMPL). I could not see a obvious difference between the trajectory different planner get, so the original one is kept.</p>
 
-<h2 id="developing-parts">Developing parts</h2>
+<h2 id="rqt_kinematics-plugin">rqt_kinematics plugin</h2>
 
-<h3 id="change-current-gui-template-into-rqt-plugins">Change current GUI template into rqt plugins</h3>
-<p><a href="http://wiki.ros.org/rqt?distro=noetic">rqt</a> is a software framework of ROS that implements the various GUI tools in the form of plugins. The advantage of using it is that we can customize different GUI that shares similar contents easily by integrating rqt plugins, and don’t need to generate each of them from scratch. I am currently working on this task.</p>
+<p>The GUI I implemented is modified into a rqt plugin, so it can be loaded and shown together with other rqt plugins. All the button is usable now. With this GUI tool, we can easily debug and play with the robot.</p>
 
-<h3 id="test-grasping-irregular-mesh-based-object">Test grasping irregular mesh-based object</h3>
-<p>I have modified the hammer model provided by Gazebo to test it. However, since all the physical parameters are manully set, the hammer doesn’t behave as what I expected and will oscillate in Gazebo. When the gripper is trying to grasp it, the grasp_fix plugin can detect a grasp, but it will suddently move out of thr gripper. It would be more reasonable to directly generate the sdf and urdf file with CAD software.</p>
+<h2 id="preparation-of-the-first-exercise">Preparation of the first exercise</h2>
 
-<h3 id="make-a-two-finger-gripper-model-based-on-schunk-kgg-gripper">Make a two-finger gripper model based on Schunk KGG gripper</h3>
-<p>If we only generate models of the gripper in sdf format, it can not be seen in Rviz, but URDF file can be used in both Gazebo and Rviz. I plan to make it after making rqt_plugin.</p>
+<h3 id="world-in-gazebo">World in Gazebo</h3>
+
+<p>A table and container are added into the world file. All the objects are placed on the table and will be picked and placed to the container. The table can be changed into the conveyor. ARIAC provides a conveyor model, but it requires some modifications in collision model because when I put some objects on it, they will direcly drop to the ground.</p>
+
+<h3 id="first-version-api">first version API</h3>
+
+<p>Currently, I provides following API for the first exercise.</p>
+
+<h4 id="object-class">Object Class:</h4>
+<p>Object information are packaged in Object class. They are stored in <code class="highlighter-rouge">object_list</code> and can be accessed by providing the object name.</p>
+<ul>
+  <li>pose</li>
+  <li>height</li>
+  <li>width</li>
+  <li>shape</li>
+  <li>color</li>
+</ul>
+
+<h4 id="pick_place-class">Pick_Place Class</h4>
+<p>With integrated functions, users can quickly implement a solution to pick and place objects by providing their name.</p>
+
+<p><strong>Integrated Solution</strong></p>
+<ul>
+  <li>self.get_object_pose(object_name)</li>
+  <li>self.pickup(object_name, pose)</li>
+  <li>self.place(pose)</li>
+  <li>self.back_to_home()</li>
+</ul>
+
+<p>If the user wants to understand the pipeline better, some basic functions are also provided. With them and move_group API, they can also finish the pick and place task.</p>
+
+<p><strong>Basic functions</strong></p>
+<ul>
+  <li>self.get_object_width(object_name)</li>
+  <li>self.move_pose_arm(pose)</li>
+  <li>self.move_joint_arm(pose)</li>
+  <li>self.move_joint_hand(joint_value)</li>
+  <li>self.generate_grasps(object_name, pose)</li>
+  <li>self.pose2msg(roll, pitch, yaw, x, y, z)</li>
+  <li>self.msg2pose(pose)</li>
+</ul>
+
+<h4 id="move_group-api">move_group API:</h4>
+<ul>
+  <li>self.arm.stop()</li>
+  <li>self.arm.set_pose_target(pose)</li>
+  <li>self.arm.go()</li>
+  <li>self.arm.pick(object_name, grasp)</li>
+  <li>self.arm.place(placelocation)<br />
+More API for movegroup can be found <a href="http://docs.ros.org/melodic/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html">here</a>.</li>
+</ul>
 
       </article>
 
@@ -238,12 +288,12 @@
       <ul class="pagination blog-pager">
         
         <li class="page-item previous">
-          <a class="page-link" href="/2020-06-11-week1_2/" data-toggle="tooltip" data-placement="top" title="Week1-2">&larr; Previous Post</a>
+          <a class="page-link" href="/2020-06-18-week3/" data-toggle="tooltip" data-placement="top" title="Week3">&larr; Previous Post</a>
         </li>
         
         
         <li class="page-item next">
-          <a class="page-link" href="/2020-06-25-week4/" data-toggle="tooltip" data-placement="top" title="Week4">Next Post &rarr;</a>
+          <a class="page-link" href="/2020-07-02-draft_of_document_of_first_exercise/" data-toggle="tooltip" data-placement="top" title="Draft of document of first exercise">Next Post &rarr;</a>
         </li>
         
       </ul>

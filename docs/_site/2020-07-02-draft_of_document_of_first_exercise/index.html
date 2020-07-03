@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- Beautiful Jekyll | MIT license | Copyright Dean Attali 2020 -->
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Draft of document of first exercise</title>
+  
+  
+  <meta name="author" content="Yijia Wu">
+  
+  
+  
+
+  <link rel="alternate" type="application/rss+xml" title="GSoC 2020 Blog - Yijia Wu - GSoC progress" href="http://localhost:4000/feed.xml">
+
+  
+
+  
+
+  
+
+
+  
+    
+      
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+
+    
+      
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+
+
+    
+      
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic">
+
+
+    
+      
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800">
+
+
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="/assets/css/bootstrap-social.css">
+    
+      <link rel="stylesheet" href="/assets/css/main.css">
+    
+  
+
+  
+
+  
+
+  <!-- Facebook OpenGraph tags -->
+  
+
+  
+  <meta property="og:title" content="Draft of document of first exercise">
+  
+
+   
+  <meta property="og:description" content="This is a draft of the document of first exercise. The goal of this exercise is to learn the underlying infrastructure of Industrial Robot exercises(ROS + MoveIt + our own industrial robotics API) and get familiar with the key components needed for more complex exercises by completing the task of...">
+  
+
+
+  <meta property="og:type" content="website">
+
+  
+  <meta property="og:url" content="http://localhost:4000/2020-07-02-draft_of_document_of_first_exercise/">
+  <link rel="canonical" href="http://localhost:4000/2020-07-02-draft_of_document_of_first_exercise/">
+  
+
+  
+  <meta property="og:image" content="http://localhost:4000/img/logo.png">
+  
+
+
+  <!-- Twitter summary cards -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@">
+  <meta name="twitter:creator" content="@">
+
+  
+  <meta name="twitter:title" content="Draft of document of first exercise">
+  
+
+  
+  <meta name="twitter:description" content="This is a draft of the document of first exercise. The goal of this exercise is to learn the underlying infrastructure of Industrial Robot exercises(ROS + MoveIt + our own industrial robotics API) and get familiar with the key components needed for more complex exercises by completing the task of...">
+  
+
+  
+  <meta name="twitter:image" content="http://localhost:4000/img/logo.png">
+  
+
+  
+
+  
+
+</head>
+
+
+  <body>
+
+    
+
+  
+    <nav class="navbar navbar-expand-md navbar-light fixed-top navbar-custom "><a class="navbar-brand" href="http://localhost:4000/">GSoC 2020 Blog - Yijia Wu</a><button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="main-navbar">
+    <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://theroboticsclub.github.io/colab-gsoc2020-Yijia_Wu">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/aboutme">About Me</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">About Project</a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="/aboutproject">Introduction</a>
+                  <a class="dropdown-item" href="/progress">Progress</a>
+            </div>
+          </li>
+        </ul>
+  </div>
+
+  
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        <a href="http://localhost:4000/">
+          <img alt="Navbar avatar" class="avatar-img" src="/img/logo.png" />
+        </a>
+      </div>
+    </div>
+  
+
+</nav>
+
+
+    <!-- TODO this file has become a mess, refactor it -->
+
+
+
+
+
+
+
+<header class="header-section ">
+
+<div class="intro-header no-img">
+  <div class="container-md">
+    <div class="row">
+      <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1">
+        <div class="post-heading">
+          <h1>Draft of document of first exercise</h1>
+      
+      
+      
+          <span class="post-meta">Posted on July 2, 2020</span>
+          
+      
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</header>
+
+
+
+
+
+<div class="container-md">
+  <div class="row">
+    <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1">
+
+      
+
+      <article role="main" class="blog-post">
+        <p><strong>This is a draft of the document of first exercise.</strong></p>
+
+<p>The goal of this exercise is to learn the underlying infrastructure of Industrial Robot exercises(ROS + MoveIt + our own industrial robotics API) and get familiar with the key components needed for more complex exercises by completing the task of pick and place multiple objects and sorting them by color or shape.</p>
+
+<p><img src="https://raw.githubusercontent.com/TheRoboticsClub/colab-gsoc2020-Yijia_Wu/master/docs/img/first_exercise_world.png" alt="world" class="mx-auto d-block" /></p>
+
+<h2 id="installation">Installation</h2>
+<ol>
+  <li>Install the <a href="https://jderobot.github.io/RoboticsAcademy/installation/#generic-infrastructure">General Infrastructure</a> of the JdeRobot Robotics Academy.</li>
+  <li>Install MoveIt, ros_controller …(TO BE DONE)</li>
+  <li>Install Industrial Robot package(TO BE DONE)</li>
+</ol>
+
+<h2 id="how-to-run-the-exercise">How to run the exercise</h2>
+<p>TO launch the exercise, open a terminal windows, navigate to the Industrial RObot folder and execute following command:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>roslaunch irb120_robotiq85_gazebo irb120_robotiq85_gazebo_world.launch 
+</code></pre></div></div>
+<p>Two different windows will pop up:</p>
+<ul>
+  <li><strong>Gazebo simulator</strong>: A warehouse environment with a industrial robot(robot arm and gripper), multiple objects, a conveyor and two boxes will be shown in Gazebo.</li>
+  <li><strong>Industrial robot teleoperator</strong>: A GUI which provideds following functionalities:
+    <ul>
+      <li>A Forward Kinematics teleoperator providing sliders to change the angle of each joint of the robot arm and the gripper. The limits of each joints are shown in the two sides of the slider. The true angle of the joints are shown in the text box beside the sliders.</li>
+      <li>An Inverse Kinematics teleoperator allowing users to set the desired end effector pose.
+        <ul>
+          <li>Plan button can plan the trajectory to the desired pose</li>
+          <li>Excute button can make the robot execute the planned trajectory</li>
+          <li>Plan &amp; Execute button is the integration of last two buttons</li>
+          <li>Stop button allows users to stop moving robot</li>
+          <li>Back to home button can make the robot back to home pose</li>
+        </ul>
+      </li>
+      <li>Two update button to update the value of current robot state</li>
+      <li>Two buttons to start and stop the main code you program</li>
+      <li>An info box showing the status of the main code(“start” or “stop”)</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="https://raw.githubusercontent.com/TheRoboticsClub/colab-gsoc2020-Yijia_Wu/master/docs/img/GUI.png" alt="GUI" class="mx-auto d-block" /></p>
+
+<h2 id="how-should-i-solve-the-exercise">How should I solve the exercise</h2>
+<p>To solve the exercise, you must edit the MyAlgorithm.py file and insert control logic in myalgorithm() function.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">myalgorithm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+	<span class="c1">############## Insert your code here ###############
+</span>    <span class="c1"># Move the robot back to home as a start
+</span>    <span class="bp">self</span><span class="p">.</span><span class="n">pick_place</span><span class="p">.</span><span class="n">back_to_home</span><span class="p">()</span>
+	
+    <span class="c1"># insert following two lines where you want to stop the algorithm 
+</span>    <span class="c1"># with the stop button in GUI
+</span>    <span class="k">if</span> <span class="ow">not</span> <span class="n">event</span><span class="p">.</span><span class="n">isSet</span><span class="p">():</span>
+        <span class="k">return</span>
+
+	<span class="c1">####################################################
+</span></code></pre></div></div>
+<p>Multiple APIs can be used to implement your algorithm. They are provided in Pick_Place class, so you should allways add “self.pick_place.” as a prefix to following introduced APIs in your algorithm.</p>
+
+<h2 id="api">API</h2>
+<h3 id="environment-information">Environment Information</h3>
+<ul>
+  <li><code class="highlighter-rouge">get_object_list()</code> - Return the name list of all objects.</li>
+  <li><code class="highlighter-rouge">get_object_pose(object_name)</code> - Return the pose of the object.</li>
+  <li><code class="highlighter-rouge">get_object_info(object_name)</code> - Return the pose, shape, height, eidth, length, color of the object.</li>
+  <li><code class="highlighter-rouge">get_target_list()</code> - Return the name list of all targets.</li>
+  <li><code class="highlighter-rouge">get_target_position(target_name)</code> - Return the position of target where we are going to place the objects.</li>
+</ul>
+
+<h3 id="basic-robot-movement">Basic Robot Movement</h3>
+<ul>
+  <li><code class="highlighter-rouge">move_pose_arm(pose_goal)</code> - Command the robot to make its end effector frame move to the desired pose with inverse kinematics.</li>
+  <li><code class="highlighter-rouge">move_joint_arm(joint_0,joint_1,joint_2,joint_3,joint_4,joint_5)</code> - Command the robot joints to move to desired joints value</li>
+  <li><code class="highlighter-rouge">move_joint_arm(joint_value)</code> - Command the gripper joint to move to desired joint value.</li>
+  <li><code class="highlighter-rouge">back_to_home()</code> - Command the robot arm and gripper to move back to the home pose.</li>
+</ul>
+
+<h3 id="setup-grasp-message">Setup Grasp message</h3>
+<p><a href="http://docs.ros.org/melodic/api/moveit_msgs/html/msg/Grasp.html">Grasp message</a> contains the informations that the MoveIt pick function requires.</p>
+<ul>
+  <li><code class="highlighter-rouge">set_grasp_distance(min_distance, desired_distance)</code> - Set the minmum distance and desired distance the gripper translates before and after grasping.</li>
+  <li><code class="highlighter-rouge">set_grasp_direction(x, y, z)</code> - Set the direction of the gripper approach translation before grasping. Retreat translation distance will set to be the opposite direction of the approach direction.</li>
+  <li><code class="highlighter-rouge">generate_grasp(eef_orientation, position, width[, roll, pitch, yaw])</code> - Returns the specified Grasp message according to related setup.
+    <ul>
+      <li><code class="highlighter-rouge">eef_orientaion</code> is to clarify the desired end effector orientation.
+        <ul>
+          <li><code class="highlighter-rouge">horizontal</code>: grasp the object with a horizontal gripper orientation. (pitch = yaw = 0. <code class="highlighter-rouge">roll</code> is setable.)</li>
+          <li><code class="highlighter-rouge">vertical</code>: grasp the object with a vertical gripper orientation. (pitch = 90°, roll = 0. <code class="highlighter-rouge">yaw</code> is setable.)</li>
+          <li><code class="highlighter-rouge">user_defined</code>: grasp the object with a user defined gripper orientation. (<code class="highlighter-rouge">roll</code>,<code class="highlighter-rouge">pitch</code>,<code class="highlighter-rouge">yaw</code> are all setable)</li>
+        </ul>
+      </li>
+      <li><code class="highlighter-rouge">position</code> is the position of the end effector when grasping the object</li>
+      <li><code class="highlighter-rouge">width</code> is the value the gripper joints should move to grasp the object with a range of [0, 0.8]</li>
+      <li><code class="highlighter-rouge">roll</code>,<code class="highlighter-rouge">pitch</code>,<code class="highlighter-rouge">yaw</code> are optional parameters with default value 0.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="pick-and-place">Pick and Place</h3>
+<ul>
+  <li><code class="highlighter-rouge">pickup(object_name, grasps)</code> - Command the industrial robot to pick up the object with the genrated Grasp messages.</li>
+  <li><code class="highlighter-rouge">place(eef_orientation, position[, roll, pitch, yaw])</code> - Command the industrial robot to place the currently holding object to goal_position with desired end effector orientation.</li>
+</ul>
+
+<h2 id="theory">Theory</h2>
+<h3 id="relationship-among-ros-moveit-rviz-gazebo-jderobot-provided-api">Relationship among ROS, MoveIt, Rviz, Gazebo, JdeRobot provided API</h3>
+<p>TO BE DONE</p>
+<ul>
+  <li>Draw a example relationship image</li>
+  <li>Introduction of each of them and explanation of the relationship</li>
+</ul>
+
+<h3 id="difference-between-moveitrviz-and-gazebo">Difference between MoveIt(Rviz) and Gazebo</h3>
+<p>Rviz can show the planning scene of MoveIt.</p>
+
+<h4 id="objects-visualization">Objects visualization</h4>
+<p>When we start Gazebo with a world file, the objects in Gazebo will not be automatically added in the planning scene of MoveIt, so we can only see the robot in Rviz without any other objects. If we want MoveIt to know there are some objects in the environment, we should manually add them into the planning scene, but you don’t need to worry about it in this exercise as it has been done by us.</p>
+
+<h4 id="obstacle-avoidance">Obstacle Avoidance</h4>
+<p>After adding objects into planning scene, MoveIt will avoid planning trajectory for the robot that will lead to collision. However, because the object in planning scene cannot be updated automatically with their pose in Gazebo, after the robot grasping them, we cannot track their poses any more, so MoveIt cannot take them into consideration of obstacle avoidance.</p>
+
+<h4 id="pick-and-place-1">Pick and Place</h4>
+<p>Moveit provides pick and place functions. We can perform great pick and place in planning scene with them, but at the same time, you will see that the objects cannot be picked up in Gazebo. The reason for it is that Gazebo, as a physical simulator, still cannot simulate the contact between two surface perfectly. Even if we can see the robot pick up the object successfully in Rviz, it might not work in Gazebo.</p>
+
+<h3 id="difference-between-real-world-and-gazebo-simulator">Difference between real world and Gazebo Simulator</h3>
+<p>TO BE DONE</p>
+
+<h2 id="hints">Hints</h2>
+<h3 id="manipulation-pipeline-pick-and-place-one-object">Manipulation Pipeline: pick and place one object</h3>
+<ul>
+  <li>Get the information about the object you are going to grasp, especially the pose and size of them, and the target position</li>
+  <li>Find good grasp motion for grasping that object</li>
+  <li>Specify the grasp related information in Grasp message</li>
+  <li>Command MoveIt to plan and execute the robot to pick the object with specified Grasp message</li>
+  <li>Command Moveit to plan and execute the robot to place the object to target position
+TO DO: Draw a flow chart</li>
+</ul>
+
+<h3 id="why-does-the-robot-cannot-move-to-some-desired-pose">Why does the robot cannot move to some desired pose?</h3>
+<p>The most possible reason is that your specified pose is unreachable for the robot arm, so MoveIt cannot plan a trajectory from current pose to desired pose in limited time. You will see such a warning when this problem happened:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Fail: ABORTED: No motion plan found. No execution attempted.
+</code></pre></div></div>
+<h3 id="ignorable-error-and-warning">Ignorable ERROR and WARNING</h3>
+<ul>
+  <li><code class="highlighter-rouge">No p gain specified for pid.</code></li>
+  <li><code class="highlighter-rouge">Controller is taking too long to execute trajectory</code></li>
+  <li><code class="highlighter-rouge">Controller failed with error GOAL_TOLERANCE_VIOLATED</code></li>
+</ul>
+
+<h2 id="demonstration-video-of-the-solution">Demonstration video of the solution</h2>
+<p><a href="https://youtu.be/4RG9vsOzSTY"><img src="https://img.youtube.com/vi/4RG9vsOzSTY/0.jpg" alt="solution" class="mx-auto d-block" /></a></p>
+
+      </article>
+
+      
+
+      
+        <!-- Check if any share-links are active -->
+
+
+
+
+
+      
+
+      <ul class="pagination blog-pager">
+        
+        <li class="page-item previous">
+          <a class="page-link" href="/2020-06-25-week4/" data-toggle="tooltip" data-placement="top" title="Week4">&larr; Previous Post</a>
+        </li>
+        
+        
+      </ul>
+              
+  
+  
+  
+
+  
+
+
+
+    </div>
+  </div>
+</div>
+
+
+    <footer>
+  <div class="container-md beautiful-jekyll-footer">
+    <div class="row">
+      <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1">
+      <ul class="list-inline text-center footer-links"><li class="list-inline-item">
+    <a href="mailto:sixerwyj@gmail.com" title="Email me">
+      <span class="fa-stack fa-lg" aria-hidden="true">
+        <i class="fas fa-circle fa-stack-2x"></i>
+        <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+      </span>
+      <span class="sr-only">Email me</span>
+   </a>
+  </li><li class="list-inline-item">
+    <a href="https://github.com/sixer51" title="GitHub">
+      <span class="fa-stack fa-lg" aria-hidden="true">
+        <i class="fas fa-circle fa-stack-2x"></i>
+        <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+      </span>
+      <span class="sr-only">GitHub</span>
+   </a>
+  </li></ul>
+
+      
+      <p class="copyright text-muted">
+      
+        Yijia Wu
+        &nbsp;&bull;&nbsp;
+      
+      2020
+
+      
+
+      
+      </p>
+      <!-- Please don't remove this, keep my open source work credited :) -->
+      <p class="theme-by text-muted">
+        Theme by
+        <a href="https://beautifuljekyll.com">beautiful-jekyll</a>
+      </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  
+    
+  
+    
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+
+  
+    
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+
+
+  
+    
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+
+  
+
+
+
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+      <script src="/assets/js/main.js"></script>
+    
+  
+
+
+
+
+
+
+  
+  </body>
+</html>
