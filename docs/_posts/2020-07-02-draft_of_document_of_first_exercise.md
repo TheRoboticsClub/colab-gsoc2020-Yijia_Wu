@@ -7,7 +7,7 @@ title: Draft of document of first exercise
 
 The goal of this exercise is to learn the underlying infrastructure of Industrial Robot exercises(ROS + MoveIt + our own industrial robotics API) and get familiar with the key components needed for more complex exercises by completing the task of pick and place multiple objects and sorting them by color or shape.
 
-![world](https://raw.githubusercontent.com/TheRoboticsClub/colab-gsoc2020-Yijia_Wu/master/docs/img/first_exercise_world.png){: .mx-auto.d-block :}
+![world](https://raw.githubusercontent.com/TheRoboticsClub/colab-gsoc2020-Yijia_Wu/master/docs/img/new_first_exercise_world.png){: .mx-auto.d-block :}
 
 ## Installation
 1. Install the [General Infrastructure](https://jderobot.github.io/RoboticsAcademy/installation/#generic-infrastructure) of the JdeRobot Robotics Academy.
@@ -15,8 +15,13 @@ The goal of this exercise is to learn the underlying infrastructure of Industria
 3. Install Industrial Robot package(TO BE DONE)
 
 ## How to run the exercise
-TO launch the exercise, open a terminal windows, navigate to the Industrial RObot folder and execute following command:
+TO launch the exercise, open a terminal windows, navigate to the ROS workspace which contains Industrial Robot folder and execute following command:
 ```bash
+catkin_make
+source devel/setup.bash
+cd /src/models
+export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:${PWD}
+cd ../..
 roslaunch irb120_robotiq85_gazebo irb120_robotiq85_gazebo_world.launch 
 ```
 Two different windows will pop up:
@@ -30,13 +35,16 @@ Two different windows will pop up:
         - Stop button allows users to stop moving robot
         - Back to home button can make the robot back to home pose
     - Two update button to update the value of current robot state
-    - Two buttons to start and stop the main code you program
-    - An info box showing the status of the main code("start" or "stop")
+    - Code Manager part
+        - Two buttons to start and stop the main code you program
+        - One button to launch Rviz
+        - One button to Respawn all objects in Gazebo and Rviz
+        - An info box showing the status of the main code("start" or "stop")
 
-![GUI](https://raw.githubusercontent.com/TheRoboticsClub/colab-gsoc2020-Yijia_Wu/master/docs/img/GUI.png){: .mx-auto.d-block :}
+![GUI](https://raw.githubusercontent.com/TheRoboticsClub/colab-gsoc2020-Yijia_Wu/master/docs/img/newGUI.png){: .mx-auto.d-block :}
 
 ## How should I solve the exercise
-To solve the exercise, you must edit the MyAlgorithm.py file and insert control logic in myalgorithm() function.
+To solve the exercise, you must edit the MyAlgorithm.py file and insert control logic in myalgorithm() function. The path of this file is "rqt_kinematics/src/rqt_kinematics/interfaces/MyAlgorithm.py".
 ```python
 def myalgorithm(self, event):
 	############## Insert your code here ###############
@@ -63,7 +71,7 @@ Multiple APIs can be used to implement your algorithm. They are provided in Pick
 ### Basic Robot Movement
 * `move_pose_arm(pose_goal)` - Command the robot to make its end effector frame move to the desired pose with inverse kinematics.
 * `move_joint_arm(joint_0,joint_1,joint_2,joint_3,joint_4,joint_5)` - Command the robot joints to move to desired joints value
-* `move_joint_arm(joint_value)` - Command the gripper joint to move to desired joint value.
+* `move_joint_hand(joint_value)` - Command the gripper joint to move to desired joint value.
 * `back_to_home()` - Command the robot arm and gripper to move back to the home pose.
 
 ### Setup Grasp message
@@ -72,9 +80,9 @@ Multiple APIs can be used to implement your algorithm. They are provided in Pick
 * `set_grasp_direction(x, y, z)` - Set the direction of the gripper approach translation before grasping. Retreat translation distance will set to be the opposite direction of the approach direction.
 * `generate_grasp(eef_orientation, position, width[, roll, pitch, yaw])` - Returns the specified Grasp message according to related setup. 
     - `eef_orientaion` is to clarify the desired end effector orientation. 
-        - `horizontal`: grasp the object with a horizontal gripper orientation. (pitch = yaw = 0. `roll` is setable.)
-        - `vertical`: grasp the object with a vertical gripper orientation. (pitch = 90°, roll = 0. `yaw` is setable.)
-        - `user_defined`: grasp the object with a user defined gripper orientation. (`roll`,`pitch`,`yaw` are all setable)
+        - `horizontal`: grasp the object with a horizontal gripper orientation. (default: roll = pitch = yaw = 0. `pitch` is setable.)
+        - `vertical`: grasp the object with a vertical gripper orientation. (default: roll = 0, pitch = 90°, yaw = 0. `yaw` is setable.)
+        - `user_defined`: grasp the object with a user defined gripper orientation. (default: roll = pitch = yaw = 0. `roll`,`pitch`,`yaw` are all setable)
     - `position` is the position of the end effector when grasping the object
     - `width` is the value the gripper joints should move to grasp the object with a range of [0, 0.8]
     - `roll`,`pitch`,`yaw` are optional parameters with default value 0.
@@ -82,6 +90,11 @@ Multiple APIs can be used to implement your algorithm. They are provided in Pick
 ### Pick and Place
 * `pickup(object_name, grasps)` - Command the industrial robot to pick up the object with the genrated Grasp messages.
 * `place(eef_orientation, position[, roll, pitch, yaw])` - Command the industrial robot to place the currently holding object to goal_position with desired end effector orientation.
+    - `eef_orientaion` is to clarify the desired end effector orientation. 
+        - `horizontal`: grasp the object with a horizontal gripper orientation. (default: roll = 0, pitch = 0, yaw = 180°. `pitch` is setable.)
+        - `vertical`: grasp the object with a vertical gripper orientation. (default: roll = 180°, pitch = 90°, yaw = 180°. `yaw` is setable.)
+        - `user_defined`: grasp the object with a user defined gripper orientation. (default: roll = 0, pitch = 0, yaw = 180°. `roll`,`pitch`,`yaw` are all setable)
+    - `position` is the position of the end effector when placing the object
 
 ## Theory
 ### Relationship among ROS, MoveIt, Rviz, Gazebo, JdeRobot provided API
@@ -124,4 +137,4 @@ Fail: ABORTED: No motion plan found. No execution attempted.
 - `Controller failed with error GOAL_TOLERANCE_VIOLATED`
 
 ## Demonstration video of the solution
-[![solution](https://img.youtube.com/vi/4RG9vsOzSTY/0.jpg){: .mx-auto.d-block :}](https://youtu.be/4RG9vsOzSTY)
+[![solution](https://img.youtube.com/vi/HnI6L75zaFk/0.jpg){: .mx-auto.d-block :}](https://youtu.be/HnI6L75zaFk)
