@@ -24,6 +24,7 @@ from tf.transformations import euler_from_quaternion, quaternion_from_euler
 from geometry_msgs.msg import Pose, PoseStamped, PoseArray, Quaternion
 from pick_and_place import Pick_Place
 from MyAlgorithm import Algorithm
+from model_manager import ModelManager
 
 
 class RobotWrapper:
@@ -51,8 +52,8 @@ class RobotWrapper:
 
         self.movement_finish = False
 
-        #self.joints = self.arm.get_current_joint_values()
-        #self.gripper_joint = self.gripper.get_current_joint_values()
+        self.modelmanager = ModelManager()
+        self.modelmanager.spawn_all_model()
 
     def test_connection(self):
         print("connected with robot wrapper")

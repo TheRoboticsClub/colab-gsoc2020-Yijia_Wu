@@ -76,7 +76,7 @@ class Kinematics(Plugin):
         self.event = threading.Event()
 
         self.algorithm = Algorithm()
-        self.algorithm.set_pick_and_place(Pick_Place(self.robot.arm, self.robot.gripper))
+        self.algorithm.set_pick_and_place(Pick_Place(self.robot.arm, self.robot.gripper, self.robot.modelmanager.object_list))
         self.start_algorithm = False
 
         self._widget.xEdit.editingFinished.connect(self.set_x)
@@ -159,8 +159,10 @@ class Kinematics(Plugin):
         self.updatefk()
         self.updateik()
 
-        # self.t_update = threading.Thread(target = self.update)
-        # self.t_update.start()
+        self._widget.respawnButton.clicked.connect(self.respawn_all_objects)
+
+    def respawn_all_objects(self):
+        self.robot.modelmanager.respawn_all_objects()
 
     def updatefk(self):
         self._widget.joint1Browser.clear()

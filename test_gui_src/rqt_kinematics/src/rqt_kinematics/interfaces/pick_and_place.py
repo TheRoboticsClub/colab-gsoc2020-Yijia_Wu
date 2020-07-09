@@ -21,206 +21,158 @@ from std_msgs.msg import String
 from math import pi
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
 
-from geometry_msgs.msg import Pose, PoseStamped, PoseArray, Quaternion
+from geometry_msgs.msg import Pose, PoseStamped, PoseArray, Quaternion, Vector3, Point
 import threading
-
-
-class Object:
-    def __init__(self, pose, height, width, shape, color):
-        self.pose = pose
-        self.height = height
-        self.width = width
-        self.shape = shape
-        self.color = color
+import yaml
+from model_manager import Object
 
 
 class Pick_Place:
-    def __init__ (self, arm, gripper):
-        self.object_list = {}
+    def __init__ (self, arm, gripper, object_list):
+        self.object_list = object_list
+        self.goal_list = {}
+        self.set_target_info()
 
         self.arm = arm
         self.gripper = gripper
 
-        self.arm.set_goal_tolerance(0.05)
-        #self.gripper.set_goal_tolerance(0)
+        self.arm.set_goal_tolerance(0.01)
 
         self.scene = PlanningSceneInterface()
         self.robot = RobotCommander()
         rospy.sleep(1)
 
-        self.add_objects()
-        self.add_table()
-        #self.add_ground()
-
-        self.approach_retreat_desired_dist = 0.2
-        self.approach_retreat_min_dist = 0.1
+        # set default grasp message infos
+        self.set_grasp_distance(0.1, 0.2)
+        self.set_grasp_direction(0, 0, -0.5)
 
         rospy.sleep(1.0)
-
-    # pick up object in pose
-    def pickup(self, object_name, pose):
-        grasps = self.generate_grasps(object_name, pose)
-        self.arm.pick(object_name, grasps)
-        #self.gripper.stop()
-
-        rospy.loginfo('Pick up successfully')
-        self.arm.detach_object(object_name)
-        self.clean_scene(object_name)
-        #rospy.sleep(1)
-
-    # place object to goal pose
-    def place(self, pose):
-        self.move_pose_arm(pose)
-        rospy.sleep(1)
-
-        # pose.position.z -= 0.1
-        # self.move_pose_arm(pose)
-        
-        waypoints = []
-        wpose = self.arm.get_current_pose().pose
-        wpose.position.z -= 0.15
-        waypoints.append(copy.deepcopy(wpose))
-
-        (plan, fraction) = self.arm.compute_cartesian_path(
-                                        waypoints,   # waypoints to follow
-                                        0.01,        # eef_step
-                                        0.0)         # jump_threshold
-        self.arm.execute(plan, wait=True)
-
-        self.move_joint_hand(0)
-        rospy.sleep(1)
-        
-        # pose.position.z += 0.1
-        # self.move_pose_arm(pose)
-
-        waypoints = []
-        wpose = self.arm.get_current_pose().pose
-        wpose.position.z += 0.15
-        waypoints.append(copy.deepcopy(wpose))
-
-        (plan, fraction) = self.arm.compute_cartesian_path(
-                                        waypoints,   # waypoints to follow
-                                        0.01,        # eef_step
-                                        0.0)         # jump_threshold
-        self.arm.execute(plan, wait=True)
-
-        rospy.loginfo('Place successfully')
-
-    def get_object_pose(self, object_name):
-        pose = self.object_list[object_name].pose
-        return pose
 
     def clean_scene(self, object_name):
         self.scene.remove_world_object(object_name)
 
-    def add_ground(self):
-        self.clean_scene("ground")
+    def set_target_info(self):
+        filename = os.path.join(rospkg.RosPack().get_path('rqt_kinematics'), 'src','rqt_kinematics', 'interfaces', 'models_info.yaml')
+        with open(filename) as file:
+            objects_info = yaml.load(file)
+            robot_x = objects_info["robot"]["pose"]["x"]
+            robot_y = objects_info["robot"]["pose"]["y"]
+            robot_z = objects_info["robot"]["pose"]["z"]
 
-        p = PoseStamped()
-        p.header.frame_id = self.robot.get_planning_frame()
-        p.header.stamp = rospy.Time.now()
-        p.pose.position.x = 0.0
-        p.pose.position.y = 0.0
-        p.pose.position.z = -0.01
-        size = (5,5,0.02)
+            targets = objects_info["targets"]
+            target_name = targets.keys()
+            for name in target_name:
+                position = Point()
+                position.x = targets[name]["x"] - robot_x
+                position.y = targets[name]["y"] - robot_y
+                position.z = targets[name]["z"] - robot_z
+                self.goal_list[name] = position
 
-        #self.scene.add_box("ground",p, size)
-        rospy.sleep(2)
+    def build_plannning_scene(self):
+        filename = os.path.join(rospkg.RosPack().get_path('rqt_kinematics'), 'src','rqt_kinematics', 'interfaces', 'models_info.yaml')
+        with open(filename) as file:
+            objects_info = yaml.load(file)
+            robot_x = objects_info["robot"]["pose"]["x"]
+            robot_y = objects_info["robot"]["pose"]["y"]
+            robot_z = objects_info["robot"]["pose"]["z"]
+            robot_roll = objects_info["robot"]["pose"]["roll"]
+            robot_pitch = objects_info["robot"]["pose"]["pitch"]
+            robot_yaw = objects_info["robot"]["pose"]["yaw"]
 
-    def add_table(self):
-        self.clean_scene("table")
+            targets = objects_info["targets"]
+            target_name = targets.keys()
+            for name in target_name:
+                x = -(targets[name]["y"] - robot_y)
+                y = targets[name]["x"] - robot_x
+                z = targets[name]["z"] - robot_z
+                self.goal_list[name] = (x, y, z)
 
-        p = PoseStamped()
-        p.header.frame_id = self.robot.get_planning_frame()
-        p.header.stamp = rospy.Time.now()
-        p.pose.position.x = 0.8
-        p.pose.position.y = 0.0
-        p.pose.position.z = 0.1
-        size = (0.8,1.5,0.028)
+            objects = objects_info["objects"]
+            objects_name = objects.keys()
+            for object_name in objects_name:
+                name = object_name
+                shape = objects[name]["shape"]
+                color = objects[name]["color"]
 
-        self.scene.add_box("table",p, size)
-        rospy.sleep(2)
+                p = PoseStamped()
+                p.header.frame_id = self.robot.get_planning_frame()
+                p.header.stamp = rospy.Time.now()
 
-    def add_objects(self):
-        p = PoseStamped()
-        p.header.frame_id = self.robot.get_planning_frame()
-        p.header.stamp = rospy.Time.now()
+                self.clean_scene(name)
+                p.pose.position.x = objects[name]["pose"]["x"] - robot_x
+                p.pose.position.y = objects[name]["pose"]["y"] - robot_y
+                p.pose.position.z = objects[name]["pose"]["z"] - robot_z
 
-        # add box
-        name = "box"
-        self.clean_scene(name)
-        p.pose.position.x = 0.5
-        p.pose.position.y = 0.0
-        p.pose.position.z = 0.025+0.115
+                q = quaternion_from_euler(robot_roll, robot_pitch, robot_yaw)
+                p.pose.orientation = Quaternion(*q)
 
-        q = quaternion_from_euler(0.0, 0.0, 0.0)
-        p.pose.orientation = Quaternion(*q)
-        size = (0.05,0.05,0.05)
+                if shape == "box":
+                    x = objects[name]["size"]["x"]
+                    y = objects[name]["size"]["y"]
+                    z = objects[name]["size"]["z"]
+                    p.pose.position.z += z/2
+                    size = (x, y, z)
+                    self.scene.add_box(name, p, size)
 
-        self.scene.add_box(name, p, size)
+                    height = z
+                    width = y
+                    length = x
+                    self.object_list[name] = Object(p.pose, height, width, length, shape, color)
 
-        height = 0.05
-        width = 0.05
-        shape = "cube"
-        color = "red"
-        self.object_list[name] = Object(p.pose, height, width, shape, color)
-        print("add box in planning scene")
-        rospy.sleep(1)
+                elif shape == "cylinder":
+                    height = objects[name]["size"]["height"]
+                    radius = objects[name]["size"]["radius"]
+                    p.pose.position.z += height/2
+                    self.scene.add_cylinder(name, p, height, radius)
+                    self.object_list[name] = Object(p.pose, height, radius*2, radius*2, shape, color)
 
-        p = PoseStamped()
-        p.header.frame_id = self.robot.get_planning_frame()
-        p.header.stamp = rospy.Time.now()
+                elif shape == "sphere":
+                    radius = objects[name]["size"]
+                    p.pose.position.z += radius
+                    self.scene.add_sphere(name, p, radius)
+                    self.object_list[name] = Object(p.pose, radius*2, radius*2, radius*2, shape, color)
 
-        # add cylinder
-        name = "cylinder"
-        self.clean_scene(name)
-        p.pose.position.x = 0.5
-        p.pose.position.y = 0.2
-        p.pose.position.z = 0.05+0.115
+                rospy.sleep(1)
+            
+            obstacles = objects_info["obstacles"]
+            obstacles_name = obstacles.keys()
+            for obstacle_name in obstacles_name:
+                name = obstacle_name
 
-        q = quaternion_from_euler(0.0, 0.0, 0.0)
-        p.pose.orientation = Quaternion(*q)
+                p = PoseStamped()
+                p.header.frame_id = self.robot.get_planning_frame()
+                p.header.stamp = rospy.Time.now()
 
-        height = 0.1
-        radius = 0.03
+                self.clean_scene(name)
+                p.pose.position.x = obstacles[name]["pose"]["x"] - robot_x
+                p.pose.position.y = obstacles[name]["pose"]["y"] - robot_y
+                p.pose.position.z = obstacles[name]["pose"]["z"] - robot_z
 
-        self.scene.add_cylinder(name, p, height, radius)
+                q = quaternion_from_euler(robot_roll, robot_pitch, robot_yaw)
+                p.pose.orientation = Quaternion(*q)
 
-        height = 0.1
-        width = 0.03
-        shape = "cylinder"
-        color = "green"
-        self.object_list[name] = Object(p.pose, height, width, shape, color)
-        print("add cylinder in planning scene")
-        rospy.sleep(1)
+                x = obstacles[name]["size"]["x"]
+                y = obstacles[name]["size"]["y"]
+                z = obstacles[name]["size"]["z"]
+                size = (x, y, z)
+                self.scene.add_box(name, p, size)
 
-        p = PoseStamped()
-        p.header.frame_id = self.robot.get_planning_frame()
-        p.header.stamp = rospy.Time.now()
+                rospy.sleep(1)
 
-        # add sphere
-        name = "ball"
-        self.clean_scene(name)
-        p.pose.position.x = 0.5
-        p.pose.position.y = -0.2
-        p.pose.position.z = 0.03+0.115
+    def get_object_list(self):
+        return self.object_list.keys()
 
-        q = quaternion_from_euler(0.0, 0.0, 0.0)
-        p.pose.orientation = Quaternion(*q)
+    def get_target_list(self):
+        return self.goal_list.keys()
 
-        radius = 0.03
+    def get_object_pose(self, object_name):
+        return copy.deepcopy(self.object_list[object_name].relative_pose)
 
-        self.scene.add_sphere(name, p, radius)
+    def get_object_info(self, object_name):
+        return self.object_list[object_name]
 
-        height = 0.03
-        width = 0.03
-        shape = "sphere"
-        color = "red"
-        self.object_list[name] = Object(p.pose, height, width, shape, color)
-        print("add ball in planning scene")
-        rospy.sleep(1)
-
-        #print(self.object_list)
+    def get_target_position(self, target_name):
+        return self.goal_list[target_name]
 
     def pose2msg(self, roll, pitch, yaw, x, y, z):
         pose = geometry_msgs.msg.Pose()
@@ -285,161 +237,130 @@ class Pick_Place:
         self.gripper.go(joint_goal, wait=True)
         self.gripper.stop() # To guarantee no residual movement
 
-    def generate_grasps(self, name, pose):
-        grasps = []
+    def set_grasp_direction(self, x, y, z):
+        self.approach_direction = Vector3()
+        self.approach_direction.x = x
+        self.approach_direction.y = y
+        self.approach_direction.z = z
 
+        self.retreat_direction = Vector3()
+        self.retreat_direction.x = -x
+        self.retreat_direction.y = -y
+        self.retreat_direction.z = -z
+
+    def set_grasp_distance(self, min_distance, desired_distance):
+        self.approach_retreat_min_dist = min_distance
+        self.approach_retreat_desired_dist = desired_distance
+
+    def generate_grasp(self, eef_orientation, position, width, roll = 0, pitch = 0, yaw = 0):
         now = rospy.Time.now()
+        grasp = Grasp()
 
-        if name == "box":
-            step = 90
-        else:
-            step = 30
+        grasp.grasp_pose.header.stamp = now
+        grasp.grasp_pose.header.frame_id = self.robot.get_planning_frame()
+        #grasp.grasp_pose.pose = Pose()
+
+        grasp.grasp_pose.pose.position = position
+
+        # Setting pre-grasp approach
+        grasp.pre_grasp_approach.direction.header.stamp = now
+        grasp.pre_grasp_approach.direction.header.frame_id = self.robot.get_planning_frame()
+        grasp.pre_grasp_approach.direction.vector = self.approach_direction
+        grasp.pre_grasp_approach.min_distance = self.approach_retreat_min_dist
+        grasp.pre_grasp_approach.desired_distance = self.approach_retreat_desired_dist
+
+        # Setting post-grasp retreat
+        grasp.post_grasp_retreat.direction.header.stamp = now
+        grasp.post_grasp_retreat.direction.header.frame_id = self.robot.get_planning_frame()
+        grasp.post_grasp_retreat.direction.vector = self.retreat_direction
+        grasp.post_grasp_retreat.min_distance = self.approach_retreat_min_dist
+        grasp.post_grasp_retreat.desired_distance = self.approach_retreat_desired_dist
+
+        if eef_orientation == "horizontal":
+            q = quaternion_from_euler(0.0, numpy.deg2rad(pitch), 0.0)
+        elif eef_orientation == "vertical":
+            q = quaternion_from_euler(0.0, numpy.deg2rad(90.0), numpy.deg2rad(yaw))
+        elif eef_orientation == "user_defined":
+            q = quaternion_from_euler(numpy.deg2rad(roll), numpy.deg2rad(pitch), numpy.deg2rad(yaw))
+
+        grasp.grasp_pose.pose.orientation = Quaternion(*q)
+
+        grasp.max_contact_force = 1000
+
+        grasp.pre_grasp_posture.joint_names.append("gripper_finger1_joint")
+        traj = JointTrajectoryPoint()
+        traj.positions.append(0.0)
+        traj.time_from_start = rospy.Duration.from_sec(0.5)
+        grasp.pre_grasp_posture.points.append(traj)
+
+        grasp.grasp_posture.joint_names.append("gripper_finger1_joint")
+        traj = JointTrajectoryPoint()
+        traj.positions.append(width)
+
+        traj.time_from_start = rospy.Duration.from_sec(5.0)
+        grasp.grasp_posture.points.append(traj)
+
+        return grasp
+
+    # pick up object with grasps
+    def pickup(self, object_name, grasps):
+        rospy.loginfo('Start picking '+object_name)
+        self.arm.pick(object_name, grasps)
+        #self.gripper.stop()
+
+        rospy.loginfo('Pick up finished')
+        self.arm.detach_object(object_name)
+        self.clean_scene(object_name)
+        #rospy.sleep(1)
+
+    # place object to goal position
+    def place(self, eef_orientation, position, roll = 180, pitch = 0, yaw = 180):
+        pose = Pose()
+        pose.position = position
+
+        distance = 0.1
+
+        if eef_orientation == "horizontal":
+            q = quaternion_from_euler(numpy.deg2rad(180), numpy.deg2rad(pitch), numpy.deg2rad(180))
+        elif eef_orientation == "vertical":
+            q = quaternion_from_euler(0.0, numpy.deg2rad(90.0), numpy.deg2rad(yaw))
+        elif eef_orientation == "user_defined":
+            q = quaternion_from_euler(numpy.deg2rad(roll), numpy.deg2rad(pitch), numpy.deg2rad(yaw))
+
+        pose.orientation = Quaternion(*q)
+        pose.position.z += distance
+
+        rospy.loginfo('Start placing')
+        self.move_pose_arm(pose)
+        rospy.sleep(1)
         
-        for angle in range(0, 360, step):
-            grasp = Grasp()
+        waypoints = []
+        wpose = self.arm.get_current_pose().pose
+        wpose.position.z -= distance
+        waypoints.append(copy.deepcopy(wpose))
 
-            grasp.grasp_pose.header.stamp = now
-            grasp.grasp_pose.header.frame_id = self.robot.get_planning_frame()
-            grasp.grasp_pose.pose = copy.deepcopy(pose)
+        (plan, fraction) = self.arm.compute_cartesian_path(
+                                        waypoints,   # waypoints to follow
+                                        0.01,        # eef_step
+                                        0.0)         # jump_threshold
+        self.arm.execute(plan, wait=True)
 
-            # Setting pre-grasp approach
-            grasp.pre_grasp_approach.direction.header.stamp = now
-            grasp.pre_grasp_approach.direction.header.frame_id = self.robot.get_planning_frame()
-            grasp.pre_grasp_approach.direction.vector.z = -0.5
-            grasp.pre_grasp_approach.min_distance = self.approach_retreat_min_dist
-            grasp.pre_grasp_approach.desired_distance = self.approach_retreat_desired_dist
+        self.move_joint_hand(0)
+        rospy.sleep(1)
+        
+        # pose.position.z += 0.1
+        # self.move_pose_arm(pose)
 
-            # Setting post-grasp retreat
-            grasp.post_grasp_retreat.direction.header.stamp = now
-            grasp.post_grasp_retreat.direction.header.frame_id = self.robot.get_planning_frame()
-            grasp.post_grasp_retreat.direction.vector.z = 0.5
-            grasp.post_grasp_retreat.min_distance = self.approach_retreat_min_dist
-            grasp.post_grasp_retreat.desired_distance = self.approach_retreat_desired_dist
+        waypoints = []
+        wpose = self.arm.get_current_pose().pose
+        wpose.position.z += distance
+        waypoints.append(copy.deepcopy(wpose))
 
+        (plan, fraction) = self.arm.compute_cartesian_path(
+                                        waypoints,   # waypoints to follow
+                                        0.01,        # eef_step
+                                        0.0)         # jump_threshold
+        self.arm.execute(plan, wait=True)
 
-            q = quaternion_from_euler(0.0, numpy.deg2rad(90.0), numpy.deg2rad(angle))
-            grasp.grasp_pose.pose.orientation = Quaternion(*q)
+        rospy.loginfo('Place finished')
 
-            grasp.max_contact_force = 1000
-
-            grasp.pre_grasp_posture.joint_names.append("gripper_finger1_joint")
-            traj = JointTrajectoryPoint()
-            traj.positions.append(0.0)
-            traj.time_from_start = rospy.Duration.from_sec(0.5)
-            grasp.pre_grasp_posture.points.append(traj)
-
-            grasp.grasp_posture.joint_names.append("gripper_finger1_joint")
-            traj = JointTrajectoryPoint()
-            if name == "box":
-                traj.positions.append(0.4)
-            elif name == "ball":
-                traj.positions.append(0.3)
-            elif name == "cylinder":
-                traj.positions.append(0.3)
-
-            #traj.velocities.append(0.2)
-            #traj.effort.append(100)
-            traj.time_from_start = rospy.Duration.from_sec(5.0)
-            grasp.grasp_posture.points.append(traj)
-
-            grasps.append(grasp)
-
-        return grasps
-
-    # Implement the main algorithm here
-    def MyAlgorithm(self, event):
-        self.back_to_home()
-
-        # insert this part where you want to stop the algorithm 
-        # with the stop button in GUI
-        if not event.isSet():
-            return
-
-        # pick cylinder
-        object_name = "cylinder"
-        pose = self.get_object_pose(object_name)
-        print(pose.position.y)
-        pose.position.z += 0.16
-        self.pickup(object_name, pose)
-
-        if not event.isSet():
-            return
-
-        roll = 0.0
-        pitch = numpy.deg2rad(90.0)
-        yaw = 0.0
-        x = 0
-        y = 0.6
-        z = pose.position.z + 0.01
-        place_pose = self.pose2msg(roll, pitch, yaw, x, y, z)
-        self.place(place_pose)
-
-        if not event.isSet():
-            return
-
-        self.back_to_home()
-
-        if not event.isSet():
-            return
-
-        # pick box
-        object_name = "box"
-        pose = self.get_object_pose(object_name)
-        print(pose.position.y)
-        pose.position.z += 0.15
-        self.pickup(object_name, pose)
-
-        if not event.isSet():
-            return
-
-        roll = 0.0
-        pitch = numpy.deg2rad(90.0)
-        yaw = 0.0
-        x = 0.15
-        y = 0.6
-        z = pose.position.z + 0.01
-        place_pose = self.pose2msg(roll, pitch, yaw, x, y, z)
-        self.place(place_pose)
-
-        if not event.isSet():
-            return
-
-        self.back_to_home()
-
-        if not event.isSet():
-            return
-
-        # pick ball
-        object_name = "ball"
-        pose = self.get_object_pose(object_name)
-        print(pose.position.y)
-        pose.position.z += 0.14
-        self.pickup(object_name, pose)
-
-        if not event.isSet():
-            return
-
-        roll = 0.0
-        pitch = numpy.deg2rad(90.0)
-        yaw = 0.0
-        x = -0.15
-        y = 0.6
-        z = pose.position.z + 0.01
-        place_pose = self.pose2msg(roll, pitch, yaw, x, y, z)
-        self.place(place_pose)
-
-        if not event.isSet():
-            return
-
-        self.back_to_home()
-
-
-# if __name__ == "__main__":
-#     roscpp_initialize(sys.argv)
-#     rospy.init_node('pick_and_place')
-
-#     p = Pick_Place()
-#     p.MyAlgorithm()
-
-#     rospy.spin()
-#     roscpp_shutdown()
