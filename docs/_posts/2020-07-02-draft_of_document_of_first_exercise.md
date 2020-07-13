@@ -5,24 +5,43 @@ title: Draft of document of first exercise
 
 **This is a draft of the document of first exercise.**
 
-The goal of this exercise is to learn the underlying infrastructure of Industrial Robot exercises(ROS + MoveIt + our own industrial robotics API) and get familiar with the key components needed for more complex exercises by completing the task of pick and place multiple objects and sorting them by color or shape.
+The goal of this exercise is to learn the underlying infrastructure of Industrial Robot exercises(ROS + MoveIt + our own industrial robotics API) and get familiar with the key components needed for more complex exercises by completing the task of pick and place multiple objects and classify them by color or shape.
 
 ![world](https://raw.githubusercontent.com/TheRoboticsClub/colab-gsoc2020-Yijia_Wu/master/docs/img/new_first_exercise_world.png){: .mx-auto.d-block :}
 
 ## Installation
 1. Install the [General Infrastructure](https://jderobot.github.io/RoboticsAcademy/installation/#generic-infrastructure) of the JdeRobot Robotics Academy.
-2. Install MoveIt, ros_controller ...(TO BE DONE)
+2. Install MoveIt
+```bash
+sudo apt install ros-melodic-moveit
+sudo apt-get install ros-melodic-ros-control ros-melodic-ros-controllers
+```
 3. Install Industrial Robot package(TO BE DONE)
+```bash
+mkdir -p catkin_ws/src
+cd catkin_ws/src
+# after pull request to the industrial robot repo
+git clone https://github.com/JdeRobot/IndustrialRobotics.git -b testing
+cd ..
+
+# Update ROS dependencies
+rosdep update
+rosdep check --from-paths . --ignore-src --rosdistro melodic
+rosdep install --from-paths . --ignore-src --rosdistro melodic -y
+
+# Build workspace
+catkin build
+
+# Export environment variables
+echo 'source '$PWD'/devel/setup.bash' >> ~/.bashrc
+echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:'$PWD'/src/models' >> ~/.bashrc
+source ~/.bashrc
+```
 
 ## How to run the exercise
 TO launch the exercise, open a terminal windows, navigate to the ROS workspace which contains Industrial Robot folder and execute following command:
 ```bash
-catkin_make
-source devel/setup.bash
-cd /src/models
-export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:${PWD}
-cd ../..
-roslaunch irb120_robotiq85_gazebo irb120_robotiq85_gazebo_world.launch 
+roslaunch irb120_robotiq85_gazebo industrial_robot.launch 
 ```
 Two different windows will pop up:
 - **Gazebo simulator**: A warehouse environment with a industrial robot(robot arm and gripper), multiple objects, a conveyor and two boxes will be shown in Gazebo.
@@ -32,9 +51,9 @@ Two different windows will pop up:
         - Plan button can plan the trajectory to the desired pose
         - Excute button can make the robot execute the planned trajectory
         - Plan & Execute button is the integration of last two buttons
-        - Stop button allows users to stop moving robot
-        - Back to home button can make the robot back to home pose
-    - Two update button to update the value of current robot state
+        - Stop button allows users to stop the robot
+        - Back to home button can make the robot move back to home pose
+    - Two update button can update the value of current robot state
     - Code Manager part
         - Two buttons to start and stop the main code you program
         - One button to launch Rviz
@@ -44,7 +63,7 @@ Two different windows will pop up:
 ![GUI](https://raw.githubusercontent.com/TheRoboticsClub/colab-gsoc2020-Yijia_Wu/master/docs/img/newGUI.png){: .mx-auto.d-block :}
 
 ## How should I solve the exercise
-To solve the exercise, you must edit the MyAlgorithm.py file and insert control logic in myalgorithm() function. The path of this file is "rqt_kinematics/src/rqt_kinematics/interfaces/MyAlgorithm.py".
+To solve the exercise, you must edit the MyAlgorithm.py file and insert control logic in myalgorithm() function. The path of this file is "src/rqt_kinematics/src/rqt_kinematics/interfaces/MyAlgorithm.py" inside the catkin_ws folder.
 ```python
 def myalgorithm(self, event):
 	############## Insert your code here ###############
@@ -55,6 +74,24 @@ def myalgorithm(self, event):
     # with the stop button in GUI
     if not event.isSet():
         return
+
+    ##### A brief example to pick and place object "blue_ball" #####
+    object_name = "blue_ball"
+    # get object pose
+    pose = self.pick_place.get_object_pose(object_name)
+
+    # generate grasp message and pick it up
+    # parameters WIDTH and LENGTH need to be tuned according to the object and grasping pose
+    grasp = self.pick_place.generate_grasp("vertical", pose.position, WIDTH, length=LENGTH)
+    self.pick_place.pickup(object_name, [grasp])
+
+    # setup stop signal detector
+    if not event.isSet():
+        return
+
+    # choose target position and place the object
+    place_position = ...
+    self.pick_place.place("vertical", place_position)
 
 	####################################################
 ```  
@@ -75,35 +112,62 @@ Multiple APIs can be used to implement your algorithm. They are provided in Pick
 * `back_to_home()` - Command the robot arm and gripper to move back to the home pose.
 
 ### Setup Grasp message
-[Grasp message](http://docs.ros.org/melodic/api/moveit_msgs/html/msg/Grasp.html) contains the informations that the MoveIt pick function requires.
-* `set_grasp_distance(min_distance, desired_distance)` - Set the minmum distance and desired distance the gripper translates before and after grasping.
-* `set_grasp_direction(x, y, z)` - Set the direction of the gripper approach translation before grasping. Retreat translation distance will set to be the opposite direction of the approach direction.
-* `generate_grasp(eef_orientation, position, width[, roll, pitch, yaw])` - Returns the specified Grasp message according to related setup. 
+[Grasp message](http://docs.ros.org/melodic/api/moveit_msgs/html/msg/Grasp.html) contains the informations that the MoveIt pick function requires. 
+* `generate_grasp(eef_orientation, position, width[, roll, pitch, yaw, length])` - Returns the specified Grasp message according to related setup. 
     - `eef_orientaion` is to clarify the desired end effector orientation. 
-        - `horizontal`: grasp the object with a horizontal gripper orientation. (default: roll = pitch = yaw = 0. `pitch` is setable.)
-        - `vertical`: grasp the object with a vertical gripper orientation. (default: roll = 0, pitch = 90°, yaw = 0. `yaw` is setable.)
-        - `user_defined`: grasp the object with a user defined gripper orientation. (default: roll = pitch = yaw = 0. `roll`,`pitch`,`yaw` are all setable)
+        - `horizontal`: grasp the object with a horizontal gripper orientation. (default value: roll = pitch = yaw = 0. `pitch` is setable.)
+        - `vertical`: grasp the object with a vertical gripper orientation. (default value: roll = 0, pitch = 90°, yaw = 0. `yaw` is setable.)
+        - `user_defined`: grasp the object with a user defined gripper orientation. (default value: roll = pitch = yaw = 0. `roll`,`pitch`,`yaw` are all setable)
     - `position` is the position of the end effector when grasping the object
     - `width` is the value the gripper joints should move to grasp the object with a range of [0, 0.8]
-    - `roll`,`pitch`,`yaw` are optional parameters with default value 0.
+    - `roll`,`pitch`,`yaw` are optional parameters.
+    - `length` is the offset length from the your desired gripper position to robot tool center. When you input grasping pose, you are specifying the pose of the desired gripper position. The default value is 0, which means you are specifying the pose of the tool center of the robot arm when the robot is grasping the object. More details will be discussed in Theory and Hint Sections.
+
+The default minimum grasp distance and desired distance are set to be 0.2(m) and 0.1(m). The default approach direction is set to be (0, 0, -0.5). You can keep them or modify them with following functions:
+* `set_grasp_distance(min_distance, desired_distance)` - Set the minmum distance and desired distance the gripper translates before and after grasping.
+* `set_grasp_direction(x, y, z)` - Set the direction of the gripper approach translation before grasping. Retreat translation distance will set to be the opposite direction of the approach direction.
 
 ### Pick and Place
 * `pickup(object_name, grasps)` - Command the industrial robot to pick up the object with the genrated Grasp messages.
 * `place(eef_orientation, position[, roll, pitch, yaw])` - Command the industrial robot to place the currently holding object to goal_position with desired end effector orientation.
     - `eef_orientaion` is to clarify the desired end effector orientation. 
-        - `horizontal`: grasp the object with a horizontal gripper orientation. (default: roll = 0, pitch = 0, yaw = 180°. `pitch` is setable.)
-        - `vertical`: grasp the object with a vertical gripper orientation. (default: roll = 180°, pitch = 90°, yaw = 180°. `yaw` is setable.)
-        - `user_defined`: grasp the object with a user defined gripper orientation. (default: roll = 0, pitch = 0, yaw = 180°. `roll`,`pitch`,`yaw` are all setable)
+        - `horizontal`: grasp the object with a horizontal gripper orientation. (default value: roll = 0, pitch = 0, yaw = 180°. `pitch` is setable.)
+        - `vertical`: grasp the object with a vertical gripper orientation. (default value: roll = 0, pitch = 90°, yaw = 180°. `yaw` is setable.)
+        - `user_defined`: grasp the object with a user defined gripper orientation. (default value: roll = 0, pitch = 0, yaw = 180°. `roll`,`pitch`,`yaw` are all setable)
     - `position` is the position of the end effector when placing the object
 
 ## Theory
-### Relationship among ROS, MoveIt, Rviz, Gazebo, JdeRobot provided API
-TO BE DONE
-- Draw a example relationship image
-- Introduction of each of them and explanation of the relationship
 
-### Difference between MoveIt(Rviz) and Gazebo
-Rviz can show the planning scene of MoveIt.
+### Robot Workspace
+Workspace is the space the end effector of the robot can reach. It is limited by the mechanical structure of the robot. The industrial robot providers usually provide the workspace or work range for their robot in the manual. For example, the following image is the work range of irb120 robot, the robot we use in this exercise.
+
+![irb120](https://abbcloud.blob.core.windows.net/public/images/b7207bb0-410e-4ea7-bee3-3cbbe94b0a74/i1080px.jpg){: .mx-auto.d-block :}
+
+When you are specifying the pose of the end effector to grasp or place the object, sometimes you will see a warning `***** GOAL POSE IS OUT OF ROBOT WORKSPACE *****` which is provided behind our API. However, as you can see, the workspace is complicated, so we only check whether the position is inside the outer sphere, outside of the inner sphere and above the bottom position. No warning doesn't mean the position is inside the workspace. 
+
+Even if your specified position of the end effector is inside the workspace, if the orientation is not properly set, you are actually requiring other joints to move out of their workspaces. 
+
+### Position and Orientation
+In 3D space, a rigid body has six degrees of freedom. Its pose can be fully described by position, translations in three axies(x, y, z) from origin and orientation, rotation relative to reference frame. Position can be easily descirbe with (X, Y, Z) when coordinate frame is given. In our exercise, the reference frame is the robot frame with origin in its bottom center, x-axis pointing forward, y-axis pointing leftward and z-axis pointing upward. 
+
+By contrast, orientation is harder to describe. There are many different methods to describe orientation in 3D including rotation matrix, rotation vector, euler angle, quaternion. If you want to understand more about them and has linear algebra background, have a look of [this page](https://en.wikibooks.org/wiki/Robotics_Kinematics_and_Dynamics/Description_of_Position_and_Orientation). To finish this exercise, you only need to understand part of euler angle. 
+
+Roll, pitch, yaw are rotation angles around x, y, z axis. They are applied in order, such as x-y-z or z-y-x. Usually we use the new frame after each rotation as the new reference frame, but in [tf](http://wiki.ros.org/tf), a ROS library for managing coordinate frames, they choose static x-y-z euler angle as default method, which means each rotation will be applied with respect to(w.r.t.) the static original reference frame. Thus, in this exercise, roll, pitch, yaw will be applied in this x-y-z order w.r.t. the robot frame.
+
+When you use the inverse kinematic tool in GUI, sometimes you will see that the input desired orientation is much different from the final orientation values, position also has tiny difference. The reason for the tiny difference is that when the difference between final pose and desired pose is within a given range, controller will stop. The reason for the large difference in orientation is that there are some other expressions that can also describe this orientation correctly.
+
+### Forward Kinematics and Inverse Kinematics
+Forward kinematics is given the value of each joints, to find the pose of the end effector. The pose is unique.  
+Inverse kinematics is given the pose of the end effector, to find possible joints value and trajectory to move from start state to goal state. There are usully multiple solutions.
+
+## Hints
+
+### Relationship among ROS, MoveIt, Rviz, Gazebo, JdeRobot provided API
+- [ROS](https://www.ros.org/)(Robot Operating System) is a robotics middleware which contains a set of open source libraries for developing robot applications.
+- [MoveIt](https://moveit.ros.org/) is an open source Motion Planning framework for industrial robot which integrates motion planning, collision checking, manipulation, 3D perception capabilities.
+- [Rviz](http://wiki.ros.org/rviz) is a 3D visualization tool for ROS. Many ROS topics can be visualized in Rviz, including the planning scene of MoveIt move group, but it does not contain any physics simulation capability.
+- [Gazebo](http://gazebosim.org/) is a physics simulator mainly use for robot simulation. 
+- The APIs provided by JdeRobot Academy are based on the above tools, so the user don't need to learn all of them to start simulation of industrial robot manipulation.
 
 #### Objects visualization
 When we start Gazebo with a world file, the objects in Gazebo will not be automatically added in the planning scene of MoveIt, so we can only see the robot in Rviz without any other objects. If we want MoveIt to know there are some objects in the environment, we should manually add them into the planning scene, but you don't need to worry about it in this exercise as it has been done by us. 
@@ -114,19 +178,24 @@ After adding objects into planning scene, MoveIt will avoid planning trajectory 
 #### Pick and Place
 Moveit provides pick and place functions. We can perform great pick and place in planning scene with them, but at the same time, you will see that the objects cannot be picked up in Gazebo. The reason for it is that Gazebo, as a physical simulator, still cannot simulate the contact between two surface perfectly. Even if we can see the robot pick up the object successfully in Rviz, it might not work in Gazebo.
 
-### Difference between real world and Gazebo Simulator
-TO BE DONE
+### Object and Target lists:
+**Object list:**
+- yellow_box
+- red_box
+- blue_box
+- blue_ball
+- yellow_ball
+- green_ball
+- green_cylinder
+- red_cylinder
 
-## Hints
-### Manipulation Pipeline: pick and place one object
-- Get the information about the object you are going to grasp, especially the pose and size of them, and the target position
-- Find good grasp motion for grasping that object
-- Specify the grasp related information in Grasp message
-- Command MoveIt to plan and execute the robot to pick the object with specified Grasp message
-- Command Moveit to plan and execute the robot to place the object to target position
-TO DO: Draw a flow chart
+**Target list:**
+- red_target
+- green_target
+- blue_target
+- yellow_target
 
-### Why does the robot cannot move to some desired pose?
+### Why does the robot sometimes cannot move to some desired pose?
 The most possible reason is that your specified pose is unreachable for the robot arm, so MoveIt cannot plan a trajectory from current pose to desired pose in limited time. You will see such a warning when this problem happened:
 ```bash
 Fail: ABORTED: No motion plan found. No execution attempted.
