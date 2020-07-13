@@ -14,7 +14,7 @@
 
 	<!-- Kinect Camera -->
 	<xacro:include filename="$(find irb120_robotiq85_gazebo)/urdf/kinect_main.urdf.xacro" />
-        <xacro:sensor_kinect parent="world"/>
+    <xacro:sensor_kinect parent="world"/>
 
 	<gazebo>
     <plugin name="gazebo_grasp_fix" filename="libgazebo_grasp_fix.so">

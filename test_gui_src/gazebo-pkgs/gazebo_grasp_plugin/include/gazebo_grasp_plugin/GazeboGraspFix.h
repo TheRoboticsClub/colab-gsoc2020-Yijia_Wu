@@ -252,6 +252,7 @@ class GazeboGraspFix : public ModelPlugin
 
     //ContactManager filter to be removed in destructor
     std::string filter_name;
+
 };
 
 }

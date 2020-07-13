@@ -9,6 +9,9 @@
 #include <gazebo_grasp_plugin/GazeboGraspFix.h>
 #include <gazebo_version_helpers/GazeboVersionHelpers.h>
 
+#include <ros/ros.h>
+#include <std_msgs/Bool.h>
+
 using gazebo::GazeboGraspFix;
 using gazebo::GzVector3;
 
@@ -282,6 +285,8 @@ void GazeboGraspFix::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
 
   update_connection = event::Events::ConnectWorldUpdateEnd(boost::bind(
                         &GazeboGraspFix::OnUpdate, this));
+
+  
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -428,6 +433,7 @@ class GazeboGraspFix::CollidingPoint
     // up from several contact points).
     // Divide both \e force and \e pos by this to obtain average
     int sum;
+
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -634,6 +640,11 @@ void GazeboGraspFix::OnUpdate()
 
     gzmsg << "GazeboGraspFix: Attaching " << objName << " to gripper " <<
           graspingGripperName << "." << std::endl;
+    // std_msgs::Bool msg;
+    // ros::NodeHandle n;
+    // ros::Publisher grasp_pub = n.advertise<std_msgs::Bool>("grasp", 0);
+    // msg.data = true;
+    // grasp_pub.publish(msg);
 
     // Store the array of contact poses which played part in the grip, sorted by colliding link.
     // Filter out all link names of other grippers, otherwise if the other gripper moves

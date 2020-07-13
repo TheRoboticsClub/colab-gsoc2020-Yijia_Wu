@@ -20,7 +20,7 @@
         </inertia>
       </inertial>
       <visual name='visual'>
-        <pose frame=''>0 0 0.025 0 -0 0</pose>
+        <pose frame=''>0 0 0.0075 0 -0 0</pose>
         <geometry>
           <mesh>
             <scale>0.25 0.25 0.25</scale>

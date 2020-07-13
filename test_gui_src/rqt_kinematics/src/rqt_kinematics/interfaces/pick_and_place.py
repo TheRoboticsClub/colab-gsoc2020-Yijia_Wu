@@ -7,6 +7,7 @@ import sys
 import copy
 import os
 import numpy
+import math
 
 from moveit_commander import RobotCommander,PlanningSceneInterface
 from moveit_commander import roscpp_initialize, roscpp_shutdown
@@ -18,13 +19,22 @@ from moveit_msgs.msg import Grasp, PlaceLocation
 from trajectory_msgs.msg import JointTrajectoryPoint
 from std_msgs.msg import String
 
-from math import pi
-from tf.transformations import euler_from_quaternion, quaternion_from_euler
+from tf.transformations import euler_from_quaternion, quaternion_from_euler, euler_matrix
 
 from geometry_msgs.msg import Pose, PoseStamped, PoseArray, Quaternion, Vector3, Point
 import threading
 import yaml
 from model_manager import Object
+
+
+class WorkSpace:
+    def __init__(self, x, y, z, min_r, max_r, min_z):
+        self.x = x
+        self.y = y
+        self.z = z
+        self.min_r = min_r
+        self.max_r = max_r
+        self.min_z = min_z
 
 
 class Pick_Place:
@@ -45,6 +55,8 @@ class Pick_Place:
         # set default grasp message infos
         self.set_grasp_distance(0.1, 0.2)
         self.set_grasp_direction(0, 0, -0.5)
+
+        self.get_workspace()
 
         rospy.sleep(1.0)
 
@@ -202,6 +214,60 @@ class Pick_Place:
 
         return roll, pitch, yaw, x, y, z 
 
+    def get_workspace(self):
+        filename = os.path.join(rospkg.RosPack().get_path('rqt_kinematics'), 'src','rqt_kinematics', 'joints_setup.yaml')
+        with open(filename) as file:
+            joints_setup = yaml.load(file)
+            workspace = joints_setup["workspace"]
+
+            x = workspace["center"]["x"]
+            y = workspace["center"]["y"]
+            z = workspace["center"]["z"]
+            min_r = workspace["r"]["min"]
+            max_r = workspace["r"]["max"]
+            min_z = workspace["min_z"]
+            self.workspace = WorkSpace(x, y, z, min_r, max_r, min_z)
+
+    # check if the position is inside workspace
+    def is_inside_workspace(self, x, y, z):
+        if z > self.workspace.min_z:
+            dx = x - self.workspace.x
+            dy = y - self.workspace.y
+            dz = z - self.workspace.z
+            r = math.sqrt(dx**2+dy**2+dz**2)
+            if self.workspace.min_r < r < self.workspace.max_r:
+                return True
+        
+        return False
+
+    def gripper2TCP(self, pose, length=0):
+        roll, pitch, yaw, x, y, z = self.msg2pose(pose)
+
+        T = euler_matrix(roll, pitch, yaw)
+        T[0:3, 3] = numpy.array([x, y, z])
+
+        pos_gripper_tcp = numpy.array([-length, 0, 0, 1])
+        pos_tcp = T.dot(pos_gripper_tcp)
+        pose.position.x = pos_tcp[0]
+        pose.position.y = pos_tcp[1]
+        pose.position.z = pos_tcp[2]
+
+        return pose
+
+    def TCP2gripper(self, pose, length=0):
+        roll, pitch, yaw, x, y, z = self.msg2pose(pose)
+
+        T = euler_matrix(roll, pitch, yaw)
+        T[0:3, 3] = numpy.array([x, y, z])
+
+        pos_gripper_tcp = numpy.array([length, 0, 0, 1])
+        pos_tcp = T.dot(pos_gripper_tcp)
+        pose.position.x = pos_tcp[0]
+        pose.position.y = pos_tcp[1]
+        pose.position.z = pos_tcp[2]
+
+        return pose
+
     def back_to_home(self):
         self.move_joint_arm(0,0,0,0,0,0)
         self.move_joint_hand(0)
@@ -222,6 +288,11 @@ class Pick_Place:
 
     # Inverse Kinematics: Move the robot arm to desired pose
     def move_pose_arm(self, pose_goal):
+        position = pose_goal.position
+        if not self.is_inside_workspace(position.x, position.y, position.z):
+            rospy.loginfo('***** GOAL POSE IS OUT OF ROBOT WORKSPACE *****')
+            return
+
         self.arm.set_pose_target(pose_goal)
 
         self.arm.go(wait=True)
@@ -252,15 +323,30 @@ class Pick_Place:
         self.approach_retreat_min_dist = min_distance
         self.approach_retreat_desired_dist = desired_distance
 
-    def generate_grasp(self, eef_orientation, position, width, roll = 0, pitch = 0, yaw = 0):
+    def generate_grasp(self, eef_orientation, position, width, roll = 0, pitch = 0, yaw = 0, length = 0):
         now = rospy.Time.now()
         grasp = Grasp()
 
         grasp.grasp_pose.header.stamp = now
         grasp.grasp_pose.header.frame_id = self.robot.get_planning_frame()
-        #grasp.grasp_pose.pose = Pose()
 
         grasp.grasp_pose.pose.position = position
+
+        if eef_orientation == "horizontal":
+            q = quaternion_from_euler(0.0, numpy.deg2rad(pitch), 0.0)
+        elif eef_orientation == "vertical":
+            q = quaternion_from_euler(0.0, numpy.deg2rad(90.0), numpy.deg2rad(yaw))
+        elif eef_orientation == "user_defined":
+            q = quaternion_from_euler(numpy.deg2rad(roll), numpy.deg2rad(pitch), numpy.deg2rad(yaw))
+
+        grasp.grasp_pose.pose.orientation = Quaternion(*q)
+
+        # transform from gripper to TCP
+        grasp.grasp_pose.pose = self.gripper2TCP(grasp.grasp_pose.pose, length)
+
+        if not self.is_inside_workspace(grasp.grasp_pose.pose.position.x, grasp.grasp_pose.pose.position.y, grasp.grasp_pose.pose.position.z):
+            rospy.loginfo('***** GOAL POSE IS OUT OF ROBOT WORKSPACE *****')
+            #return False
 
         # Setting pre-grasp approach
         grasp.pre_grasp_approach.direction.header.stamp = now
@@ -275,15 +361,6 @@ class Pick_Place:
         grasp.post_grasp_retreat.direction.vector = self.retreat_direction
         grasp.post_grasp_retreat.min_distance = self.approach_retreat_min_dist
         grasp.post_grasp_retreat.desired_distance = self.approach_retreat_desired_dist
-
-        if eef_orientation == "horizontal":
-            q = quaternion_from_euler(0.0, numpy.deg2rad(pitch), 0.0)
-        elif eef_orientation == "vertical":
-            q = quaternion_from_euler(0.0, numpy.deg2rad(90.0), numpy.deg2rad(yaw))
-        elif eef_orientation == "user_defined":
-            q = quaternion_from_euler(numpy.deg2rad(roll), numpy.deg2rad(pitch), numpy.deg2rad(yaw))
-
-        grasp.grasp_pose.pose.orientation = Quaternion(*q)
 
         grasp.max_contact_force = 1000
 
@@ -314,14 +391,19 @@ class Pick_Place:
         #rospy.sleep(1)
 
     # place object to goal position
-    def place(self, eef_orientation, position, roll = 180, pitch = 0, yaw = 180):
+    def place(self, eef_orientation, position, roll = 0, pitch = 0, yaw = 180):
+        if not self.is_inside_workspace(position.x, position.y, position.z):
+            rospy.loginfo('***** GOAL POSE IS OUT OF ROBOT WORKSPACE *****')
+            rospy.loginfo('Stop placing')
+            return
+
         pose = Pose()
         pose.position = position
 
         distance = 0.1
 
         if eef_orientation == "horizontal":
-            q = quaternion_from_euler(numpy.deg2rad(180), numpy.deg2rad(pitch), numpy.deg2rad(180))
+            q = quaternion_from_euler(0.0, numpy.deg2rad(pitch), numpy.deg2rad(180))
         elif eef_orientation == "vertical":
             q = quaternion_from_euler(0.0, numpy.deg2rad(90.0), numpy.deg2rad(yaw))
         elif eef_orientation == "user_defined":
@@ -334,6 +416,7 @@ class Pick_Place:
         self.move_pose_arm(pose)
         rospy.sleep(1)
         
+        # move down
         waypoints = []
         wpose = self.arm.get_current_pose().pose
         wpose.position.z -= distance
@@ -345,12 +428,11 @@ class Pick_Place:
                                         0.0)         # jump_threshold
         self.arm.execute(plan, wait=True)
 
+        # place
         self.move_joint_hand(0)
         rospy.sleep(1)
-        
-        # pose.position.z += 0.1
-        # self.move_pose_arm(pose)
 
+        # move up
         waypoints = []
         wpose = self.arm.get_current_pose().pose
         wpose.position.z += distance

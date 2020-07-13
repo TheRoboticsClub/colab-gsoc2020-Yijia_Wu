@@ -21,9 +21,8 @@ class Algorithm:
         object_name = "blue_ball"
         pose = self.pick_place.get_object_pose(object_name)
         print(pose.position)
-        pose.position.z += 0.145
 
-        grasp = self.pick_place.generate_grasp("vertical", pose.position, 0.27)
+        grasp = self.pick_place.generate_grasp("vertical", pose.position, 0.27, length=0.145)
         self.pick_place.pickup(object_name, [grasp])
 
         if not event.isSet():
@@ -49,9 +48,8 @@ class Algorithm:
         object_name = "yellow_box"
         pose = self.pick_place.get_object_pose(object_name)
         print(pose.position)
-        pose.position.z += 0.16
 
-        grasp = self.pick_place.generate_grasp("vertical", pose.position, 0.55, yaw = 90)
+        grasp = self.pick_place.generate_grasp("vertical", pose.position, 0.55, yaw = 90, length=0.16)
         self.pick_place.pickup(object_name, [grasp])
 
         if not event.isSet():
@@ -77,9 +75,8 @@ class Algorithm:
         object_name = "red_box"
         pose = self.pick_place.get_object_pose(object_name)
         print(pose.position)
-        pose.position.z += 0.16
 
-        grasp = self.pick_place.generate_grasp("vertical", pose.position, 0.4)
+        grasp = self.pick_place.generate_grasp("vertical", pose.position, 0.4, length=0.16)
         self.pick_place.pickup(object_name, [grasp])
 
         if not event.isSet():
@@ -105,9 +102,8 @@ class Algorithm:
         object_name = "yellow_ball"
         pose = self.pick_place.get_object_pose(object_name)
         print(pose.position)
-        pose.position.z += 0.16
 
-        grasp = self.pick_place.generate_grasp("vertical", pose.position, 0.55)
+        grasp = self.pick_place.generate_grasp("vertical", pose.position, 0.55, length = 0.155)
         self.pick_place.pickup(object_name, [grasp])
 
         if not event.isSet():
@@ -133,10 +129,9 @@ class Algorithm:
         object_name = "green_cylinder"
         pose = self.pick_place.get_object_pose(object_name)
         print(pose.position)
-        pose.position.x -= 0.13
         pose.position.z += 0.02
 
-        grasp = self.pick_place.generate_grasp("horizontal", pose.position, 0.3)
+        grasp = self.pick_place.generate_grasp("horizontal", pose.position, 0.3, length = 0.13)
         self.pick_place.pickup(object_name, [grasp])
 
         if not event.isSet():
@@ -162,10 +157,9 @@ class Algorithm:
         object_name = "red_cylinder"
         pose = self.pick_place.get_object_pose(object_name)
         print(pose.position)
-        pose.position.x -= 0.14
         pose.position.z += 0.01
 
-        grasp = self.pick_place.generate_grasp("horizontal", pose.position, 0.45)
+        grasp = self.pick_place.generate_grasp("horizontal", pose.position, 0.45, length=0.14)
         self.pick_place.pickup(object_name, [grasp])
 
         if not event.isSet():
@@ -191,10 +185,9 @@ class Algorithm:
         object_name = "blue_box"
         pose = self.pick_place.get_object_pose(object_name)
         print(pose.position)
-        pose.position.z += 0.145
-        pose.position.x -= 0.07
+        pose.position.x -= 0.02
 
-        grasp = self.pick_place.generate_grasp("horizontal", pose.position, 0.4, pitch = 60)
+        grasp = self.pick_place.generate_grasp("horizontal", pose.position, 0.4, pitch = 60, length = 0.16)
         self.pick_place.pickup(object_name, [grasp])
 
         if not event.isSet():
@@ -217,10 +210,8 @@ class Algorithm:
         object_name = "green_ball"
         pose = self.pick_place.get_object_pose(object_name)
         print(pose.position)
-        pose.position.z += 0.147
-        pose.position.x -= 0.025
 
-        grasp = self.pick_place.generate_grasp("horizontal", pose.position, 0.37, pitch = 80)
+        grasp = self.pick_place.generate_grasp("horizontal", pose.position, 0.37, pitch = 80, length=0.145)
         self.pick_place.pickup(object_name, [grasp])
 
         if not event.isSet():

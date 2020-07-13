@@ -38,6 +38,8 @@ class Kinematics(Plugin):
             print('arguments: ', args)
             print('unknowns: ', unknowns)
 
+        rospy.loginfo("Opening GUI")
+
         # Create QWidget
         self._widget = QWidget()
         # Get path to UI file which should be in the "resource" folder of this package
@@ -188,8 +190,7 @@ class Kinematics(Plugin):
         self._widget.gripperSlider.setValue(self.robot.get_gripper_joint_value()*100)
 
     def updateik(self):
-        x, y, z = self.robot.get_arm_position()
-        roll, pitch, yaw = self.robot.get_arm_orientation()
+        roll, pitch, yaw, x, y, z = self.robot.get_arm_pose()
         self._widget.xEdit.setText(str(round(x,4)))
         self._widget.yEdit.setText(str(round(y,4)))
         self._widget.zEdit.setText(str(round(z,4)))
@@ -224,6 +225,13 @@ class Kinematics(Plugin):
             time.sleep(1)
 
     def plan(self):
+        self.set_x()
+        self.set_y()
+        self.set_z()
+        self.set_roll()
+        self.set_pitch()
+        self.set_yaw()
+
         self.robot.plan()
 
     def execute(self):
@@ -254,10 +262,17 @@ class Kinematics(Plugin):
     
     def planexe(self):
         last_joints = self.robot.get_joints_value()
+
+        self.set_x()
+        self.set_y()
+        self.set_z()
+        self.set_roll()
+        self.set_pitch()
+        self.set_yaw()
         self.robot.plan()
         self.robot.execute()
 
-        print("start moving")
+        # print("start moving")
         # update after robot stops moving
         while abs(sum(last_joints)-sum(self.robot.get_joints_value()) > 1e-10):
             last_joints = self.robot.get_joints_value()
@@ -268,7 +283,7 @@ class Kinematics(Plugin):
         self.updateik()
         
         time.sleep(1.5)
-        print("double check movement")
+        # print("double check movement")
 
         # update after robot stops moving
         while abs(sum(last_joints)-sum(self.robot.get_joints_value()) > 1e-10):
