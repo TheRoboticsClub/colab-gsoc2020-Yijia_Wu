@@ -20,19 +20,24 @@ sudo apt-get install ros-melodic-ros-control ros-melodic-ros-controllers
 ```bash
 mkdir -p catkin_ws/src
 cd catkin_ws/src
-# after pull request to the industrial robot repo
+```
+after pull request to the industrial robot repo
+```bash
 git clone https://github.com/JdeRobot/IndustrialRobotics.git -b testing
 cd ..
-
-# Update ROS dependencies
+```
+Update ROS dependencies
+```bash
 rosdep update
 rosdep check --from-paths . --ignore-src --rosdistro melodic
 rosdep install --from-paths . --ignore-src --rosdistro melodic -y
-
-# Build workspace
+```
+Build workspace
+```bash
 catkin build
-
-# Export environment variables
+```
+Export environment variables
+```bash
 echo 'source '$PWD'/devel/setup.bash' >> ~/.bashrc
 echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:'$PWD'/src/models' >> ~/.bashrc
 source ~/.bashrc
