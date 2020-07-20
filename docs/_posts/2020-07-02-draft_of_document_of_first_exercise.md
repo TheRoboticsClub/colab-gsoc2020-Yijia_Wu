@@ -118,13 +118,13 @@ Multiple APIs can be used to implement your algorithm. They are provided in Pick
 
 ### Setup Grasp message
 [Grasp message](http://docs.ros.org/melodic/api/moveit_msgs/html/msg/Grasp.html) contains the informations that the MoveIt pick function requires. 
-* `generate_grasp(eef_orientation, position, width[, roll, pitch, yaw, length])` - Returns the specified Grasp message according to related setup. 
+* `generate_grasp(object_name, eef_orientation, position, [width, roll, pitch, yaw, length])` - Returns the specified Grasp message according to related setup. 
     - `eef_orientaion` is to clarify the desired end effector orientation. 
         - `horizontal`: grasp the object with a horizontal gripper orientation. (default value: roll = pitch = yaw = 0. `pitch` is setable.)
         - `vertical`: grasp the object with a vertical gripper orientation. (default value: roll = 0, pitch = 90°, yaw = 0. `yaw` is setable.)
         - `user_defined`: grasp the object with a user defined gripper orientation. (default value: roll = pitch = yaw = 0. `roll`,`pitch`,`yaw` are all setable)
     - `position` is the position of the end effector when grasping the object
-    - `width` is the value the gripper joints should move to grasp the object with a range of [0, 0.8]
+    - `width` is the value the gripper joints should move to grasp the object with a range of [0, 0.8]. If you keep the default value 0, the `eef_orientation` is `horizontal` or `vertical` and the default rpy angle values are kept, this width value will be set depend on the object width.
     - `roll`,`pitch`,`yaw` are optional parameters.
     - `length` is the offset length from the your desired gripper position to robot tool center. When you input grasping pose, you are specifying the pose of the desired gripper position. The default value is 0, which means you are specifying the pose of the tool center of the robot arm when the robot is grasping the object. More details will be discussed in Theory and Hint Sections.
 
