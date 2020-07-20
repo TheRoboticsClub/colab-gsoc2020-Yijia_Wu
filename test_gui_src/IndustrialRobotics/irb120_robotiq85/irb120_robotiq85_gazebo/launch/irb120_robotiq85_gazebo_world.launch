@@ -61,6 +61,6 @@
   </include>
 
   <!-- Spawn GUI-->
-  <node name="rqt_gui" pkg="rqt_gui" type="rqt_gui" respawn="false" output="screen" args="--perspective-file $(find rqt_kinematics)/kinematics.perspective"/>
+  <node name="rqt_gui" pkg="rqt_gui" type="rqt_gui" respawn="false" output="screen" args="--perspective-file $(find rqt_industrial_robot)/kinematics.perspective"/>
 
 </launch>

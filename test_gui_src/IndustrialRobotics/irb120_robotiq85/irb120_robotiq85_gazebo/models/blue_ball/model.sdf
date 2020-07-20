@@ -3,7 +3,7 @@
   <model name='blue_ball'>
     <link name='link_3'>
       <inertial>
-        <mass>0.0001131</mass>
+        <mass>0.01</mass>
         <inertia>
           <ixx>4e-08</ixx>
           <ixy>0</ixy>
