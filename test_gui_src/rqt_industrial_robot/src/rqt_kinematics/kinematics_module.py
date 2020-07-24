@@ -14,6 +14,7 @@ from interfaces.pick_and_place import Pick_Place
 import threading
 import time
 import resources_rc
+from std_msgs.msg import String, Bool
 
 import yaml
 
@@ -75,9 +76,11 @@ class Kinematics(Plugin):
             g = home_value["gripper"]
             self.robot.set_home_value([j1, j2, j3, j4, j5, j6, g])
         
-        self.event = threading.Event()
+        self.stopevent = threading.Event()
+        self.pauseevent = threading.Event()
 
         self.algorithm = Algorithm()
+        rospy.loginfo("Setting up algorithm")
         self.algorithm.set_pick_and_place(Pick_Place(self.robot.arm, self.robot.gripper, self.robot.modelmanager.object_list))
         self.start_algorithm = False
 
@@ -154,6 +157,8 @@ class Kinematics(Plugin):
         self._widget.start_button.clicked.connect(self.playClicked)
         self._widget.stop_button.clicked.connect(self.stopexe)
         self._widget.stop_button.setCheckable(True)
+        self._widget.pause_button.clicked.connect(self.pauseClicked)
+        self._widget.restart_button.clicked.connect(self.restartClicked)
 
         self._widget.updatefkButton.clicked.connect(self.updatefk)
         self._widget.updateikButton.clicked.connect(self.updateik)
@@ -163,8 +168,30 @@ class Kinematics(Plugin):
 
         self._widget.respawnButton.clicked.connect(self.respawn_all_objects)
 
+        rospy.Subscriber("/updatepose", Bool, self.updatepose)
+        rospy.Subscriber("/gui_message", String, self.browser_callback)
+        self.message_pub = rospy.Publisher("/gui_message", String, queue_size=0)
+        self.updatepose_pub = rospy.Publisher("/updatepose", Bool, queue_size=0)
+
+    def browser_callback(self, msg):
+        self._widget.browser.append(msg.data)
+
+    def send_message(self, msg):
+        message = String()
+        message.data = msg
+        self.message_pub.publish(message)
+
+    def updatepose_trigger(self, value):
+        msg = Bool()
+        msg.data = value
+        self.updatepose_pub.publish(msg)
+
     def respawn_all_objects(self):
         self.robot.modelmanager.respawn_all_objects()
+
+    def updatepose(self, msg):
+        if msg.data == True:
+            self.updateik()
 
     def updatefk(self):
         self._widget.joint1Browser.clear()
@@ -202,20 +229,34 @@ class Kinematics(Plugin):
         os.system("gnome-terminal -x sh -c \"roslaunch rqt_industrial_robot rviz.launch\"")
 
     def playClicked(self):
-        self._widget.browser.append("start")
-        self.event.set()
+        self.send_message("Start Algorithm")
+        self.stopevent.set()
+        self.pauseevent.set()
         self.t1 = threading.Thread(target = self.algorithm.myalgorithm, 
-                                    args = (self.event,))
+                                    args = (self.stopevent,self.pauseevent,))
         self.t2 = threading.Thread(target = self.stopChecked)
         self.t1.start()
         self.t2.start()
         self.start_algorithm = True
 
     def stopChecked(self):
-        while self.event.isSet():
+        last_time = rospy.Time.now().to_sec()
+        while self.stopevent.isSet():
+            # update robot pose browser
+            if rospy.Time.now().to_sec()-last_time > 0.1:
+                self.updatepose_trigger(True)
+                last_time = rospy.Time.now().to_sec()
             if self._widget.stop_button.isChecked():
-                self.event.clear()
+                self.stopevent.clear()
                 break
+
+    def pauseClicked(self):
+        self.send_message("Pause Algorithm")
+        self.pauseevent.clear()
+
+    def restartClicked(self):
+        self.send_message("Retart Algorithm")
+        self.pauseevent.set()
 
     def update(self):
         while True:
@@ -238,7 +279,7 @@ class Kinematics(Plugin):
         last_joints = self.robot.get_joints_value()
         self.robot.execute()
 
-        print("start moving")
+        # print("start moving")
         # update after robot stops moving
         while abs(sum(last_joints)-sum(self.robot.get_joints_value()) > 1e-10):
             last_joints = self.robot.get_joints_value()
@@ -249,7 +290,7 @@ class Kinematics(Plugin):
         self.updateik()
 
         time.sleep(1.5)
-        print("double check movement")
+        # print("double check movement")
 
         # update after robot stops moving
         while abs(sum(last_joints)-sum(self.robot.get_joints_value()) > 1e-10):
@@ -298,10 +339,10 @@ class Kinematics(Plugin):
         self.robot.stop_execution()
         
         if self.start_algorithm == True:
-            self.event.clear()
+            self.stopevent.clear()
             self.t1.join()
             self.t2.join()
-            self._widget.browser.append("stop")
+            self.send_message("Stop Algorithm")
             self._widget.stop_button.toggle()
             self.start_algorithm = False
 

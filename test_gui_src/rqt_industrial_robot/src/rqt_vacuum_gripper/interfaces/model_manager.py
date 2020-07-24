@@ -77,6 +77,8 @@ class ModelManager:
         objects_name = self.object_list.keys()
         for object_name in objects_name:
             this_object = self.object_list[object_name]
+            print("Respawning {}".format(object_name))
+
             # remove old objects in Gazebo
             self.delete_model(object_name)
 
@@ -124,6 +126,7 @@ class ModelManager:
             robot_pitch = objects_info["robot"]["pose"]["pitch"]
             robot_yaw = objects_info["robot"]["pose"]["yaw"]
 
+            rospy.loginfo("Spawning Objects in Gazebo")
             objects = objects_info["objects"]
             objects_name = objects.keys()
             for object_name in objects_name:
@@ -142,47 +145,48 @@ class ModelManager:
                 object_pose = self.pose2msg(x, y, z, roll, pitch, yaw)
                 self.spawn_model(object_name, object_pose)
 
-                ## add object in planning scene(Rviz)
-                # p = PoseStamped()
-                # p.header.frame_id = self.robot.get_planning_frame()
-                # p.header.stamp = rospy.Time.now()
+                # add object in planning scene(Rviz)
+                p = PoseStamped()
+                p.header.frame_id = self.robot.get_planning_frame()
+                p.header.stamp = rospy.Time.now()
 
                 # self.clean_scene(name)
-                # p.pose.position.x = x - robot_x
-                # p.pose.position.y = y - robot_y
-                # p.pose.position.z = z - robot_z
+                p.pose.position.x = x - robot_x
+                p.pose.position.y = y - robot_y
+                p.pose.position.z = z - robot_z
 
-                # q = quaternion_from_euler(roll,pitch,yaw)
-                # p.pose.orientation = Quaternion(*q)
+                q = quaternion_from_euler(roll,pitch,yaw)
+                p.pose.orientation = Quaternion(*q)
 
-                # if shape == "box":
-                #     x = objects[name]["size"]["x"]
-                #     y = objects[name]["size"]["y"]
-                #     z = objects[name]["size"]["z"]
-                #     p.pose.position.z += z/2
-                #     size = (x, y, z)
-                #     self.scene.add_box(name, p, size)
+                if shape == "box":
+                    x = objects[name]["size"]["x"]
+                    y = objects[name]["size"]["y"]
+                    z = objects[name]["size"]["z"]
+                    p.pose.position.z += z/2
+                    # size = (x, y, z)
+                    # self.scene.add_box(name, p, size)
 
-                #     height = z
-                #     width = y
-                #     length = x
-                #     self.object_list[name] = Object(p.pose, object_pose, height, width, length, shape, color)
+                    height = z
+                    width = y
+                    length = x
+                    self.object_list[name] = Object(p.pose, object_pose, height, width, length, shape, color)
 
-                # elif shape == "cylinder":
-                #     height = objects[name]["size"]["height"]
-                #     radius = objects[name]["size"]["radius"]
-                #     p.pose.position.z += height/2
-                #     self.scene.add_cylinder(name, p, height, radius)
-                #     self.object_list[name] = Object(p.pose, object_pose, height, radius*2, radius*2, shape, color)
+                elif shape == "cylinder":
+                    height = objects[name]["size"]["height"]
+                    radius = objects[name]["size"]["radius"]
+                    p.pose.position.z += height/2
+                    # self.scene.add_cylinder(name, p, height, radius)
+                    self.object_list[name] = Object(p.pose, object_pose, height, radius*2, radius*2, shape, color)
 
-                # elif shape == "sphere":
-                #     radius = objects[name]["size"]
-                #     p.pose.position.z += radius
-                #     self.scene.add_sphere(name, p, radius)
-                #     self.object_list[name] = Object(p.pose, object_pose, radius*2, radius*2, radius*2, shape, color)
+                elif shape == "sphere":
+                    radius = objects[name]["size"]
+                    p.pose.position.z += radius
+                    # self.scene.add_sphere(name, p, radius)
+                    self.object_list[name] = Object(p.pose, object_pose, radius*2, radius*2, radius*2, shape, color)
 
                 # rospy.sleep(1)
             
+            rospy.loginfo("Spawning Obstacles in planning scene")
             obstacles = objects_info["obstacles"]
             obstacles_name = obstacles.keys()
             for obstacle_name in obstacles_name:
@@ -206,7 +210,7 @@ class ModelManager:
                 size = (x, y, z)
                 self.scene.add_box(name, p, size)
 
-                rospy.sleep(1)
+                rospy.sleep(0.5)
 
 
 if __name__ == "__main__":

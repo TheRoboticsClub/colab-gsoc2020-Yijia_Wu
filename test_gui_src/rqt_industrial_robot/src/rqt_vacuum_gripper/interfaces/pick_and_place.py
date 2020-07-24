@@ -17,11 +17,12 @@ import moveit_msgs.msg
 import geometry_msgs.msg
 from moveit_msgs.msg import Grasp, PlaceLocation
 from trajectory_msgs.msg import JointTrajectoryPoint
-from std_msgs.msg import String
+from std_msgs.msg import String, Bool
 
 from tf.transformations import euler_from_quaternion, quaternion_from_euler, euler_matrix
 
 from geometry_msgs.msg import Pose, PoseStamped, PoseArray, Quaternion, Vector3, Point
+from sensor_msgs.msg import JointState
 import threading
 import yaml
 from model_manager import Object
@@ -53,7 +54,6 @@ class Pick_Place:
 
         self.scene = PlanningSceneInterface()
         self.robot = RobotCommander()
-        rospy.sleep(1)
 
         # set default grasp message infos
         self.set_grasp_distance(0.1, 0.2)
@@ -61,7 +61,13 @@ class Pick_Place:
 
         self.get_workspace()
 
-        rospy.sleep(1.0)
+        self.message_pub = rospy.Publisher("/gui_message", String, queue_size=0)
+        self.updatepose_pub = rospy.Publisher("/updatepose", Bool, queue_size=0)
+    
+    def send_message(self, message):
+        msg = String()
+        msg.data = message
+        self.message_pub.publish(msg)
 
     def clean_scene(self, object_name):
         self.scene.remove_world_object(object_name)
@@ -207,6 +213,7 @@ class Pick_Place:
 
         self.arm.go(joint_goal, wait=True)
         self.arm.stop() # To guarantee no residual movement
+        self.updatepose_trigger(True)
 
     # Inverse Kinematics: Move the robot arm to desired pose
     def move_pose_arm(self, pose_goal):
@@ -221,6 +228,7 @@ class Pick_Place:
 
         self.arm.stop() # To guarantee no residual movement
         self.arm.clear_pose_targets()
+        self.updatepose_trigger(True)
 
     def set_grasp_direction(self, x, y, z):
         self.approach_direction = Vector3()

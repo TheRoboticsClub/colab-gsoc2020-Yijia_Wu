@@ -63,40 +63,6 @@
     </item>
    </layout>
   </widget>
-  <widget class="QPushButton" name="stop_button">
-   <property name="geometry">
-    <rect>
-     <x>315</x>
-     <y>440</y>
-     <width>91</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Stop</string>
-   </property>
-   <property name="icon">
-    <iconset resource="resources.qrc">
-     <normaloff>:/images/stop.png</normaloff>:/images/stop.png</iconset>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="start_button">
-   <property name="geometry">
-    <rect>
-     <x>160</x>
-     <y>440</y>
-     <width>91</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Start</string>
-   </property>
-   <property name="icon">
-    <iconset resource="resources.qrc">
-     <normaloff>:/images/play.png</normaloff>:/images/play.png</iconset>
-   </property>
-  </widget>
   <widget class="QPushButton" name="rvizButton">
    <property name="geometry">
     <rect>
@@ -970,10 +936,67 @@
     <string>Message Box</string>
    </property>
   </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>440</y>
+     <width>358</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <property name="spacing">
+     <number>12</number>
+    </property>
+    <item>
+     <widget class="QPushButton" name="start_button">
+      <property name="text">
+       <string>Start</string>
+      </property>
+      <property name="icon">
+       <iconset resource="resources.qrc">
+        <normaloff>:/images/play.png</normaloff>:/images/play.png</iconset>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="stop_button">
+      <property name="text">
+       <string>Stop</string>
+      </property>
+      <property name="icon">
+       <iconset resource="resources.qrc">
+        <normaloff>:/images/stop.png</normaloff>:/images/stop.png</iconset>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pause_button">
+      <property name="text">
+       <string>Pause</string>
+      </property>
+      <property name="icon">
+       <iconset theme="pause"/>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="restart_button">
+      <property name="text">
+       <string>Restart</string>
+      </property>
+      <property name="icon">
+       <iconset theme="restart"/>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
  </widget>
  <resources>
   <include location="resources.qrc"/>
-  <include location="../../../../.designer/backup/resources.qrc"/>
+  <include location="resources.qrc"/>
  </resources>
  <connections/>
 </ui>

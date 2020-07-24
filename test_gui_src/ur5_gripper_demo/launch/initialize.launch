@@ -22,14 +22,6 @@
 
   <!-- push robot_description to factory and spawn robot in gazebo -->
   <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot -z 1.2" respawn="false" output="screen" />
-  <!-- <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot -z 1.2 -J ur5_robot::shoulder_lift_joint -1.57 -J ur5_robot::wrist_2_joint -1.57 -unpause" respawn="false" output="screen" /> -->
-  <!-- <node name="spawn_gazebo_kinect" pkg="gazebo_ros" type="spawn_model" args="-urdf -file $(find ur_description)/urdf/kinect_world.urdf.xacro -model kinect" respawn="false" output="screen" /> -->
-  
-  <!-- Kinect camera name. Position and orientation in kinect_properties.urdf.xacro -->
-  <!-- <arg name="camera_name" default="kinect_camera" /> -->
-
-  <!-- <rosparam command="load" file="$(find ur5_moveit_config)/config/sensors_kinect_depthmap.yaml" /> -->
-  <!-- <rosparam command="load" file="$(find ur5_moveit_config)/config/sensors_3d.yaml" /> -->
 
   <include file="$(find ur_gazebo)/launch/controller_utils.launch"/>
   <rosparam file="$(find ur_gazebo)/controller/arm_controller_ur5.yaml" command="load"/>
@@ -87,5 +79,11 @@
     <remap from="cloud_in" to="/kinect_camera_fixed/depth/points" />
     <remap from="octomap_full" to="/kinect_camera_fixed/octomap_full" />
   </node>
+
+  <!-- We do not have a robot connected, so publish fake joint states -->
+  <!-- <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="/use_gui" value="false"/>
+    <rosparam param="/source_list">[/move_group/fake_controller_joint_states]</rosparam>
+  </node> -->
 
 </launch>

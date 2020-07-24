@@ -77,6 +77,7 @@ class ModelManager:
         objects_name = self.object_list.keys()
         for object_name in objects_name:
             this_object = self.object_list[object_name]
+            print("Respawning {}".format(object_name))
             # remove old objects in Gazebo
             self.delete_model(object_name)
 
@@ -110,8 +111,8 @@ class ModelManager:
                 radius = this_object.width/2
                 self.scene.add_sphere(object_name, p, radius)
 
-            rospy.sleep(1)
-
+            rospy.sleep(0.5)
+        rospy.loginfo("All objects are respawned")
 
     def spawn_all_model(self):
         filename = os.path.join(rospkg.RosPack().get_path('rqt_industrial_robot'), 'src','rqt_kinematics', 'interfaces', 'models_info.yaml')
@@ -124,6 +125,7 @@ class ModelManager:
             robot_pitch = objects_info["robot"]["pose"]["pitch"]
             robot_yaw = objects_info["robot"]["pose"]["yaw"]
 
+            rospy.loginfo("Spawning Objects in Gazebo and planning scene")
             objects = objects_info["objects"]
             objects_name = objects.keys()
             for object_name in objects_name:
@@ -181,8 +183,9 @@ class ModelManager:
                     self.scene.add_sphere(name, p, radius)
                     self.object_list[name] = Object(p.pose, object_pose, radius*2, radius*2, radius*2, shape, color)
 
-                rospy.sleep(1)
+                rospy.sleep(0.5)
             
+            rospy.loginfo("Spawning Obstacles in planning scene")
             obstacles = objects_info["obstacles"]
             obstacles_name = obstacles.keys()
             for obstacle_name in obstacles_name:
@@ -206,7 +209,7 @@ class ModelManager:
                 size = (x, y, z)
                 self.scene.add_box(name, p, size)
 
-                rospy.sleep(1)
+                rospy.sleep(0.5)
 
 
 if __name__ == "__main__":

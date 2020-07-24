@@ -171,7 +171,7 @@
       <allow_auto_disable>1</allow_auto_disable>
       <pose frame=''>0.335211 0.377742 0 0 -0 0</pose>
     </model>
-    <model name='ground_logo'>
+    <model name='ground_logo_corner'>
       <static>1</static>
       <link name='link'>
         <visual name='visual'>
@@ -179,7 +179,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>model://ground_logo/meshes/ground_logo.dae</uri>
+              <uri>model://ground_logo_corner/meshes/ground_logo.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -204,7 +204,7 @@
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
-      <model name='ground_logo'>
+      <model name='ground_logo_corner'>
         <pose frame=''>-0.5 0 0 0 -0 1.57</pose>
         <scale>1 1 1</scale>
         <link name='link'>
@@ -257,9 +257,6 @@
       <light name='sun'>
         <pose frame=''>0 0 10 0 -0 0</pose>
       </light>
-      <light name='user_directional_light_0'>
-        <pose frame=''>0 0 10 0 -0 0</pose>
-      </light>
     </state>
     <gui fullscreen='0'>
       <camera name='user_camera'>
@@ -268,19 +265,6 @@
         <projection_type>perspective</projection_type>
       </camera>
     </gui>
-    <light name='user_directional_light_0' type='directional'>
-      <pose frame=''>0 0 10 0 -0 0</pose>
-      <diffuse>1 1 1 1</diffuse>
-      <specular>0.1 0.1 0.1 1</specular>
-      <direction>0.1 0.1 -0.9</direction>
-      <attenuation>
-        <range>20</range>
-        <constant>0.5</constant>
-        <linear>0.01</linear>
-        <quadratic>0.001</quadratic>
-      </attenuation>
-      <cast_shadows>1</cast_shadows>
-    </light>
     <model name='target_table'>
       <link name='link'>
         <self_collide>0</self_collide>

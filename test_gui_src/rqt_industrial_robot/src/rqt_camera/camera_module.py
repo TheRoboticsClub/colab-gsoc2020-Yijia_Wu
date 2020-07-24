@@ -66,7 +66,10 @@ class CameraViewer(Plugin):
 		rospy.Subscriber("kinect_camera_fixed/rgb/filtered/image_raw", Image, self.cam_fixed_filtered_viewer)
 
 	def msg_to_pixmap(self, msg):
-		cv_img = self.bridge.imgmsg_to_cv2(msg)
+		# print("before",msg.msg.encoding)
+		#msg.encoding = "rgb8"
+		# print("after",msg.encoding)
+		cv_img = self.bridge.imgmsg_to_cv2(msg, "rgb8")
 		shape = cv_img.shape
 		if len(shape) == 3 and shape[2] == 3:  # RGB888
 			h, w, _ = shape

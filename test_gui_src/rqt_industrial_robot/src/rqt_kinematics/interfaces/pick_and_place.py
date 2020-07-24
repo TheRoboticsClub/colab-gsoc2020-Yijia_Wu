@@ -17,7 +17,7 @@ import moveit_msgs.msg
 import geometry_msgs.msg
 from moveit_msgs.msg import Grasp, PlaceLocation
 from trajectory_msgs.msg import JointTrajectoryPoint
-from std_msgs.msg import String
+from std_msgs.msg import String, Bool
 
 from tf.transformations import euler_from_quaternion, quaternion_from_euler, euler_matrix
 
@@ -53,7 +53,6 @@ class Pick_Place:
 
         self.scene = PlanningSceneInterface()
         self.robot = RobotCommander()
-        rospy.sleep(1)
 
         # set default grasp message infos
         self.set_grasp_distance(0.1, 0.2)
@@ -61,7 +60,18 @@ class Pick_Place:
 
         self.get_workspace()
 
-        rospy.sleep(1.0)
+        self.message_pub = rospy.Publisher("/gui_message", String, queue_size=0)
+        self.updatepose_pub = rospy.Publisher("/updatepose", Bool, queue_size=0)
+    
+    def send_message(self, message):
+        msg = String()
+        msg.data = message
+        self.message_pub.publish(msg)
+
+    def updatepose_trigger(self, value):
+        msg = Bool()
+        msg.data = value
+        self.updatepose_pub.publish(msg)
 
     def clean_scene(self, object_name):
         self.scene.remove_world_object(object_name)
@@ -103,7 +113,14 @@ class Pick_Place:
         return copy.deepcopy(self.object_list[object_name].relative_pose)
 
     def get_object_info(self, object_name):
-        return self.object_list[object_name]
+        this_object = copy.deepcopy(self.object_list[object_name])
+        pose = this_object.relative_pose
+        height = this_object.height
+        width = this_object.width
+        length = this_object.length
+        shape = this_object.shape
+        color = this_object.color
+        return pose, height, width, length, shape, color
 
     def get_target_position(self, target_name):
         return self.goal_list[target_name]
@@ -133,6 +150,34 @@ class Pick_Place:
         roll = euler[0]
         pitch = euler[1]
         yaw = euler[2]
+
+        return roll, pitch, yaw, x, y, z 
+
+    def pose2msg_deg(self, roll, pitch, yaw, x, y, z):
+        pose = geometry_msgs.msg.Pose()
+        quat = quaternion_from_euler(numpy.deg2rad(roll),numpy.deg2rad(pitch),numpy.deg2rad(yaw))
+        pose.orientation.x = quat[0]
+        pose.orientation.y = quat[1]
+        pose.orientation.z = quat[2]
+        pose.orientation.w = quat[3]
+        pose.position.x = x
+        pose.position.y = y
+        pose.position.z = z
+
+        return pose
+
+    def msg2pose_deg(self, pose):
+        x = pose.position.x
+        y = pose.position.y
+        z = pose.position.z
+        quaternion = (pose.orientation.x,
+                      pose.orientation.y,
+                      pose.orientation.z,
+                      pose.orientation.w)
+        euler = euler_from_quaternion(quaternion)
+        roll = numpy.rad2deg(euler[0])
+        pitch = numpy.rad2deg(euler[1])
+        yaw = numpy.rad2deg(euler[2])
 
         return roll, pitch, yaw, x, y, z 
 
@@ -207,6 +252,7 @@ class Pick_Place:
 
         self.arm.go(joint_goal, wait=True)
         self.arm.stop() # To guarantee no residual movement
+        self.updatepose_trigger(True)
 
     # Inverse Kinematics: Move the robot arm to desired pose
     def move_pose_arm(self, pose_goal):
@@ -221,6 +267,7 @@ class Pick_Place:
 
         self.arm.stop() # To guarantee no residual movement
         self.arm.clear_pose_targets()
+        self.updatepose_trigger(True)
 
     # Move the Robotiq gripper by master axis
     def move_joint_hand(self,gripper_finger1_joint):
@@ -229,6 +276,7 @@ class Pick_Place:
 
         self.gripper.go(joint_goal, wait=True)
         self.gripper.stop() # To guarantee no residual movement
+        self.updatepose_trigger(True)
 
     def set_grasp_direction(self, x, y, z):
         self.approach_direction = Vector3()
@@ -323,11 +371,11 @@ class Pick_Place:
         rospy.loginfo('Start picking '+object_name)
         self.arm.pick(object_name, grasps)
         #self.gripper.stop()
+        self.updatepose_trigger(True)
 
         rospy.loginfo('Pick up finished')
         self.arm.detach_object(object_name)
         self.clean_scene(object_name)
-        #rospy.sleep(1)
 
     # place object to goal position
     def place(self, eef_orientation, position, roll = 0, pitch = 0, yaw = 180):
@@ -366,6 +414,7 @@ class Pick_Place:
                                         0.01,        # eef_step
                                         0.0)         # jump_threshold
         self.arm.execute(plan, wait=True)
+        self.updatepose_trigger(True)
 
         # place
         self.move_joint_hand(0)
@@ -382,6 +431,7 @@ class Pick_Place:
                                         0.01,        # eef_step
                                         0.0)         # jump_threshold
         self.arm.execute(plan, wait=True)
+        self.updatepose_trigger(True)
 
         rospy.loginfo('Place finished')
 

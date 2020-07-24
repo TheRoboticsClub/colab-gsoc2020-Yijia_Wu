@@ -14,6 +14,7 @@ from interfaces.pick_and_place import Pick_Place
 import threading
 import time
 import resources_rc
+from sensor_msgs.msg import JointState
 
 import yaml
 
@@ -58,6 +59,8 @@ class VacuumGripper(Plugin):
         # Add widget to the user interface
         context.add_widget(self._widget)
 
+        rospy.Subscriber("/joint_states", JointState, self.jointstate_callback)
+        self.jointstate_pub = rospy.Publisher("/joint_states", JointState, queue_size=0)
         self.robot = RobotWrapper()
 
         filename = os.path.join(rospkg.RosPack().get_path('rqt_industrial_robot'), 'src','rqt_vacuum_gripper', 'joints_setup.yaml')
@@ -147,6 +150,15 @@ class VacuumGripper(Plugin):
         self.updateik()
 
         self._widget.respawnButton.clicked.connect(self.respawn_all_objects)
+
+    def jointstate_callback(self, msg):
+        if len(msg.name)==6:
+            msg.name.extend(["gripper_joint", "gripper_joint1", "gripper_joint2", "gripper_joint3", "gripper_joint4",
+                            "gripper_joint5", "gripper_joint6", "gripper_joint7", "gripper_joint8"])
+            position = list(msg.position)
+            position.extend([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+            msg.position = position
+            self.jointstate_pub.publish(msg)
 
     def respawn_all_objects(self):
         self.robot.modelmanager.respawn_all_objects()

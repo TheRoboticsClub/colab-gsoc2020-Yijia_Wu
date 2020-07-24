@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <sdf version="1.6">
-  <model name="ground_logo">
+  <model name="ground_logo_corner">
     <static>true</static>
     <link name="link">
       <visual name="visual">
@@ -8,7 +8,7 @@
         <geometry>
           <mesh>
             <scale>0.5 0.5 0.5</scale>
-            <uri>model://ground_logo/meshes/ground_logo.dae</uri>
+            <uri>model://ground_logo_corner/meshes/ground_logo.dae</uri>
           </mesh>
         </geometry>
       </visual>

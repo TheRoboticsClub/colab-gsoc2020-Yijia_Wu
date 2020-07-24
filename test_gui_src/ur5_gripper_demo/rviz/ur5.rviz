@@ -123,6 +123,11 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        gripper_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         shoulder_link:
           Alpha: 1
           Show Axes: false
@@ -133,6 +138,51 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
         upper_arm_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        vacuum_gripper:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        vacuum_gripper1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        vacuum_gripper2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        vacuum_gripper3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        vacuum_gripper4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        vacuum_gripper5:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        vacuum_gripper6:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        vacuum_gripper7:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        vacuum_gripper8:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -346,14 +396,14 @@ Visualization Manager:
       Use rainbow: true
       Value: true
     - Class: octomap_rviz_plugin/OccupancyGrid
-      Enabled: true
+      Enabled: false
       Max. Height Display: 3.4028234663852886e+38
       Max. Octree Depth: 16
       Min. Height Display: -3.4028234663852886e+38
       Name: OccupancyGrid
       Octomap Topic: /kinect_camera_robot/octomap_full
       Queue Size: 5
-      Value: true
+      Value: false
       Voxel Alpha: 1
       Voxel Coloring: Z-Axis
       Voxel Rendering: Occupied Voxels
