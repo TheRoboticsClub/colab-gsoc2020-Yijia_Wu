@@ -1,5 +1,5 @@
 joints_limit:
-  joint_1: {low: -200, high: 200}
+  joint_1: {low: -360, high: 360}
   joint_2: {low: -180, high: 180}
   joint_3: {low: -180, high: 180}
   joint_4: {low: -180, high: 180}

@@ -5,6 +5,6 @@ sensors:
     max_update_rate: 5.0
     padding_offset: 0.1
     padding_scale: 1.0
-    point_cloud_topic: /kinect_camera_robot/depth/points
+    point_cloud_topic: /kinect_camera_fixed/depth/points
     point_subsample: 1
     sensor_plugin: occupancy_map_monitor/PointCloudOctomapUpdater

@@ -210,10 +210,10 @@ def trigger(msg):
         gripper2_on()
         gripper3_on()
         gripper4_on()
-        gripper5_on()
-        gripper6_on()
-        gripper7_on()
-        gripper8_on()
+        # gripper5_on()
+        # gripper6_on()
+        # gripper7_on()
+        # gripper8_on()
 
     else:
         gripper_off()
@@ -221,10 +221,10 @@ def trigger(msg):
         gripper2_off()
         gripper3_off()
         gripper4_off()
-        gripper5_off()
-        gripper6_off()
-        gripper7_off()
-        gripper8_off()
+        # gripper5_off()
+        # gripper6_off()
+        # gripper7_off()
+        # gripper8_off()
        
 
 rospy.init_node("ur5_gripper", anonymous=False)

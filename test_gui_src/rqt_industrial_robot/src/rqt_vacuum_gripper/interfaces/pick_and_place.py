@@ -14,12 +14,14 @@ from moveit_commander import roscpp_initialize, roscpp_shutdown
 from moveit_commander.conversions import pose_to_list
 import moveit_commander
 import moveit_msgs.msg
+from moveit_msgs.msg import Constraints, OrientationConstraint, JointConstraint
 import geometry_msgs.msg
 from moveit_msgs.msg import Grasp, PlaceLocation
 from trajectory_msgs.msg import JointTrajectoryPoint
 from std_msgs.msg import String, Bool
 
 from tf.transformations import euler_from_quaternion, quaternion_from_euler, euler_matrix
+import tf
 
 from geometry_msgs.msg import Pose, PoseStamped, PoseArray, Quaternion, Vector3, Point
 from sensor_msgs.msg import JointState
@@ -43,44 +45,49 @@ class Pick_Place:
         self.object_list = object_list
         self.goal_list = {}
         self.set_target_info()
-        
-        self.gripper_width = {}
-        self.set_gripper_width_relationship()
 
         self.arm = arm
-        self.gripper = gripper
+        self.arm.set_max_velocity_scaling_factor(0.5)
+        self.gripper_pub = rospy.Publisher(gripper, Bool, queue_size=0)
 
         self.arm.set_goal_tolerance(0.01)
 
         self.scene = PlanningSceneInterface()
         self.robot = RobotCommander()
 
-        # set default grasp message infos
-        self.set_grasp_distance(0.1, 0.2)
-        self.set_grasp_direction(0, 0, -0.5)
-
         self.get_workspace()
+
+        self.listener = tf.TransformListener()
 
         self.message_pub = rospy.Publisher("/gui_message", String, queue_size=0)
         self.updatepose_pub = rospy.Publisher("/updatepose", Bool, queue_size=0)
+
+        filename = os.path.join(rospkg.RosPack().get_path('rqt_industrial_robot'), 'src','rqt_vacuum_gripper', 'joints_setup.yaml')
+        with open(filename) as file:
+            joints_setup = yaml.load(file)
+            jointslimit = joints_setup["joints_limit"]
+
+            home_value = joints_setup["home_value"]
+            j1 = home_value["joint_1"]
+            j2 = home_value["joint_2"]
+            j3 = home_value["joint_3"]
+            j4 = home_value["joint_4"]
+            j5 = home_value["joint_5"]
+            j6 = home_value["joint_6"]
+            self.set_home_value([j1, j2, j3, j4, j5, j6])
     
     def send_message(self, message):
         msg = String()
         msg.data = message
         self.message_pub.publish(msg)
 
+    def updatepose_trigger(self, value):
+        msg = Bool()
+        msg.data = value
+        self.updatepose_pub.publish(msg)
+
     def clean_scene(self, object_name):
         self.scene.remove_world_object(object_name)
-
-    def set_gripper_width_relationship(self):
-        filename = os.path.join(rospkg.RosPack().get_path('rqt_industrial_robot'), 'src','rqt_vacuum_gripper', 'interfaces', 'models_info.yaml')
-        with open(filename) as file:
-            objects_info = yaml.load(file)
-            gripper_joint_value = objects_info["gripper_joint_value"]
-
-            objects_width = gripper_joint_value.keys()
-            for object_width in objects_width:
-                self.gripper_width[object_width] = gripper_joint_value[object_width]
 
     def set_target_info(self):
         filename = os.path.join(rospkg.RosPack().get_path('rqt_industrial_robot'), 'src','rqt_vacuum_gripper', 'interfaces', 'models_info.yaml')
@@ -196,10 +203,15 @@ class Pick_Place:
 
         return pose
 
+    def set_home_value(self, home_value):
+        self.home_value = home_value
+
     def back_to_home(self):
-        self.move_joint_arm(0,0,0,0,0,0)
-        self.move_joint_hand(0)
-        rospy.sleep(1)
+        self.arm.set_max_velocity_scaling_factor(0.8)
+        j1, j2, j3, j4, j5, j6 = self.home_value
+        self.move_joint_arm(j1, j2, j3, j4, j5, j6)
+        self.gripper_release()
+        self.send_message("Back to home")
 
     # Forward Kinematics (FK): move the arm by axis values
     def move_joint_arm(self,joint_0,joint_1,joint_2,joint_3,joint_4,joint_5):
@@ -230,105 +242,36 @@ class Pick_Place:
         self.arm.clear_pose_targets()
         self.updatepose_trigger(True)
 
-    def set_grasp_direction(self, x, y, z):
-        self.approach_direction = Vector3()
-        self.approach_direction.x = x
-        self.approach_direction.y = y
-        self.approach_direction.z = z
+    def gripper_grasp(self):
+        msg = Bool()
+        msg.data = True
+        self.gripper_pub.publish(msg)
 
-        self.retreat_direction = Vector3()
-        self.retreat_direction.x = -x
-        self.retreat_direction.y = -y
-        self.retreat_direction.z = -z
+    def gripper_release(self):
+        msg = Bool()
+        msg.data = False
+        self.gripper_pub.publish(msg)
 
-    def set_grasp_distance(self, min_distance, desired_distance):
-        self.approach_retreat_min_dist = min_distance
-        self.approach_retreat_desired_dist = desired_distance
+    def get_object_position(self, color, shape):
+        frame_id = color+"_"+shape
+        (trans,rot) = self.listener.lookupTransform('/world', frame_id, rospy.Time(0))
+        position = Point()
+        position.x = trans[0]
+        position.y = trans[1]
+        position.z = trans[2]
+        print("*************************************")
+        print("Detected position of "+color+" "+shape+":")
+        print(trans)
+        print("*************************************")
+        return position
 
-    def count_gripper_width(self, object_name):
-        object_width = self.object_list[object_name].width
-        if object_width in self.gripper_width:
-            return self.gripper_width[str(object_width)]
-        else:
-            rospy.loginfo("Cannot find suitable gripper joint value for this object width")
-            return 0
+    def buildmap(self):
+        self.send_message("Building map")
+        self.move_joint_arm(3.14, -1.57, 0.0, 0.0, -1.57, 0.0)
+        self.back_to_home()
 
-    def generate_grasp(self, object_name, eef_orientation, position, width = 0, roll = 0, pitch = 0, yaw = 0, length = 0):
-        if width == 0: # need to count gripper joint value
-            if (eef_orientation == "horizontal" and pitch == 0) or (eef_orientation == "vertical" and yaw == 0):
-                width = self.count_gripper_width(object_name)
-            else:
-                rospy.loginfo("Orientation doesn't meet requirement. Please tune gripper width by yourself")
-
-        return self.generate_grasp_width(eef_orientation, position, width, roll, pitch, yaw, length)
-
-    def generate_grasp_width(self, eef_orientation, position, width, roll = 0, pitch = 0, yaw = 0, length = 0):
-        now = rospy.Time.now()
-        grasp = Grasp()
-
-        grasp.grasp_pose.header.stamp = now
-        grasp.grasp_pose.header.frame_id = self.robot.get_planning_frame()
-
-        grasp.grasp_pose.pose.position = position
-
-        if eef_orientation == "horizontal":
-            q = quaternion_from_euler(0.0, numpy.deg2rad(pitch), 0.0)
-        elif eef_orientation == "vertical":
-            q = quaternion_from_euler(0.0, numpy.deg2rad(90.0), numpy.deg2rad(yaw))
-        elif eef_orientation == "user_defined":
-            q = quaternion_from_euler(numpy.deg2rad(roll), numpy.deg2rad(pitch), numpy.deg2rad(yaw))
-
-        grasp.grasp_pose.pose.orientation = Quaternion(*q)
-
-        # transform from gripper to TCP
-        grasp.grasp_pose.pose = self.gripper2TCP(grasp.grasp_pose.pose, length)
-
-        if not self.is_inside_workspace(grasp.grasp_pose.pose.position.x, grasp.grasp_pose.pose.position.y, grasp.grasp_pose.pose.position.z):
-            rospy.loginfo('***** GOAL POSE IS OUT OF ROBOT WORKSPACE *****')
-            #return False
-
-        # Setting pre-grasp approach
-        grasp.pre_grasp_approach.direction.header.stamp = now
-        grasp.pre_grasp_approach.direction.header.frame_id = self.robot.get_planning_frame()
-        grasp.pre_grasp_approach.direction.vector = self.approach_direction
-        grasp.pre_grasp_approach.min_distance = self.approach_retreat_min_dist
-        grasp.pre_grasp_approach.desired_distance = self.approach_retreat_desired_dist
-
-        # Setting post-grasp retreat
-        grasp.post_grasp_retreat.direction.header.stamp = now
-        grasp.post_grasp_retreat.direction.header.frame_id = self.robot.get_planning_frame()
-        grasp.post_grasp_retreat.direction.vector = self.retreat_direction
-        grasp.post_grasp_retreat.min_distance = self.approach_retreat_min_dist
-        grasp.post_grasp_retreat.desired_distance = self.approach_retreat_desired_dist
-
-        grasp.max_contact_force = 1000
-
-        grasp.pre_grasp_posture.joint_names.append("gripper_finger1_joint")
-        traj = JointTrajectoryPoint()
-        traj.positions.append(0.0)
-        traj.time_from_start = rospy.Duration.from_sec(0.5)
-        grasp.pre_grasp_posture.points.append(traj)
-
-        grasp.grasp_posture.joint_names.append("gripper_finger1_joint")
-        traj = JointTrajectoryPoint()
-        traj.positions.append(width)
-
-        traj.time_from_start = rospy.Duration.from_sec(5.0)
-        grasp.grasp_posture.points.append(traj)
-
-        return grasp
-
-    # pick up object with grasps
-    def pickup(self, object_name, grasps):
-        rospy.loginfo('Start picking '+object_name)
-        self.arm.pick(object_name, grasps)
-
-        rospy.loginfo('Pick up finished')
-        self.arm.detach_object(object_name)
-        self.clean_scene(object_name)
-
-    # place object to goal position
-    def place(self, eef_orientation, position, roll = 0, pitch = 0, yaw = 180):
+    # pick up object
+    def pickup(self, object_name, position, distance = 0.2):
         if not self.is_inside_workspace(position.x, position.y, position.z):
             rospy.loginfo('***** GOAL POSE IS OUT OF ROBOT WORKSPACE *****')
             rospy.loginfo('Stop placing')
@@ -337,19 +280,25 @@ class Pick_Place:
         pose = Pose()
         pose.position = position
 
-        distance = 0.1
-
-        if eef_orientation == "horizontal":
-            q = quaternion_from_euler(0.0, numpy.deg2rad(pitch), numpy.deg2rad(180))
-        elif eef_orientation == "vertical":
-            q = quaternion_from_euler(0.0, numpy.deg2rad(90.0), numpy.deg2rad(yaw))
-        elif eef_orientation == "user_defined":
-            q = quaternion_from_euler(numpy.deg2rad(roll), numpy.deg2rad(pitch), numpy.deg2rad(yaw))
-
+        q = quaternion_from_euler(0.0, numpy.deg2rad(90.0), 0.0)
         pose.orientation = Quaternion(*q)
         pose.position.z += distance
 
-        rospy.loginfo('Start placing')
+        constraint = Constraints()
+
+        joint_constraint = JointConstraint()
+        joint_constraint.joint_name = "shoulder_pan_joint"
+        joint_constraint.position = 0
+        joint_constraint.tolerance_above = 1.57
+        joint_constraint.tolerance_below = 1.57
+        joint_constraint.weight = 0.1
+        constraint.joint_constraints.append(joint_constraint)
+
+        self.arm.set_path_constraints(constraint)
+
+        rospy.loginfo('Start picking')
+        self.send_message('Start picking')
+        self.arm.set_max_velocity_scaling_factor(0.5)
         self.move_pose_arm(pose)
         rospy.sleep(1)
         
@@ -364,10 +313,111 @@ class Pick_Place:
                                         0.01,        # eef_step
                                         0.0)         # jump_threshold
         self.arm.execute(plan, wait=True)
+        rospy.sleep(1)
+
+        # pick
+        self.gripper_grasp()
+        self.arm.attach_object(object_name)
+        rospy.sleep(1)
+
+        # move up
+        waypoints = []
+        wpose = self.arm.get_current_pose().pose
+        wpose.position.z += distance
+        waypoints.append(copy.deepcopy(wpose))
+
+        self.arm.set_max_velocity_scaling_factor(0.2)
+        (plan, fraction) = self.arm.compute_cartesian_path(
+                                        waypoints,   # waypoints to follow
+                                        0.01,        # eef_step
+                                        0.0)         # jump_threshold
+        self.arm.execute(plan, wait=True)
+
+        self.arm.clear_path_constraints()
+
+        rospy.loginfo('Pick finished')
+        self.send_message('Pick finished')
+
+    def get_joints_value(self):
+        joints = self.arm.get_current_joint_values()
+        return joints
+
+    # place object to goal position
+    def place(self, object_name, position, distance = 0.1):
+        if not self.is_inside_workspace(position.x, position.y, position.z):
+            rospy.loginfo('***** GOAL POSE IS OUT OF ROBOT WORKSPACE *****')
+            rospy.loginfo('Stop placing')
+            return
+
+        pose = Pose()
+        pose.position = position
+
+        q = quaternion_from_euler(0.0, numpy.deg2rad(90.0), numpy.deg2rad(180.0))
+        pose.orientation = Quaternion(*q)
+        pose.position.z += distance
+
+        # Add contraint
+        constraint = Constraints()
+
+        joints = self.get_joints_value()
+        joint_constraint = JointConstraint()
+        joint_constraint.joint_name = "wrist_2_joint"
+        joint_constraint.position = joints[4]
+        joint_constraint.tolerance_above = 0.5
+        joint_constraint.tolerance_below = 0.5
+        joint_constraint.weight = 0.1
+        constraint.joint_constraints.append(joint_constraint)
+
+        joint_constraint = JointConstraint()
+        joint_constraint.joint_name = "wrist_3_joint"
+        joint_constraint.position = joints[5]
+        joint_constraint.tolerance_above = 0.5
+        joint_constraint.tolerance_below = 0.5
+        joint_constraint.weight = 0.1
+        constraint.joint_constraints.append(joint_constraint)
+
+        # orientation_constraint = OrientationConstraint()
+        # now = rospy.Time.now()
+        # orientation_constraint.header.stamp = now
+        # orientation_constraint.header.frame_id = self.robot.get_planning_frame()
+
+        # orientation_constraint.link_name = "ee_link"
+        # orientation_constraint.orientation = pose.orientation
+        # orientation_constraint.absolute_x_axis_tolerance = 0.5
+        # orientation_constraint.absolute_y_axis_tolerance = 0.5
+        # orientation_constraint.absolute_z_axis_tolerance = 5
+        # orientation_constraint.weight = 0.1
+        # constraint.orientation_constraints.append(orientation_constraint)
+
+        self.arm.set_path_constraints(constraint)
+        # self.arm.set_goal_position_tolerance(0.015)
+
+        rospy.loginfo('Start placing')
+        self.send_message('Start placing')
+        self.arm.set_max_velocity_scaling_factor(0.05)
+        self.move_pose_arm(pose)
+        rospy.sleep(1)
+
+        self.arm.clear_path_constraints()
+        # self.arm.set_goal_tolerance(0.01)
+        
+        # move down
+        waypoints = []
+        wpose = self.arm.get_current_pose().pose
+        wpose.position.z -= distance
+        waypoints.append(copy.deepcopy(wpose))
+
+        (plan, fraction) = self.arm.compute_cartesian_path(
+                                        waypoints,   # waypoints to follow
+                                        0.01,        # eef_step
+                                        0.0)         # jump_threshold
+        self.arm.execute(plan, wait=True)
 
         # place
-        self.move_joint_hand(0)
-        rospy.sleep(1)
+        self.gripper_release()
+        self.arm.detach_object(object_name)
+        self.clean_scene(object_name)
+        rospy.sleep(0.5)
 
         # move up
         waypoints = []
@@ -382,4 +432,5 @@ class Pick_Place:
         self.arm.execute(plan, wait=True)
 
         rospy.loginfo('Place finished')
+        self.send_message('Place finished')
 

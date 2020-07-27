@@ -62,7 +62,7 @@ class ModelManager:
         return roll, pitch, yaw, x, y, z 
 
     def spawn_model(self, model_name, model_pose):
-        with open(os.path.join(rospkg.RosPack().get_path('irb120_robotiq85_gazebo'), 'models', model_name,'model.sdf'), "r") as f:
+        with open(os.path.join(rospkg.RosPack().get_path('ur5_gripper_demo'), 'models', model_name,'model.sdf'), "r") as f:
             model_xml = f.read()
 
         self.spawn_model_srv(model_name, model_xml, "", model_pose, "world")
@@ -88,31 +88,31 @@ class ModelManager:
             self.spawn_model(object_name, object_pose)
 
             # respawn objects in Rviz
-            # p = PoseStamped()
-            # p.header.frame_id = self.robot.get_planning_frame()
-            # p.header.stamp = rospy.Time.now()
+            p = PoseStamped()
+            p.header.frame_id = self.robot.get_planning_frame()
+            p.header.stamp = rospy.Time.now()
 
-            # self.clean_scene(object_name)
-            # p.pose = copy.copy(this_object.relative_pose)
-            # shape = this_object.shape
+            self.clean_scene(object_name)
+            p.pose = copy.copy(this_object.relative_pose)
+            shape = this_object.shape
 
-            # if shape == "box":
-            #     x = this_object.length
-            #     y = this_object.width
-            #     z = this_object.height
-            #     size = (x, y, z)
-            #     self.scene.add_box(object_name, p, size)
+            if shape == "box":
+                x = this_object.length
+                y = this_object.width
+                z = this_object.height
+                size = (x, y, z)
+                self.scene.add_box(object_name, p, size)
 
-            # elif shape == "cylinder":
-            #     height = this_object.height
-            #     radius = this_object.width/2
-            #     self.scene.add_cylinder(object_name, p, height, radius)
+            elif shape == "cylinder":
+                height = this_object.height
+                radius = this_object.width/2
+                self.scene.add_cylinder(object_name, p, height, radius)
 
-            # elif shape == "sphere":
-            #     radius = this_object.width/2
-            #     self.scene.add_sphere(object_name, p, radius)
+            elif shape == "sphere":
+                radius = this_object.width/2
+                self.scene.add_sphere(object_name, p, radius)
 
-            # rospy.sleep(1)
+            rospy.sleep(0.5)
 
 
     def spawn_all_model(self):
@@ -150,7 +150,7 @@ class ModelManager:
                 p.header.frame_id = self.robot.get_planning_frame()
                 p.header.stamp = rospy.Time.now()
 
-                # self.clean_scene(name)
+                self.clean_scene(name)
                 p.pose.position.x = x - robot_x
                 p.pose.position.y = y - robot_y
                 p.pose.position.z = z - robot_z
@@ -175,16 +175,16 @@ class ModelManager:
                     height = objects[name]["size"]["height"]
                     radius = objects[name]["size"]["radius"]
                     p.pose.position.z += height/2
-                    # self.scene.add_cylinder(name, p, height, radius)
+                    self.scene.add_cylinder(name, p, height, radius)
                     self.object_list[name] = Object(p.pose, object_pose, height, radius*2, radius*2, shape, color)
 
                 elif shape == "sphere":
                     radius = objects[name]["size"]
                     p.pose.position.z += radius
-                    # self.scene.add_sphere(name, p, radius)
+                    self.scene.add_sphere(name, p, radius)
                     self.object_list[name] = Object(p.pose, object_pose, radius*2, radius*2, radius*2, shape, color)
 
-                # rospy.sleep(1)
+                rospy.sleep(0.5)
             
             rospy.loginfo("Spawning Obstacles in planning scene")
             obstacles = objects_info["obstacles"]

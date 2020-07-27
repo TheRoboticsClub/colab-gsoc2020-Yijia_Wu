@@ -2,6 +2,7 @@
 import rospy
 from sensor_msgs.msg import Image, PointCloud2
 from cv_bridge import CvBridge
+# import pcl
 
 
 class CameraManager:

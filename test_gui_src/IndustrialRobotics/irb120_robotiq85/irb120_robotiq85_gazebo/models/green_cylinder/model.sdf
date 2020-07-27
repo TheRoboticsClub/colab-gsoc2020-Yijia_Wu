@@ -3,7 +3,7 @@
   <model name='green_cylinder'>
     <link name='link_2'>
       <inertial>
-        <mass>0.00028274</mass>
+        <mass>0.01</mass>
         <inertia>
           <ixx>3e-07</ixx>
           <ixy>0</ixy>
