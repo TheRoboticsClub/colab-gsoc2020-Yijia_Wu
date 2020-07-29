@@ -15,4 +15,3 @@ In addition, we will use vision for **automatic detection of collisions** in the
 
 <img src="https://dhb3yazwboecu.cloudfront.net/990/bandeja-organizadora-de-vasos-para-lavavajillas-industriales-_l.jpg" alt="Organizing tray" style="zoom:50%;" />
 
-(TO BE COMPLETED)

@@ -1,13 +1,36 @@
 ## Weekly tasks 
 
-#### WEEK 7.  June 13 - July 20
+#### WEEK 12.  August 18 - August 24
+
+#### WEEK 11.  August 11 - August 17
+
+#### WEEK 10.  August 4 - August 10
+
+#### WEEK 9.  July 28 - August 3
 
 |      | Tasks                                                        | State   |
 | ---- | ------------------------------------------------------------ | ------- |
-| 1    | Finish Task 4 of last week (automatic gripper closing) just for *Vertical* and *Horizontal* grasp approaches. | ONGOING |
-| 2    | Prepare a solution using the Gazebo world for *exercise 2*, adding three spheres of different colors on the conveyor belt. The position of the spheres must be detected using a color filter, converted to a 3D pose (PCL) and changed to the robot frame (TF). After that a complete pick and place must be performed. Once finished the vision API and goals for exercise 2 will be decided. | ONGOING |
-| 3    | Explore ways to activate automatic vision-based obstacle detection building the 3D occupation octomap. Its activation will be available via the vision API. | ONGOING |
-| 4    | Update GUI for vision exercises: add new plugin with two images side by side: raw and processed by OpenCV, similar to other Academy exercises. As we have two cameras, it would be ideal to select the camera via its namespace. | ONGOING |
+| 1    | Prepare *Exercise 1* to be published in our official repos. That means: <br />a) Upload Gazebo models, GUI and all necessary to the [Industrial Robotics repo](https://github.com/JdeRobot/IndustrialRobotics). Open related issue, work in new branch and make PR. <br />b) Upload exercise .launch file, Gazebo world and my_algorithm.py and documentation to a new exercise following the structure of the JdeRobot [Robotics Academy repo](https://github.com/JdeRobot/RoboticsAcademy). Again: work creating issue + new branch + PR | ONGOING |
+| 2    | *Exercise 2:* Explore how to integrate actual PCL-based segmentation in RQT GUI two-cameras plugin | ONGOING |
+| 3    | Try to improve grasping quality for the vacuum gripper, adding new non-vertical grippers to avoid lateral object displacements when executing trajectories | ONGOING |
+| 4    | Create a new yellow pick target (4 pick objects in total). If task 3 is completed successfully, increase a little bit the obstacles height, to make the trajectories more visually challenging. | ONGOING |
+| 5    | Prepare API and documentation for *Exercise 2*, and try to have a almost ready version. Weeks 10 to 12 should be used to work in *Exercise 3* | ONGOING |
+
+#### [WEEK 8.  July 21 - July 27](https://theroboticsclub.github.io/colab-gsoc2020-Yijia_Wu/2020-07-26-week8/)
+
+|      | Tasks                                                        | State |
+| ---- | ------------------------------------------------------------ | ----- |
+| 1    | Finish some details and minor issues to close *Exercise 1*: logo, pause button, update GUI when running solution, review GUI opening time, remove extra light and place objects at a larger distance. | DONE  |
+| 2    | Continue the development of *Exercise 2*:<br />- Explore ways to detect center of gravity of spheres and cylinders (PCL library)<br />- Integrate vision-based collision detection, being able to separate pick targets from other scene obstacles<br />- Make the vacuum gripper work without errors or warnings. | DONE  |
+
+#### [WEEK 7.  July 13 - July 20](https://theroboticsclub.github.io/colab-gsoc2020-Yijia_Wu/2020-07-19-week7/)
+
+|      | Tasks                                                        | State |
+| ---- | ------------------------------------------------------------ | ----- |
+| 1    | Finish Task 4 of last week (automatic gripper closing) just for *Vertical* and *Horizontal* grasp approaches. | DONE  |
+| 2    | Prepare a solution using the Gazebo world for *exercise 2*, adding three spheres of different colors on the conveyor belt. The position of the spheres must be detected using a color filter, converted to a 3D pose (PCL) and changed to the robot frame (TF). After that a complete pick and place must be performed. Once finished the vision API and goals for exercise 2 will be decided. | DONE  |
+| 3    | Explore ways to activate automatic vision-based obstacle detection building the 3D occupation octomap. Its activation will be available via the vision API. | DONE  |
+| 4    | Update GUI for vision exercises: add new plugin with two images side by side: raw and processed by OpenCV, similar to other Academy exercises. As we have two cameras, it would be ideal to select the camera via its namespace. | DONE  |
 
 #### [WEEK 6.  July 3 - July 12](https://theroboticsclub.github.io/colab-gsoc2020-Yijia_Wu/2020-07-12-week5_6/)
 
