@@ -105,10 +105,12 @@ def myalgorithm(self, stopevent, pauseevent):
 
     # choose target position and place the object
     target_name = "blue_target"
-    place_position = self.pick_place.place(target_name)
+    place_position = self.pick_place.get_target_position(target_name)
     self.pick_place.place("vertical", place_position)
 
-	####################################################
+    ####################################################
+
+
 ```  
 Multiple APIs can be used to implement your algorithm. They are provided in Pick_Place class, so you should allways add "self.pick_place." as a prefix to following introduced APIs in your algorithm.
 
@@ -150,12 +152,13 @@ The default minimum grasp distance and desired distance are set to be 0.2(m) and
 
 ### Pick and Place
 * `pickup(object_name, grasps)` - Command the industrial robot to pick up the object with a list of genrated Grasp messages.
-* `place(eef_orientation, position[, roll, pitch, yaw])` - Command the industrial robot to place the currently holding object to goal_position with desired end effector orientation.
+* `place(eef_orientation, position[, distance, roll, pitch, yaw])` - Command the industrial robot to place the currently holding object to goal_position with desired end effector orientation.
     - `eef_orientaion` is to clarify the desired end effector orientation. 
         - `horizontal`: grasp the object with a horizontal gripper orientation. (default value: roll = 0, pitch = 0, yaw = 180°. `pitch` is setable.)
         - `vertical`: grasp the object with a vertical gripper orientation. (default value: roll = 0, pitch = 90°, yaw = 180°. `yaw` is setable.)
         - `user_defined`: grasp the object with a user defined gripper orientation. (default value: roll = 0, pitch = 0, yaw = 180°. `roll`,`pitch`,`yaw` are all setable)
     - `position` is the position of the end effector when placing the object
+    - `distance` is the distance the robot arm will move in z axis when placing objects. The default value is 0.1(m)
 
 ## Theory
 
@@ -239,4 +242,4 @@ Fail: ABORTED: No motion plan found. No execution attempted.
 - `Controller failed with error GOAL_TOLERANCE_VIOLATED`
 
 ## Demonstration video of the solution
-[![solution](https://img.youtube.com/vi/HnI6L75zaFk/0.jpg){: .mx-auto.d-block :}](https://youtu.be/HnI6L75zaFk)
+[![solution](https://img.youtube.com/vi/kJMPz80w9BM/0.jpg){: .mx-auto.d-block :}](https://youtu.be/kJMPz80w9BM)
