@@ -16,14 +16,14 @@ The goal of this exercise is to learn the underlying infrastructure of Industria
 sudo apt install ros-melodic-moveit
 sudo apt-get install ros-melodic-ros-control ros-melodic-ros-controllers
 ```
-3. Install Industrial Robot package(TO BE DONE)
+3. Install Industrial Robot package
 ```bash
 mkdir -p catkin_ws/src
 cd catkin_ws/src
 ```
 after pull request to the industrial robot repo
 ```bash
-git clone https://github.com/JdeRobot/IndustrialRobotics.git -b testing
+git clone https://github.com/JdeRobot/IndustrialRobotics.git -b pick_place_basic
 cd ..
 ```
 Update ROS dependencies
@@ -39,14 +39,14 @@ catkin build
 Export environment variables
 ```bash
 echo 'source '$PWD'/devel/setup.bash' >> ~/.bashrc
-echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:'$PWD'/src/models' >> ~/.bashrc
+echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:'$PWD'/src/IndustrialRobotics/industrial_robot/models' >> ~/.bashrc
 source ~/.bashrc
 ```
 
 ## How to run the exercise
 TO launch the exercise, open a terminal windows, navigate to the ROS workspace which contains Industrial Robot folder and execute following command:
 ```bash
-roslaunch irb120_robotiq85_gazebo industrial_robot.launch 
+roslaunch industrial_robot pick_place_basic.launch 
 ```
 Two different windows will pop up:
 - **Gazebo simulator**: A warehouse environment with a industrial robot(robot arm and gripper), multiple objects, a conveyor and two boxes will be shown in Gazebo.
@@ -60,25 +60,31 @@ Two different windows will pop up:
         - Back to home button can make the robot move back to home pose
     - Two update button can update the value of current robot state
     - Code Manager part
-        - Two buttons to start and stop the main code you program
+        - Four buttons to start, stop, pause and restart the main code you program
         - One button to launch Rviz
         - One button to Respawn all objects in Gazebo and Rviz
         - An info box showing the status of the main code("start" or "stop")
 
 ![GUI](https://raw.githubusercontent.com/TheRoboticsClub/colab-gsoc2020-Yijia_Wu/master/docs/img/newGUI.png){: .mx-auto.d-block :}
 
+Then open a new terminal window, navigate to `exercise` folder and execute following command:
+```bash
+python MyAlgorithm.py
+```
+
 ## How should I solve the exercise
 To solve the exercise, you must edit the MyAlgorithm.py file and insert control logic in myalgorithm() function. The path of this file is "src/rqt_kinematics/src/rqt_kinematics/interfaces/MyAlgorithm.py" inside the catkin_ws folder.
 ```python
-def myalgorithm(self, event):
+def myalgorithm(self, stopevent, pauseevent):
 	############## Insert your code here ###############
     # Move the robot back to home as a start
     self.pick_place.back_to_home()
 	
-    # insert following two lines where you want to stop the algorithm 
+    # insert following two lines where you want to pause or stop the algorithm 
     # with the stop button in GUI
-    if not event.isSet():
-        return
+    while (not self.pauseevent.isSet()) or (not self.stopevent.isSet()):
+        if not self.stopevent.isSet():
+            return
 
     ##### A brief example to pick and place object "blue_ball" #####
     object_name = "blue_ball"
@@ -87,15 +93,19 @@ def myalgorithm(self, event):
 
     # generate grasp message and pick it up
     # parameters WIDTH and LENGTH need to be tuned according to the object and grasping pose
-    grasp = self.pick_place.generate_grasp("vertical", pose.position, WIDTH, length=LENGTH)
+    WIDTH = 0.3
+    LENGTH = 0.15
+    grasp = self.pick_place.generate_grasp(object_name, "vertical", pose.position, WIDTH, length=LENGTH)
     self.pick_place.pickup(object_name, [grasp])
 
     # setup stop signal detector
-    if not event.isSet():
-        return
+    while (not self.pauseevent.isSet()) or (not self.stopevent.isSet()):
+        if not self.stopevent.isSet():
+            return
 
     # choose target position and place the object
-    place_position = ...
+    target_name = "blue_target"
+    place_position = self.pick_place.place(target_name)
     self.pick_place.place("vertical", place_position)
 
 	####################################################
@@ -106,12 +116,18 @@ Multiple APIs can be used to implement your algorithm. They are provided in Pick
 ### Environment Information
 * `get_object_list()` - Return the name list of all objects.
 * `get_object_pose(object_name)` - Return the pose of the object.
-* `get_object_info(object_name)` - Return the pose, shape, height, eidth, length, color of the object.
+* `get_object_info(object_name)` - Return the pose, height, eidth, length, shape, color of the object in order.
 * `get_target_list()` - Return the name list of all targets.
 * `get_target_position(target_name)` - Return the position of target where we are going to place the objects.
 
+### Convert Pose Message
+* `pose2msg(roll, pitch, yaw, x, y, z)` - Convert pose to Pose message. The unit of roll, pitch, yaw is radian.
+* `pose2msg_deg(roll, pitch, yaw, x, y, z)` - Convert pose to Pose message. The unit of roll, pitch, yaw is degree.
+* `msg2pose(pose)` - Convert Pose message to pose, return roll, pitch, yaw, x, y, z in order. The unit of roll, pitch, yaw is radian.
+* `msg2pose_deg(pose)` - Convert Pose message to pose, return roll, pitch, yaw, x, y, z in order. The unit of roll, pitch, yaw is degree.
+
 ### Basic Robot Movement
-* `move_pose_arm(pose_goal)` - Command the robot to make its end effector frame move to the desired pose with inverse kinematics.
+* `move_pose_arm(pose_goal)` - Command the robot with Pose message to make its end effector frame move to the desired pose with inverse kinematics.
 * `move_joint_arm(joint_0,joint_1,joint_2,joint_3,joint_4,joint_5)` - Command the robot joints to move to desired joints value
 * `move_joint_hand(joint_value)` - Command the gripper joint to move to desired joint value.
 * `back_to_home()` - Command the robot arm and gripper to move back to the home pose.
@@ -126,14 +142,14 @@ Multiple APIs can be used to implement your algorithm. They are provided in Pick
     - `position` is the position of the end effector when grasping the object
     - `width` is the value the gripper joints should move to grasp the object with a range of [0, 0.8]. If you keep the default value 0, the `eef_orientation` is `horizontal` or `vertical` and the default rpy angle values are kept, this width value will be set depend on the object width.
     - `roll`,`pitch`,`yaw` are optional parameters.
-    - `length` is the offset length from the your desired gripper position to robot tool center. When you input grasping pose, you are specifying the pose of the desired gripper position. The default value is 0, which means you are specifying the pose of the tool center of the robot arm when the robot is grasping the object. More details will be discussed in Theory and Hint Sections.
+    - `length` is the offset length from the your desired gripper position to robot tool center. When you input grasping pose, you are specifying the pose of the desired gripper position. The default value is 0, which means you are specifying the pose of the tool center of the robot arm when the robot is grasping the object.
 
 The default minimum grasp distance and desired distance are set to be 0.2(m) and 0.1(m). The default approach direction is set to be (0, 0, -0.5). You can keep them or modify them with following functions:
 * `set_grasp_distance(min_distance, desired_distance)` - Set the minmum distance and desired distance the gripper translates before and after grasping.
 * `set_grasp_direction(x, y, z)` - Set the direction of the gripper approach translation before grasping. Retreat translation distance will set to be the opposite direction of the approach direction.
 
 ### Pick and Place
-* `pickup(object_name, grasps)` - Command the industrial robot to pick up the object with the genrated Grasp messages.
+* `pickup(object_name, grasps)` - Command the industrial robot to pick up the object with a list of genrated Grasp messages.
 * `place(eef_orientation, position[, roll, pitch, yaw])` - Command the industrial robot to place the currently holding object to goal_position with desired end effector orientation.
     - `eef_orientaion` is to clarify the desired end effector orientation. 
         - `horizontal`: grasp the object with a horizontal gripper orientation. (default value: roll = 0, pitch = 0, yaw = 180°. `pitch` is setable.)
@@ -160,6 +176,18 @@ By contrast, orientation is harder to describe. There are many different methods
 Roll, pitch, yaw are rotation angles around x, y, z axis. They are applied in order, such as x-y-z or z-y-x. Usually we use the new frame after each rotation as the new reference frame, but in [tf](http://wiki.ros.org/tf), a ROS library for managing coordinate frames, they choose static x-y-z euler angle as default method, which means each rotation will be applied with respect to(w.r.t.) the static original reference frame. Thus, in this exercise, roll, pitch, yaw will be applied in this x-y-z order w.r.t. the robot frame.
 
 When you use the inverse kinematic tool in GUI, sometimes you will see that the input desired orientation is much different from the final orientation values, position also has tiny difference. The reason for the tiny difference is that when the difference between final pose and desired pose is within a given range, controller will stop. The reason for the large difference in orientation is that there are some other expressions that can also describe this orientation correctly.
+
+**roll = 0, pitch = 0, yaw = 0**  
+![rpy000](https://raw.githubusercontent.com/TheRoboticsClub/colab-gsoc2020-Yijia_Wu/master/docs/img/rpy000.png){: .mx-auto.d-block :}
+
+**roll = 90, pitch = 0, yaw = 0**  
+![roll90](https://raw.githubusercontent.com/TheRoboticsClub/colab-gsoc2020-Yijia_Wu/master/docs/img/roll90.png){: .mx-auto.d-block :}
+
+**roll = 0, pitch = 90, yaw = 0**  
+![pitch90](https://raw.githubusercontent.com/TheRoboticsClub/colab-gsoc2020-Yijia_Wu/master/docs/img/pitch90.png){: .mx-auto.d-block :}
+
+**roll = 0, pitch = 0, yaw = 90**  
+![yaw90](https://raw.githubusercontent.com/TheRoboticsClub/colab-gsoc2020-Yijia_Wu/master/docs/img/yaw90.png){: .mx-auto.d-block :}
 
 ### Forward Kinematics and Inverse Kinematics
 Forward kinematics is given the value of each joints, to find the pose of the end effector. The pose is unique.  
