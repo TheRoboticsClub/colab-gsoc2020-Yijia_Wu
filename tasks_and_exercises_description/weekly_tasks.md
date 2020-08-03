@@ -1,20 +1,37 @@
 ## Weekly tasks 
 
+#### FINAL WEEK. August 25 - August 31
+
+Wrap up project. Submit final work and documentation. 
+
 #### WEEK 12.  August 18 - August 24
+
+Exercise 3, week 3
 
 #### WEEK 11.  August 11 - August 17
 
-#### WEEK 10.  August 4 - August 10
+Exercise 3, week 2
 
-#### WEEK 9.  July 28 - August 3
+#### WEEK 10.  August 4 - August 10
 
 |      | Tasks                                                        | State   |
 | ---- | ------------------------------------------------------------ | ------- |
-| 1    | Prepare *Exercise 1* to be published in our official repos. That means: <br />a) Upload Gazebo models, GUI and all necessary to the [Industrial Robotics repo](https://github.com/JdeRobot/IndustrialRobotics). Open related issue, work in new branch and make PR. <br />b) Upload exercise .launch file, Gazebo world and my_algorithm.py and documentation to a new exercise following the structure of the JdeRobot [Robotics Academy repo](https://github.com/JdeRobot/RoboticsAcademy). Again: work creating issue + new branch + PR | ONGOING |
-| 2    | *Exercise 2:* Explore how to integrate actual PCL-based segmentation in RQT GUI two-cameras plugin | ONGOING |
-| 3    | Try to improve grasping quality for the vacuum gripper, adding new non-vertical grippers to avoid lateral object displacements when executing trajectories | ONGOING |
-| 4    | Create a new yellow pick target (4 pick objects in total). If task 3 is completed successfully, increase a little bit the obstacles height, to make the trajectories more visually challenging. | ONGOING |
-| 5    | Prepare API and documentation for *Exercise 2*, and try to have a almost ready version. Weeks 10 to 12 should be used to work in *Exercise 3* | ONGOING |
+| 1    | Update PRs (*Industrial Robotics* and *Academy* repos) according to PR reviews.  Finish deployment of *Exercise 1*. | ONGOING |
+| 2    | Finish PCL API for *Exercise 2*. Include it in exercise documentation. | ONGOING |
+| 3    | Publish *Exercise 2* via issue + new branch + PR, following these guidelines: exercise .launch file, Gazebo world, my_algorithm.py (and any additional .py) and documentation go to the *Academy* repo. The rest (industrial robot, models, PCL library) goes to the *Industrial Robotics* repo. | ONGOING |
+| 4    | Start developing last *Exercise 3*. Check if available AGV+arm models are spawned correctly in Melodic. Create a working AGV + industrial manipulator (UR5 or UR10) + mechanical gripper (maybe Robotiq 140).  Prepare a exercise test demo: pick and place a single object using two distant tables (or other kind of base). | ONGOING |
+
+#### 
+
+#### [WEEK 9.  July 28 - August 3](https://theroboticsclub.github.io/colab-gsoc2020-Yijia_Wu/2020-08-02-week9/)
+
+|      | Tasks                                                        | State       |
+| ---- | ------------------------------------------------------------ | ----------- |
+| 1    | Prepare *Exercise 1* to be published in our official repos. That means: <br />a) Upload Gazebo models, GUI and all necessary to the [Industrial Robotics repo](https://github.com/JdeRobot/IndustrialRobotics). Open related issue, work in new branch and make PR. <br />b) Upload exercise .launch file, Gazebo world and my_algorithm.py and documentation to a new exercise following the structure of the JdeRobot [Robotics Academy repo](https://github.com/JdeRobot/RoboticsAcademy). Again: work creating issue + new branch + PR | ALMOST DONE |
+| 2    | *Exercise 2:* Explore how to integrate actual PCL-based segmentation in RQT GUI two-cameras plugin | DONE        |
+| 3    | Try to improve grasping quality for the vacuum gripper, adding new non-vertical grippers to avoid lateral object displacements when executing trajectories | DONE        |
+| 4    | Create a new yellow pick target (4 pick objects in total). If task 3 is completed successfully, increase a little bit the obstacles height, to make the trajectories more visually challenging. | DONE        |
+| 5    | Prepare API and documentation for *Exercise 2*, and try to have a almost ready version. Weeks 10 to 12 should be used to work in *Exercise 3* | ALMOST DONE |
 
 #### [WEEK 8.  July 21 - July 27](https://theroboticsclub.github.io/colab-gsoc2020-Yijia_Wu/2020-07-26-week8/)
 
