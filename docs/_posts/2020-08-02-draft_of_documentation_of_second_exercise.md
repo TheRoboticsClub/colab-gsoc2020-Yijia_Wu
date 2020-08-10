@@ -3,7 +3,7 @@ layout: post
 title: Draft of document of second exercise
 ---
 
-**This is a draft of the document of second exercise.**
+**This is a draft of the documentation of second exercise.**
 
 The goal of this exercise is to learn how to use vision to assist industrial robot by detecting known objects and unknown obstcles. You will need to complete pick and place task using a robot arm and vacuum gripper. Two kinect camera, one fixed to the world and another one fixed to the robot end effector, will be provided. The shape, size and color of the objects are known, but the pose of them and the situation of obstacles in surrounding environment need to be found using two cameras.
 
@@ -83,12 +83,18 @@ python MyAlgorithm.py
 You can start running the algorithm with the start button when you see `You can start your algorithm with GUI` in the terminal.
 
 ## How should I solve the exercise
-To solve the exercise, you must edit the MyAlgorithm.py file and insert control logic in myalgorithm() function. Before writing the main logic, you should implement build_map() function to detect obstacles in surrounding environments.
+To solve the exercise, you must edit the MyAlgorithm.py file and insert control logic in myalgorithm() function. Before writing the main logic, you should implement build_map() function to detect obstacles in surrounding environments and get_object_position() function to detect the position of the objects.
 ```python
 def build_map(self):
     ############## Insert your code here ###############
     self.pick_place.send_message("Building map")
 
+    ####################################################
+
+def get_object_position(self, object_name):
+    ############## Insert your code here ###############
+
+    return position
     ####################################################
 
 def myalgorithm(self, stopevent, pauseevent):
@@ -109,10 +115,8 @@ def myalgorithm(self, stopevent, pauseevent):
     # get object position and pick it up
     # parameters HEIGHT_OFFSET need to be tuned according to the object height
     object_name = "green_cylinder"
-    height, width, length, shape, color = self.pick_place.get_object_info(object_name)
 
-    position = self.pick_place.get_object_position(color, shape)
-    position.z = HEIGHT_OFFSET
+    position = self.get_object_position(object_nam)
     self.pick_place.pickup(object_name, position)
 
     # setup stop signal detector
@@ -132,6 +136,13 @@ def myalgorithm(self, stopevent, pauseevent):
 Multiple APIs can be used to implement your algorithm. They are provided in Pick_Place class, so you should allways add "self.pick_place." as a prefix to following introduced APIs in your algorithm.
 
 ## API
+### Detect Object
+* `start_color_filter(color, rmax, rmin, gmax, gmin, bmax, bmin)` - Start color filter for given `color` with RGB range for this `color`. Two messages, `$(color)_filter`(pointcloud) and `$(color)_filtered_image`(RGB image), will be published until stopping with `stop_color_filter` function.
+* `stop_color_filter(color)` - Stop the color filter for given `color`.
+* `start_shape_filter(color, shape, radius)` - Start the shape filter to detect one set of pointcloud that can represent the input `shape` and has a smaller than input `radius` size from color filtered poindcloud. If the filter can detect a possible shape from pointcloud, two messages, `$(color)_$(shape)`(pointcloud) and `$(color)_$(shape)_image`(depth image), will be published until stopping with `stop_shape_filter` function. A frame called `$(color)_$(shape)` will be added in tf tree. The origin of the frame is the center of prediected sphere center of a point in the center axis of predicted cylinder.
+* `stop_shape_filter(color, shape)` - Stop the shape filter.
+* `get_object_position(color, shape)` - If a frame named with `$(color)_$(shape)` exists in tf tree, output is the transformation from this frame to world frame. If not, output is None.
+
 ### Environment Information
 * `get_object_list()` - Return the name list of all objects.
 * `get_object_info(object_name)` - Return the height, width, length, shape, color of the object in order.
@@ -172,6 +183,27 @@ Obstacle detection can be done using many different sensors. What we use in this
 ### How to write buildmap() function:
 The pointcloud from the camera fixed to the robot will be automatically monitored `occupancy_map_monitor/PointCloudOctomapUpdater` to update the planning scene, so what you have to do is move the robot around and make sure that the camera fixed to the robot can take image of all surrounding environent inside robot workspace.
 
+### How to write get_object_position() function:
+1. Get the color, shape and size of the object.
+2. Choose RGB range for the color filter and start it. Check the color filter result with image viewer or Rviz and tune parameters to get better result.
+3. Choose the radius for the shape filter and start it. Check the shape filter result and tune parameters to get better result.
+4. Check the position output from `get_object_position` API. 
+5. Return the position of detected object when getting a relaticely stable object position.
+
+{: .box-note} 
+**Note:** Please remember to stop the color filter and shape filter after getting the object position. If too many filters are running at the same time, you might not be able to get a stable result.
+
+### How to check the result of color filter and shape filter?
+Two image windows are provided in GUI. You can choose corresponding topic to check the result. All filtering process are done with pointcloud. The image is the projection of the pointcloud. From the image side, the expected result for color filter is that only the part with your chosen RGB value will be shown with original color in the image. All filtered out parts are black. The expected for shape filter is that only the points related to the detected shape will be shown with non-black color in the image. If nothing is detected, the whole image is black or you won't see the image change from the previously chosen image. Here are the results(topic: "green_filtered_image" and "green_cylinder_image" of detecting green cylinder.
+
+![green_filter_image](https://raw.githubusercontent.com/TheRoboticsClub/colab-gsoc2020-Yijia_Wu/master/docs/img/green_filter_image.png){: .mx-auto.d-block :}
+![green_cylinder_image](https://raw.githubusercontent.com/TheRoboticsClub/colab-gsoc2020-Yijia_Wu/master/docs/img/green_cylinder_image.png){: .mx-auto.d-block :}
+
+To view 3D pointcloud, you need to launch Rviz and change the topic of Poindcloud to the topic you want to check. If nothing is detected, you will see nothing new in Rviz after choosing the topic. Here are the pointcloud results(topic: "yellow_filter" and "yellow_cylinder") of detecting yellow cylinder.
+
+![yellow_filter](https://raw.githubusercontent.com/TheRoboticsClub/colab-gsoc2020-Yijia_Wu/master/docs/img/yellow_filter.png){: .mx-auto.d-block :}
+![yellow_cylinder_filter](https://raw.githubusercontent.com/TheRoboticsClub/colab-gsoc2020-Yijia_Wu/master/docs/img/yellow_cylinder_filter.png){: .mx-auto.d-block :}
+
 ### Object and Target lists:
 **Object list:**
 - red_ball
@@ -184,6 +216,3 @@ The pointcloud from the camera fixed to the robot will be automatically monitore
 - yellow_cylinder
 
 **Target list:** target_ID, ID are integers from 1 to 16
-
-
-## Demonstration video of the solution
