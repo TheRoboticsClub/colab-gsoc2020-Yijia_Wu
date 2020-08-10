@@ -45,14 +45,14 @@ catkin build
 Export environment variables
 ```bash
 echo 'source '$PWD'/devel/setup.bash' >> ~/.bashrc
-echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:'$PWD'/src/IndustrialRobotics/industrial_robot/models' >> ~/.bashrc
+echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:'$PWD'/src/IndustrialRobotics/assets/models' >> ~/.bashrc
 source ~/.bashrc
 ```
 
 ## How to run the exercise
-TO launch the exercise, open a terminal windows, navigate to the ROS workspace which contains Industrial Robot folder and execute following command:
+TO launch the exercise, open a terminal windows, navigate to navigate to `machine_vision` folder inside `exercises` folder and execute following command:
 ```bash
-roslaunch industrial_robot pick_place_vision.launch 
+roslaunch machine_vision.launch 
 ```
 Two different windows will pop up:
 - **Gazebo simulator**: A warehouse environment with a industrial robot(robot arm and gripper), multiple objects, a conveyor and two boxes will be shown in Gazebo.
@@ -76,7 +76,7 @@ Two different windows will pop up:
 
 ![GUI](https://raw.githubusercontent.com/TheRoboticsClub/colab-gsoc2020-Yijia_Wu/master/docs/img/newGUI_secondexercise.png){: .mx-auto.d-block :}
 
-Then open a new terminal window, navigate to `exercise` folder and execute following command:
+Then open a new terminal window, navigate to `machine_vision` folder inside `exercises` folder and execute following command:
 ```bash
 python MyAlgorithm.py
 ```
