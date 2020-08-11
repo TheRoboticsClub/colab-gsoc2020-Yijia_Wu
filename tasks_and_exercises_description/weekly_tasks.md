@@ -10,18 +10,20 @@ Exercise 3, week 3
 
 #### WEEK 11.  August 11 - August 17
 
-Exercise 3, week 2
-
-#### WEEK 10.  August 4 - August 10
-
 |      | Tasks                                                        | State   |
 | ---- | ------------------------------------------------------------ | ------- |
-| 1    | Update PRs (*Industrial Robotics* and *Academy* repos) according to PR reviews.  Finish deployment of *Exercise 1*. | ONGOING |
-| 2    | Finish PCL API for *Exercise 2*. Include it in exercise documentation. | ONGOING |
-| 3    | Publish *Exercise 2* via issue + new branch + PR, following these guidelines: exercise .launch file, Gazebo world, my_algorithm.py (and any additional .py) and documentation go to the *Academy* repo. The rest (industrial robot, models, PCL library) goes to the *Industrial Robotics* repo. | ONGOING |
-| 4    | Start developing last *Exercise 3*. Check if available AGV+arm models are spawned correctly in Melodic. Create a working AGV + industrial manipulator (UR5 or UR10) + mechanical gripper (maybe Robotiq 140).  Prepare a exercise test demo: pick and place a single object using two distant tables (or other kind of base). | ONGOING |
+| 1    | Finish documentation for Exercise 2. Include RViz explanation (starts by default). Mention that separate launching MyAlgorithm.py allows code hot-reloading. Once Exercise 2 demo video is recorded and published, open issue + new branch + PR in Academy to upload it. | ONGOING |
+| 2    | Update RQT GUI for *Exercise 3*, including new plugin to teleoperate AGV. | ONGOING |
+| 3    | Make a first working draft of *Exercise 3* and test it: <br/>- **Robot:** A single Neobotix AGV with UR10 arm. If Neobotix gives permission, modify it to include a small tray to carry objects. <br />- **Scene:** a "realistic" industrial warehouse, squared (or rectangular) in shape. Pick objects (different shapes and colors) will be placed in a source table. Three conveyor belts will be used as targets (by color, or shape). Adjust position and heights to allow 2D detection by onboard Lidars.    <br />- **Test 1:** pick and place of three objects in different targets, one at a time. <br />- **Test 2:** pick and place of three objects using the onboard tray. | ONGOING |
 
-#### 
+#### [WEEK 10.  August 4 - August 10](https://theroboticsclub.github.io/colab-gsoc2020-Yijia_Wu/2020-08-09-week10/)
+
+|      | Tasks                                                        | State       |
+| ---- | ------------------------------------------------------------ | ----------- |
+| 1    | Update PRs (*Industrial Robotics* and *Academy* repos) according to PR reviews.  Finish deployment of *Exercise 1*. | DONE        |
+| 2    | Finish PCL API for *Exercise 2*. Include it in exercise documentation. | DONE        |
+| 3    | Publish *Exercise 2* via issue + new branch + PR, following these guidelines: exercise .launch file, Gazebo world, my_algorithm.py (and any additional .py) and documentation go to the *Academy* repo. The rest (industrial robot, models, PCL library) goes to the *Industrial Robotics* repo. | ONGOING     |
+| 4    | Start developing last *Exercise 3*. Check if available AGV+arm models are spawned correctly in Melodic. Create a working AGV + industrial manipulator (UR5 or UR10) + mechanical gripper (maybe Robotiq 140).  Prepare a exercise test demo: pick and place a single object using two distant tables (or other kind of base). | ALMOST DONE |
 
 #### [WEEK 9.  July 28 - August 3](https://theroboticsclub.github.io/colab-gsoc2020-Yijia_Wu/2020-08-02-week9/)
 
