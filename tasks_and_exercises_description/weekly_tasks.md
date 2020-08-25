@@ -2,38 +2,40 @@
 
 #### FINAL WEEK. August 25 - August 31
 
-Wrap up project. Submit final work and documentation. 
-
-#### WEEK 12.  August 18 - August 24
-
-Exercise 3, week 3
-
-#### WEEK 11.  August 11 - August 17
-
 |      | Tasks                                                        | State   |
 | ---- | ------------------------------------------------------------ | ------- |
-| 1    | Finish documentation for Exercise 2. Include RViz explanation (starts by default). Mention that separate launching MyAlgorithm.py allows code hot-reloading. Once Exercise 2 demo video is recorded and published, open issue + new branch + PR in Academy to upload it. | ONGOING |
-| 2    | Update RQT GUI for *Exercise 3*, including new plugin to teleoperate AGV. | ONGOING |
-| 3    | Make a first working draft of *Exercise 3* and test it: <br/>- **Robot:** A single Neobotix AGV with UR10 arm. If Neobotix gives permission, modify it to include a small tray to carry objects. <br />- **Scene:** a "realistic" industrial warehouse, squared (or rectangular) in shape. Pick objects (different shapes and colors) will be placed in a source table. Three conveyor belts will be used as targets (by color, or shape). Adjust position and heights to allow 2D detection by onboard Lidars.    <br />- **Test 1:** pick and place of three objects in different targets, one at a time. <br />- **Test 2:** pick and place of three objects using the onboard tray. | ONGOING |
+| 1    | Finish *Exercise 3*: add color trays to target conveyor belts. Update textures to a more realistic industrial environment. Prepare solution consisting in picking and placing 3 objects (one in each target tray). Update repo asap to record solution video. | ONGOING |
+| 2    | Finish documentation for *Exercise 3*. Once documentation is finished and demo video is recorded, open issue + new branch + PR in Academy to upload it. | ONGOING |
+| 3    | **Wrap up project**. Submit final work and documentation. Submit Final Evaluation before deadline (August 31) which includes:<br/>1) Links to work product (repos, blog)<br/>2) Final evaluation of Mentor | ONGOING |
+
+#### 
+
+#### [WEEK 11 and WEEK 12.  August 11 - August 24](https://theroboticsclub.github.io/colab-gsoc2020-Yijia_Wu/2020-08-25-week11_12/)
+
+|      | Tasks                                                        | State |
+| ---- | ------------------------------------------------------------ | ----- |
+| 1    | Finish documentation for Exercise 2. Include RViz explanation (starts by default). Mention that separate launching MyAlgorithm.py allows code hot-reloading. Once Exercise 2 demo video is recorded and published, open issue + new branch + PR in Academy to upload it. | DONE  |
+| 2    | Update RQT GUI for *Exercise 3*, including new plugin to teleoperate AGV. | DONE  |
+| 3    | Make a first working draft of *Exercise 3* and test it: <br/>- **Robot:** A single Neobotix AGV with UR10 arm. If Neobotix gives permission, modify it to include a small tray to carry objects. <br />- **Scene:** a "realistic" industrial warehouse, squared (or rectangular) in shape. Pick objects (different shapes and colors) will be placed in a source table. Three conveyor belts will be used as targets (by color, or shape). Adjust position and heights to allow 2D detection by onboard Lidars.    <br />- **Test 1:** pick and place of three objects in different targets, one at a time. <br />- **Test 2:** pick and place of three objects using the onboard tray. | DONE  |
 
 #### [WEEK 10.  August 4 - August 10](https://theroboticsclub.github.io/colab-gsoc2020-Yijia_Wu/2020-08-09-week10/)
 
-|      | Tasks                                                        | State       |
-| ---- | ------------------------------------------------------------ | ----------- |
-| 1    | Update PRs (*Industrial Robotics* and *Academy* repos) according to PR reviews.  Finish deployment of *Exercise 1*. | DONE        |
-| 2    | Finish PCL API for *Exercise 2*. Include it in exercise documentation. | DONE        |
-| 3    | Publish *Exercise 2* via issue + new branch + PR, following these guidelines: exercise .launch file, Gazebo world, my_algorithm.py (and any additional .py) and documentation go to the *Academy* repo. The rest (industrial robot, models, PCL library) goes to the *Industrial Robotics* repo. | ONGOING     |
-| 4    | Start developing last *Exercise 3*. Check if available AGV+arm models are spawned correctly in Melodic. Create a working AGV + industrial manipulator (UR5 or UR10) + mechanical gripper (maybe Robotiq 140).  Prepare a exercise test demo: pick and place a single object using two distant tables (or other kind of base). | ALMOST DONE |
+|      | Tasks                                                        | State |
+| ---- | ------------------------------------------------------------ | ----- |
+| 1    | Update PRs (*Industrial Robotics* and *Academy* repos) according to PR reviews.  Finish deployment of *Exercise 1*. | DONE  |
+| 2    | Finish PCL API for *Exercise 2*. Include it in exercise documentation. | DONE  |
+| 3    | Publish *Exercise 2* via issue + new branch + PR, following these guidelines: exercise .launch file, Gazebo world, my_algorithm.py (and any additional .py) and documentation go to the *Academy* repo. The rest (industrial robot, models, PCL library) goes to the *Industrial Robotics* repo. | DONE  |
+| 4    | Start developing last *Exercise 3*. Check if available AGV+arm models are spawned correctly in Melodic. Create a working AGV + industrial manipulator (UR5 or UR10) + mechanical gripper (maybe Robotiq 140).  Prepare a exercise test demo: pick and place a single object using two distant tables (or other kind of base). | DONE  |
 
 #### [WEEK 9.  July 28 - August 3](https://theroboticsclub.github.io/colab-gsoc2020-Yijia_Wu/2020-08-02-week9/)
 
-|      | Tasks                                                        | State       |
-| ---- | ------------------------------------------------------------ | ----------- |
-| 1    | Prepare *Exercise 1* to be published in our official repos. That means: <br />a) Upload Gazebo models, GUI and all necessary to the [Industrial Robotics repo](https://github.com/JdeRobot/IndustrialRobotics). Open related issue, work in new branch and make PR. <br />b) Upload exercise .launch file, Gazebo world and my_algorithm.py and documentation to a new exercise following the structure of the JdeRobot [Robotics Academy repo](https://github.com/JdeRobot/RoboticsAcademy). Again: work creating issue + new branch + PR | ALMOST DONE |
-| 2    | *Exercise 2:* Explore how to integrate actual PCL-based segmentation in RQT GUI two-cameras plugin | DONE        |
-| 3    | Try to improve grasping quality for the vacuum gripper, adding new non-vertical grippers to avoid lateral object displacements when executing trajectories | DONE        |
-| 4    | Create a new yellow pick target (4 pick objects in total). If task 3 is completed successfully, increase a little bit the obstacles height, to make the trajectories more visually challenging. | DONE        |
-| 5    | Prepare API and documentation for *Exercise 2*, and try to have a almost ready version. Weeks 10 to 12 should be used to work in *Exercise 3* | ALMOST DONE |
+|      | Tasks                                                        | State |
+| ---- | ------------------------------------------------------------ | ----- |
+| 1    | Prepare *Exercise 1* to be published in our official repos. That means: <br />a) Upload Gazebo models, GUI and all necessary to the [Industrial Robotics repo](https://github.com/JdeRobot/IndustrialRobotics). Open related issue, work in new branch and make PR. <br />b) Upload exercise .launch file, Gazebo world and my_algorithm.py and documentation to a new exercise following the structure of the JdeRobot [Robotics Academy repo](https://github.com/JdeRobot/RoboticsAcademy). Again: work creating issue + new branch + PR | DONE  |
+| 2    | *Exercise 2:* Explore how to integrate actual PCL-based segmentation in RQT GUI two-cameras plugin | DONE  |
+| 3    | Try to improve grasping quality for the vacuum gripper, adding new non-vertical grippers to avoid lateral object displacements when executing trajectories | DONE  |
+| 4    | Create a new yellow pick target (4 pick objects in total). If task 3 is completed successfully, increase a little bit the obstacles height, to make the trajectories more visually challenging. | DONE  |
+| 5    | Prepare API and documentation for *Exercise 2*, and try to have a almost ready version. Weeks 10 to 12 should be used to work in *Exercise 3* | DONE  |
 
 #### [WEEK 8.  July 21 - July 27](https://theroboticsclub.github.io/colab-gsoc2020-Yijia_Wu/2020-07-26-week8/)
 
@@ -53,13 +55,13 @@ Exercise 3, week 3
 
 #### [WEEK 6.  July 3 - July 12](https://theroboticsclub.github.io/colab-gsoc2020-Yijia_Wu/2020-07-12-week5_6/)
 
-|      | Tasks                                                        | State   |
-| ---- | ------------------------------------------------------------ | ------- |
-| 1    | Complete some *missing parts* of Exercise 1. Finish documentation. Migrate the infrastructure (modified plugin, GUI, static objects) to a new branch in the [JdeRobot Industrial Robotics](IndustrialRobotics) repo. Open issue to incorporate the new exercises to the [Robotics Academy](https://github.com/JdeRobot/RoboticsAcademy) repo (issue + new branch), adding launch files, Gazebo world, yaml files, student template and exercise documentation there. | DONE    |
-| 2    | Mofify some API methods (move_pose_arm(), move_joint_arm(), move-joint_gripper()) to tell the student via *informative messages* that the given angles or pose are out of bounds.  Angle limits and robot workspace (as simple cartesian limits) will be stored in yaml file. | DONE    |
-| 3    | Spawn Gazebo objects to pick using a list of their properties (name, geometry, size, position, color) stored in a yaml file. | DONE    |
-| 4    | *API enhancement*: Add planning using the desired TCP gripper pose, in addition to plan using arm end-effector pose. Add also automatic gripper closing without passing the link pose (autofit to object size, mimicking how a pneumatic gripper works). | ONGOING |
-| 5    | Start preparing the Gazebo world for *exercise 2* (adding cameras, robot manipulator and vacuum gripper as described [here](../exercises_description/Second_Exercise.md). | DONE    |
+|      | Tasks                                                        | State |
+| ---- | ------------------------------------------------------------ | ----- |
+| 1    | Complete some *missing parts* of Exercise 1. Finish documentation. Migrate the infrastructure (modified plugin, GUI, static objects) to a new branch in the [JdeRobot Industrial Robotics](IndustrialRobotics) repo. Open issue to incorporate the new exercises to the [Robotics Academy](https://github.com/JdeRobot/RoboticsAcademy) repo (issue + new branch), adding launch files, Gazebo world, yaml files, student template and exercise documentation there. | DONE  |
+| 2    | Mofify some API methods (move_pose_arm(), move_joint_arm(), move-joint_gripper()) to tell the student via *informative messages* that the given angles or pose are out of bounds.  Angle limits and robot workspace (as simple cartesian limits) will be stored in yaml file. | DONE  |
+| 3    | Spawn Gazebo objects to pick using a list of their properties (name, geometry, size, position, color) stored in a yaml file. | DONE  |
+| 4    | *API enhancement*: Add planning using the desired TCP gripper pose, in addition to plan using arm end-effector pose. Add also automatic gripper closing without passing the link pose (autofit to object size, mimicking how a pneumatic gripper works). | DONE  |
+| 5    | Start preparing the Gazebo world for *exercise 2* (adding cameras, robot manipulator and vacuum gripper as described [here](../exercises_description/Second_Exercise.md). | DONE  |
 
 #### [WEEK 5.  June 27 - July 2](https://theroboticsclub.github.io/colab-gsoc2020-Yijia_Wu/2020-07-02-draft_of_document_of_first_exercise/)
 
