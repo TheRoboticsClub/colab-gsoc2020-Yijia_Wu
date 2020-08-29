@@ -57,50 +57,38 @@ class Algorithm:
         ####################################################
 
     def myalgorithm(self):
-        ###### code for recording video ######
-        self.pick_place.buildmap()
-        self.pick_place.send_message("Map is ready")
-        rospy.sleep(3)
+        ############## Insert your code here ###############
+        self.build_map()
 
-        # insert following two lines where you want to stop the algorithm 
+        # Move the robot back to home as a start
+        self.pick_place.back_to_home()
+        
+        # insert following two lines where you want to pause or stop the algorithm 
         # with the stop button in GUI
         while (not self.pauseevent.isSet()) or (not self.stopevent.isSet()):
             if not self.stopevent.isSet():
                 return
 
-        ### find red cylinder
-        object_name = "red_cylinder"
-        height, width, length, shape, color = self.pick_place.get_object_info(object_name)
-        self.pick_place.start_color_filter(color, 255, 100, 50, 0, 50, 0)
-        self.pick_place.start_shape_filter(color, shape, width/2+0.01)
-        
-        ### detect object position
-        position = self.pick_place.get_object_position(object_name)
-        its = 0
-        while its < 5:
-            while position == None:
-                position = self.pick_place.get_object_position(object_name)
-            its += 1
-            rospy.sleep(1)
-        self.pick_place.stop_shape_filter(color, shape)
+        ##### A brief example to pick and place object "green_cylinder" #####
 
-        ### adjust position and pick up object
-        position.z = -0.2+height+0.005
-        self.pick_place.pickup(object_name, position, distance = 0.15)
+        # get object position and pick it up
+        # parameters HEIGHT_OFFSET need to be tuned according to the object height
+        object_name = "green_cylinder"
 
+        position = self.get_object_position(object_nam)
+        self.pick_place.pickup(object_name, position)
+
+        # setup stop signal detector
         while (not self.pauseevent.isSet()) or (not self.stopevent.isSet()):
             if not self.stopevent.isSet():
                 return
 
-        ### place object
-        position = self.pick_place.get_target_position("target7")
+        # choose target position and place the object
+        target_name = "target6"
+        position = self.pick_place.get_target_position(target_name)
         self.pick_place.place(object_name, position)
 
-        while (not self.pauseevent.isSet()) or (not self.stopevent.isSet()):
-            if not self.stopevent.isSet():
-                return
-
-        self.pick_place.back_to_home()
+        ####################################################
 
 
 if __name__=="__main__":
