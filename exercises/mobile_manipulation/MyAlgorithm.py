@@ -48,17 +48,20 @@ class Algorithm:
     def set_client(self, movebase_client):
         self.client = movebase_client
 
+    def move_to(self, target_name):
+        pose = self.client.get_target_pose(target_name)
+        self.client.send_goal_to_client(pose)
+        while self.client.get_result_from_client() != True:
+            pass
+        print(self.pick_place.get_robot_pose())
+
     def myalgorithm(self):
         ############## Insert your code here ###############
         # Move the robot back to home as a start
         self.pick_place.back_to_home()
 
         ##### first object
-        pose = self.client.get_target_pose("conveyor1")
-        self.client.send_goal_to_client(pose)
-        while self.client.get_result_from_client() != True:
-            pass
-        print(self.pick_place.get_robot_pose())
+        self.move_to("conveyor1")
 
         while (not self.pauseevent.isSet()) or (not self.stopevent.isSet()):
             if not self.stopevent.isSet():
@@ -87,11 +90,7 @@ class Algorithm:
 
         # move to place
         target_name = "conveyor3"
-        pose = self.client.get_target_pose(target_name)
-        self.client.send_goal_to_client(pose)
-        while self.client.get_result_from_client() != True:
-            pass
-        print("robot pose:",self.pick_place.get_robot_pose())
+        self.move_to(target_name)
 
         while (not self.pauseevent.isSet()) or (not self.stopevent.isSet()):
             if not self.stopevent.isSet():
@@ -112,11 +111,7 @@ class Algorithm:
                 return
 
         ##### second object
-        pose = self.client.get_target_pose("conveyor1")
-        self.client.send_goal_to_client(pose)
-        while self.client.get_result_from_client() != True:
-            pass
-        print(self.pick_place.get_robot_pose())
+        self.move_to("conveyor1")
 
         while (not self.pauseevent.isSet()) or (not self.stopevent.isSet()):
             if not self.stopevent.isSet():
@@ -145,11 +140,7 @@ class Algorithm:
         
         # move to place
         target_name = "conveyor2"
-        pose = self.client.get_target_pose(target_name)
-        self.client.send_goal_to_client(pose)
-        while self.client.get_result_from_client() != True:
-            pass
-        print("robot pose:",self.pick_place.get_robot_pose())
+        self.move_to(target_name)
 
         while (not self.pauseevent.isSet()) or (not self.stopevent.isSet()):
             if not self.stopevent.isSet():
@@ -170,11 +161,7 @@ class Algorithm:
                 return
 
         ##### third object
-        pose = self.client.get_target_pose("conveyor1")
-        self.client.send_goal_to_client(pose)
-        while self.client.get_result_from_client() != True:
-            pass
-        print(self.pick_place.get_robot_pose())
+        self.move_to("conveyor1")
 
         while (not self.pauseevent.isSet()) or (not self.stopevent.isSet()):
             if not self.stopevent.isSet():
@@ -203,11 +190,7 @@ class Algorithm:
 
         # move to place
         target_name = "conveyor4"
-        pose = self.client.get_target_pose(target_name)
-        self.client.send_goal_to_client(pose)
-        while self.client.get_result_from_client() != True:
-            pass
-        print("robot pose:",self.pick_place.get_robot_pose())
+        self.move_to(target_name)
 
         while (not self.pauseevent.isSet()) or (not self.stopevent.isSet()):
             if not self.stopevent.isSet():

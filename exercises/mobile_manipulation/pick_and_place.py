@@ -196,10 +196,6 @@ class Pick_Place:
 
         self.gripper_length = 0.33
 
-        # set default grasp message infos
-        self.set_grasp_distance(0.1, 0.2)
-        self.set_grasp_direction(0, 0, -0.5)
-
         self.get_workspace()
 
         self.message_pub = rospy.Publisher("/gui_message", String, queue_size=0)
@@ -585,8 +581,8 @@ class Pick_Place:
         return True
 
     # Move gripper
-    def move_joint_hand(self,finger1_goal, finger2_goal = 0, finger3_goal = 0):
-        if finger2_goal == 0 and finger3_goal == 0:
+    def move_joint_hand(self,finger1_goal, finger2_goal = 10, finger3_goal = 10):
+        if finger2_goal == 10 and finger3_goal == 10:
             finger2_goal, finger3_goal = finger1_goal, finger1_goal
 
         jointtrajectory = JointTrajectory()
@@ -627,17 +623,6 @@ class Pick_Place:
         yaw = euler[2]
 
         return roll, pitch, yaw, x, y, z 
-
-    def set_grasp_direction(self, x, y, z):
-        self.approach_direction = Vector3()
-        self.approach_direction.x = x
-        self.approach_direction.y = y
-        self.approach_direction.z = z
-
-        self.retreat_direction = Vector3()
-        self.retreat_direction.x = -x
-        self.retreat_direction.y = -y
-        self.retreat_direction.z = -z
 
     def set_grasp_distance(self, min_distance, desired_distance):
         self.approach_retreat_min_dist = min_distance
