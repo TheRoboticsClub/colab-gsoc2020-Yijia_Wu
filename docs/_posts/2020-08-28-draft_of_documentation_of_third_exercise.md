@@ -7,6 +7,8 @@ title: Draft of document of third exercise
 
 The goal of this exercise is to practice integrating navigation and manipulation. You will need to use a mobile manipulator(AGV+robot arm+gripper) to pick objects on one conveyor and place them on three other conveyors.
 
+The mobile manipulator is MMO-500 robot from [Neobotix](https://www.neobotix-robots.com/homepage). They provides a set of ROS simulation packages and tutorials to test their mobile robot and mobile manipulators in ROS[1]. The MMO-500 is one of them, combineing the omnidirectional robot MPO-500 with a light-weight robot arm UR10. The navigation part of this robot is based on their provided packages.
+
 ![world](https://raw.githubusercontent.com/TheRoboticsClub/colab-gsoc2020-Yijia_Wu/master/docs/img/world_third_exercise.png){: .mx-auto.d-block :}
 
 ![rviz](https://raw.githubusercontent.com/TheRoboticsClub/colab-gsoc2020-Yijia_Wu/master/docs/img/rviz_third_exercise.png){: .mx-auto.d-block :}
@@ -160,7 +162,42 @@ Following APIs are provided in Pick_Place class, so you should allways add "self
 
 ## Theory
 
+### Navigation
+Navigation part is implemented by following steps. It is based on the simulation packages from Neobotix which integrated `amcl`, `gmapping`, `eband_local_planner` and some other related packages. If you are interested in the details of navigation implementation in ROS, check out their [tutorial website](https://docs.neobotix.de/display/ROSSim/ROS-Simulation).
+1. **Built the map of the world**: A map of the world is prebuilt using `gmapping` package. If we want to change the world, a new map need to be generated and saved.
+2. **Localization**: The `amcl` package is used to localize the robot. The odometry message of the robot will be published in `/odom` topic which contains the pose between robot `base_link` and `odom` frame.
+3. **Navigation**: The `move_base` package will use both global planning and local planning to plan a path to the goal position, and drive the robot to achieve it.
+
+### Manipulation
+Manipulation part is implemented by following steps. 
+1. **Load object info**: Load the information of objects and obstacles from yaml file, including absolute pose, size, shape, color.
+2. **Move to pick position**: Make the robot stops in target position in front of the conveyor.
+3. **Pick up object**
+    - Move the robot arm to home position for pick and place task.
+    - Get robot pose from `/odom` topic and caculate the relative pose between object and robot.
+    - Spawn the model of objects and conveyor into planning scene.
+    - Move to some distance above the object, move down and grasp the object.
+    - Delete the model of objects and conveyor in planning scene.
+4. **Move to place position**: Move robot arm to home position with the object in the gripper and move the mobile robot to the target postion.
+5. **Place object**
+    - Move the robot arm to home position for pick and place task.
+    - Get robot pose from `/odom` topic and transform the place target position from world frame to robot frame.
+    - Spawn the model of conveyor into planning scene.
+    - Move to some distance above the object, move down and grasp the object.
+    - Delete the model of conveyor in planning scene.
+
 ## Hints
+
+### How to get the object pose and pick it up?
+Motion planning for the robot arm is done by MoveIt in robot arm frame, so we need to know where are the objects we are going to grasp and where are obstacles and goal position to place objects.
+The poses of objects and obstacles in the world frame are known and assumed to be fixed until the objects are picked up. The robot pose and transformation between the base link of mobile manipulator and the base link of robot arm are also available, so the poses of objects and obstacles in robot arm frame can be computed. This part is implemented implicitly in API and available in get_object_position() and get_target_position(), but you still need to add objects and objects into planning scene before picking or placeing and clean them before mobile robot moving to next position in the world.
+
+### Why does the gripper cannot stably grasp and release the object?
+We are using gazebo_grasp_fix plugin for this exercise and the Pick Place exercise which compute the force vector between fingers to check collision and distance between object and fingers to decide whether release the object. It is because Gazebo cannot well simulates manipulation behavior. JUst keep in mind that though you might see the object shaking when the gripper is graspping it in simulation, it can usually success in the same condition in real world.
+The input `position` for pickup() and place() function are both the position for the end of the gripper in releasing mode. The output position of get_object_position() is the position of the center of the object. Therefore, because when the gripper is grasping, final end point position will change, please remember to tune the input position to pick and place. In addition, grasping sphere is the most 
+
+### Why does the mobile robot sometimes stops for a while after reaching the goal pose?
+When the mobile robot doesn't reach a pose within tolerance range of goal pose, it might stops for a while to check if it can improve its pose.
 
 ### Object and Target lists:
 **Object list:**
@@ -173,3 +210,18 @@ Following APIs are provided in Pick_Place class, so you should allways add "self
 - `conveyor2`(green tray)
 - `conveyor3`(yellow tray)
 - `conveyor4`(blue tray)
+
+### Ignorable ERROR and WARNING
+- `No p gain specified for pid.`
+
+Following three errors can be ignored in the beginning, but if it keep spawning when you run your algorithm or move the robot with GUI, please relaunch the exercise.
+- `Spawn service failed. Exiting.`
+- `wait_for_service(/controller_manager/load_controller): failed to contact, will keep trying`
+- `No laser scan received (and thus no pose updates have been published)`
+- `Timed out waiting for transform from base_link to map to become available before running costmap`
+
+## Demonstration video of the solution
+[![solution](https://img.youtube.com/vi/dQTE766uFIY/0.jpg){: .mx-auto.d-block :}](https://youtu.be/dQTE766uFIY)
+
+## References
+[1] https://docs.neobotix.de/display/ROSSim/ROS-Simulation

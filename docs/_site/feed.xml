@@ -11,6 +11,94 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Draft of document of third exercise</title>
+        <description>
+          
+          This is a draft of the documentation of third exercise. The goal of this exercise is to practice integrating navigation and manipulation. You will need to use a mobile manipulator(AGV+robot arm+gripper) to pick objects on one conveyor and place them on three other conveyors. The mobile manipulator is MMO-500 robot...
+        </description>
+        <pubDate>Fri, 28 Aug 2020 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/2020-08-28-draft_of_documentation_of_third_exercise/</link>
+        <guid isPermaLink="true">http://localhost:4000/2020-08-28-draft_of_documentation_of_third_exercise/</guid>
+      </item>
+    
+      <item>
+        <title>Week11_12</title>
+        <description>
+          
+          Navigation Navigation part is implemented by following steps. A map of the world is prebuilt using gmapping package. If we want to change the world, a new map need to be generated and saved. The amcl package is used to localize the robot. The odometry message of the robot will...
+        </description>
+        <pubDate>Tue, 25 Aug 2020 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/2020-08-25-week11_12/</link>
+        <guid isPermaLink="true">http://localhost:4000/2020-08-25-week11_12/</guid>
+      </item>
+    
+      <item>
+        <title>Week10</title>
+        <description>
+          
+          Test of AGV + robot arm + gripper The robot test is based on the mmo500 robot from Neobotix company. This company provides simulation packages to test their robots with ROS. This mmo500 robot contains an AGV with two lasers, a UR10 robot arm and a three-finger gripper from Shadow...
+        </description>
+        <pubDate>Sun, 09 Aug 2020 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/2020-08-09-week10/</link>
+        <guid isPermaLink="true">http://localhost:4000/2020-08-09-week10/</guid>
+      </item>
+    
+      <item>
+        <title>Week9</title>
+        <description>
+          
+          Convert Pointcloud to image The pcl_ros package provides a convert_pointcloud_to_image node to directly convert Pointcloud2 message to Image message, but it requires organized pointcloud which means each point in pointcloud corresponding to one image pixel. However, what we need to convert is filtered pointcloud which only contains points related to...
+        </description>
+        <pubDate>Sun, 02 Aug 2020 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/2020-08-02-week9/</link>
+        <guid isPermaLink="true">http://localhost:4000/2020-08-02-week9/</guid>
+      </item>
+    
+      <item>
+        <title>Draft of document of second exercise</title>
+        <description>
+          
+          This is a draft of the documentation of second exercise. The goal of this exercise is to learn how to use vision to assist industrial robot by detecting known objects and unknown obstcles. You will need to complete pick and place task using a robot arm and vacuum gripper. Two...
+        </description>
+        <pubDate>Sun, 02 Aug 2020 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/2020-08-02-draft_of_documentation_of_second_exercise/</link>
+        <guid isPermaLink="true">http://localhost:4000/2020-08-02-draft_of_documentation_of_second_exercise/</guid>
+      </item>
+    
+      <item>
+        <title>Week8</title>
+        <description>
+          
+          Object Detection with PCL Three objects are used for detection test: a blue ball, a red ball and a green cylinder. Input point cloud is the point cloud from the fixed kinect camera. With the color filter and shape segmentation functionality in PCL, the center and size of two balls...
+        </description>
+        <pubDate>Sun, 26 Jul 2020 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/2020-07-26-week8/</link>
+        <guid isPermaLink="true">http://localhost:4000/2020-07-26-week8/</guid>
+      </item>
+    
+      <item>
+        <title>Week7</title>
+        <description>
+          
+          GUI for the second exercise Two new plugins, rqt_vaccum_gripper and rqt_camera, are implemented for the second exercise. The rqt_vaccum_gripper plugin is based on the rqt_kinetic plugin. The slider for gripper joint is changed into grasp and release button because we will use vacuum gripper in the second exercise. The rqt_camera...
+        </description>
+        <pubDate>Sun, 19 Jul 2020 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/2020-07-19-week7/</link>
+        <guid isPermaLink="true">http://localhost:4000/2020-07-19-week7/</guid>
+      </item>
+    
+      <item>
+        <title>Week5 and 6</title>
+        <description>
+          
+          Updates for the first exercise Following parts are modified or added in last two weeks: GUI Add button to respawn models in Gazebo and Rviz() Limitation of the joint value and home pose are specfied in a separated yaml file instead of hard coding Some modifications in visulization API All...
+        </description>
+        <pubDate>Sun, 12 Jul 2020 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/2020-07-12-week5_6/</link>
+        <guid isPermaLink="true">http://localhost:4000/2020-07-12-week5_6/</guid>
+      </item>
+    
+      <item>
         <title>Draft of document of first exercise</title>
         <description>
           
