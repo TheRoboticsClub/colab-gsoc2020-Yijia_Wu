@@ -13,7 +13,7 @@
   
   
 
-  <link rel="alternate" type="application/rss+xml" title="GSoC 2020 Blog - Yijia Wu - GSoC progress" href="http://localhost:4000/feed.xml">
+  <link rel="alternate" type="application/rss+xml" title="GSoC 2020 Blog - Yijia Wu - GSoC progress" href="http://localhost:4000/colab-gsoc2020-Yijia_Wu/feed.xml">
 
   
 
@@ -48,9 +48,9 @@
 
   
     
-      <link rel="stylesheet" href="/assets/css/bootstrap-social.css">
+      <link rel="stylesheet" href="/colab-gsoc2020-Yijia_Wu/assets/css/bootstrap-social.css">
     
-      <link rel="stylesheet" href="/assets/css/main.css">
+      <link rel="stylesheet" href="/colab-gsoc2020-Yijia_Wu/assets/css/main.css">
     
   
 
@@ -73,12 +73,12 @@
   <meta property="og:type" content="website">
 
   
-  <meta property="og:url" content="http://localhost:4000/2020-07-02-draft_of_document_of_first_exercise/">
-  <link rel="canonical" href="http://localhost:4000/2020-07-02-draft_of_document_of_first_exercise/">
+  <meta property="og:url" content="http://localhost:4000/colab-gsoc2020-Yijia_Wu/2020-07-02-draft_of_document_of_first_exercise/">
+  <link rel="canonical" href="http://localhost:4000/colab-gsoc2020-Yijia_Wu/2020-07-02-draft_of_document_of_first_exercise/">
   
 
   
-  <meta property="og:image" content="http://localhost:4000/img/logo.png">
+  <meta property="og:image" content="http://localhost:4000/colab-gsoc2020-Yijia_Wu/img/logo.png">
   
 
 
@@ -96,7 +96,7 @@
   
 
   
-  <meta name="twitter:image" content="http://localhost:4000/img/logo.png">
+  <meta name="twitter:image" content="http://localhost:4000/colab-gsoc2020-Yijia_Wu/img/logo.png">
   
 
   
@@ -111,23 +111,23 @@
     
 
   
-    <nav class="navbar navbar-expand-md navbar-light fixed-top navbar-custom "><a class="navbar-brand" href="http://localhost:4000/">GSoC 2020 Blog - Yijia Wu</a><button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <nav class="navbar navbar-expand-md navbar-light fixed-top navbar-custom "><a class="navbar-brand" href="http://localhost:4000/colab-gsoc2020-Yijia_Wu">GSoC 2020 Blog - Yijia Wu</a><button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
   <div class="collapse navbar-collapse" id="main-navbar">
     <ul class="navbar-nav ml-auto">
           <li class="nav-item">
-            <a class="nav-link" href="https://theroboticsclub.github.io/colab-gsoc2020-Yijia_Wu">Home</a>
+            <a class="nav-link" href="/colab-gsoc2020-Yijia_Wu/">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/aboutme">About Me</a>
+            <a class="nav-link" href="/colab-gsoc2020-Yijia_Wu/aboutme">About Me</a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">About Project</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" href="/aboutproject">Introduction</a>
-                  <a class="dropdown-item" href="/progress">Progress</a>
+                  <a class="dropdown-item" href="/colab-gsoc2020-Yijia_Wu/aboutproject">Introduction</a>
+                  <a class="dropdown-item" href="/colab-gsoc2020-Yijia_Wu/progress">Progress</a>
             </div>
           </li>
         </ul>
@@ -136,8 +136,8 @@
   
     <div class="avatar-container">
       <div class="avatar-img-border">
-        <a href="http://localhost:4000/">
-          <img alt="Navbar avatar" class="avatar-img" src="/img/logo.png" />
+        <a href="http://localhost:4000/colab-gsoc2020-Yijia_Wu">
+          <img alt="Navbar avatar" class="avatar-img" src="/colab-gsoc2020-Yijia_Wu/img/logo.png" />
         </a>
       </div>
     </div>
@@ -258,7 +258,7 @@ rosdep <span class="nb">install</span> <span class="nt">--from-paths</span> <spa
 
 <p><img src="https://raw.githubusercontent.com/TheRoboticsClub/colab-gsoc2020-Yijia_Wu/master/docs/img/newGUI.png" alt="GUI" class="mx-auto d-block" /></p>
 
-<p>Then open a new terminal window, navigate to <code class="highlighter-rouge">exercise</code> folder and execute following command:</p>
+<p>Then open a new terminal window, navigate to <code class="language-plaintext highlighter-rouge">exercise</code> folder and execute following command:</p>
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python MyAlgorithm.py
 </code></pre></div></div>
 
@@ -306,69 +306,69 @@ rosdep <span class="nb">install</span> <span class="nt">--from-paths</span> <spa
 <h2 id="api">API</h2>
 <h3 id="environment-information">Environment Information</h3>
 <ul>
-  <li><code class="highlighter-rouge">get_object_list()</code> - Return the name list of all objects.</li>
-  <li><code class="highlighter-rouge">get_object_pose(object_name)</code> - Return the pose of the object.</li>
-  <li><code class="highlighter-rouge">get_object_info(object_name)</code> - Return the pose, height, eidth, length, shape, color of the object in order.</li>
-  <li><code class="highlighter-rouge">get_target_list()</code> - Return the name list of all targets.</li>
-  <li><code class="highlighter-rouge">get_target_position(target_name)</code> - Return the position of target where we are going to place the objects.</li>
+  <li><code class="language-plaintext highlighter-rouge">get_object_list()</code> - Return the name list of all objects.</li>
+  <li><code class="language-plaintext highlighter-rouge">get_object_pose(object_name)</code> - Return the pose of the object.</li>
+  <li><code class="language-plaintext highlighter-rouge">get_object_info(object_name)</code> - Return the pose, height, eidth, length, shape, color of the object in order.</li>
+  <li><code class="language-plaintext highlighter-rouge">get_target_list()</code> - Return the name list of all targets.</li>
+  <li><code class="language-plaintext highlighter-rouge">get_target_position(target_name)</code> - Return the position of target where we are going to place the objects.</li>
 </ul>
 
 <h3 id="convert-pose-message">Convert Pose Message</h3>
 <ul>
-  <li><code class="highlighter-rouge">pose2msg(roll, pitch, yaw, x, y, z)</code> - Convert pose to Pose message. The unit of roll, pitch, yaw is radian.</li>
-  <li><code class="highlighter-rouge">pose2msg_deg(roll, pitch, yaw, x, y, z)</code> - Convert pose to Pose message. The unit of roll, pitch, yaw is degree.</li>
-  <li><code class="highlighter-rouge">msg2pose(pose)</code> - Convert Pose message to pose, return roll, pitch, yaw, x, y, z in order. The unit of roll, pitch, yaw is radian.</li>
-  <li><code class="highlighter-rouge">msg2pose_deg(pose)</code> - Convert Pose message to pose, return roll, pitch, yaw, x, y, z in order. The unit of roll, pitch, yaw is degree.</li>
+  <li><code class="language-plaintext highlighter-rouge">pose2msg(roll, pitch, yaw, x, y, z)</code> - Convert pose to Pose message. The unit of roll, pitch, yaw is radian.</li>
+  <li><code class="language-plaintext highlighter-rouge">pose2msg_deg(roll, pitch, yaw, x, y, z)</code> - Convert pose to Pose message. The unit of roll, pitch, yaw is degree.</li>
+  <li><code class="language-plaintext highlighter-rouge">msg2pose(pose)</code> - Convert Pose message to pose, return roll, pitch, yaw, x, y, z in order. The unit of roll, pitch, yaw is radian.</li>
+  <li><code class="language-plaintext highlighter-rouge">msg2pose_deg(pose)</code> - Convert Pose message to pose, return roll, pitch, yaw, x, y, z in order. The unit of roll, pitch, yaw is degree.</li>
 </ul>
 
 <h3 id="basic-robot-movement">Basic Robot Movement</h3>
 <ul>
-  <li><code class="highlighter-rouge">move_pose_arm(pose_goal)</code> - Command the robot with Pose message to make its end effector frame move to the desired pose with inverse kinematics.</li>
-  <li><code class="highlighter-rouge">move_joint_arm(joint_0,joint_1,joint_2,joint_3,joint_4,joint_5)</code> - Command the robot joints to move to desired joints value</li>
-  <li><code class="highlighter-rouge">move_joint_hand(joint_value)</code> - Command the gripper joint to move to desired joint value.</li>
-  <li><code class="highlighter-rouge">back_to_home()</code> - Command the robot arm and gripper to move back to the home pose.</li>
+  <li><code class="language-plaintext highlighter-rouge">move_pose_arm(pose_goal)</code> - Command the robot with Pose message to make its end effector frame move to the desired pose with inverse kinematics.</li>
+  <li><code class="language-plaintext highlighter-rouge">move_joint_arm(joint_0,joint_1,joint_2,joint_3,joint_4,joint_5)</code> - Command the robot joints to move to desired joints value</li>
+  <li><code class="language-plaintext highlighter-rouge">move_joint_hand(joint_value)</code> - Command the gripper joint to move to desired joint value.</li>
+  <li><code class="language-plaintext highlighter-rouge">back_to_home()</code> - Command the robot arm and gripper to move back to the home pose.</li>
 </ul>
 
 <h3 id="setup-grasp-message">Setup Grasp message</h3>
 <p><a href="http://docs.ros.org/melodic/api/moveit_msgs/html/msg/Grasp.html">Grasp message</a> contains the informations that the MoveIt pick function requires.</p>
 <ul>
-  <li><code class="highlighter-rouge">generate_grasp(object_name, eef_orientation, position, [width, roll, pitch, yaw, length])</code> - Returns the specified Grasp message according to related setup.
+  <li><code class="language-plaintext highlighter-rouge">generate_grasp(object_name, eef_orientation, position, [width, roll, pitch, yaw, length])</code> - Returns the specified Grasp message according to related setup.
     <ul>
-      <li><code class="highlighter-rouge">eef_orientaion</code> is to clarify the desired end effector orientation.
+      <li><code class="language-plaintext highlighter-rouge">eef_orientaion</code> is to clarify the desired end effector orientation.
         <ul>
-          <li><code class="highlighter-rouge">horizontal</code>: grasp the object with a horizontal gripper orientation. (default value: roll = pitch = yaw = 0. <code class="highlighter-rouge">pitch</code> is setable.)</li>
-          <li><code class="highlighter-rouge">vertical</code>: grasp the object with a vertical gripper orientation. (default value: roll = 0, pitch = 90°, yaw = 0. <code class="highlighter-rouge">yaw</code> is setable.)</li>
-          <li><code class="highlighter-rouge">user_defined</code>: grasp the object with a user defined gripper orientation. (default value: roll = pitch = yaw = 0. <code class="highlighter-rouge">roll</code>,<code class="highlighter-rouge">pitch</code>,<code class="highlighter-rouge">yaw</code> are all setable)</li>
+          <li><code class="language-plaintext highlighter-rouge">horizontal</code>: grasp the object with a horizontal gripper orientation. (default value: roll = pitch = yaw = 0. <code class="language-plaintext highlighter-rouge">pitch</code> is setable.)</li>
+          <li><code class="language-plaintext highlighter-rouge">vertical</code>: grasp the object with a vertical gripper orientation. (default value: roll = 0, pitch = 90°, yaw = 0. <code class="language-plaintext highlighter-rouge">yaw</code> is setable.)</li>
+          <li><code class="language-plaintext highlighter-rouge">user_defined</code>: grasp the object with a user defined gripper orientation. (default value: roll = pitch = yaw = 0. <code class="language-plaintext highlighter-rouge">roll</code>,<code class="language-plaintext highlighter-rouge">pitch</code>,<code class="language-plaintext highlighter-rouge">yaw</code> are all setable)</li>
         </ul>
       </li>
-      <li><code class="highlighter-rouge">position</code> is the position of the end effector when grasping the object</li>
-      <li><code class="highlighter-rouge">width</code> is the value the gripper joints should move to grasp the object with a range of [0, 0.8]. If you keep the default value 0, the <code class="highlighter-rouge">eef_orientation</code> is <code class="highlighter-rouge">horizontal</code> or <code class="highlighter-rouge">vertical</code> and the default rpy angle values are kept, this width value will be set depend on the object width.</li>
-      <li><code class="highlighter-rouge">roll</code>,<code class="highlighter-rouge">pitch</code>,<code class="highlighter-rouge">yaw</code> are optional parameters.</li>
-      <li><code class="highlighter-rouge">length</code> is the offset length from the your desired gripper position to robot tool center. When you input grasping pose, you are specifying the pose of the desired gripper position. The default value is 0, which means you are specifying the pose of the tool center of the robot arm when the robot is grasping the object.</li>
+      <li><code class="language-plaintext highlighter-rouge">position</code> is the position of the end effector when grasping the object</li>
+      <li><code class="language-plaintext highlighter-rouge">width</code> is the value the gripper joints should move to grasp the object with a range of [0, 0.8]. If you keep the default value 0, the <code class="language-plaintext highlighter-rouge">eef_orientation</code> is <code class="language-plaintext highlighter-rouge">horizontal</code> or <code class="language-plaintext highlighter-rouge">vertical</code> and the default rpy angle values are kept, this width value will be set depend on the object width.</li>
+      <li><code class="language-plaintext highlighter-rouge">roll</code>,<code class="language-plaintext highlighter-rouge">pitch</code>,<code class="language-plaintext highlighter-rouge">yaw</code> are optional parameters.</li>
+      <li><code class="language-plaintext highlighter-rouge">length</code> is the offset length from the your desired gripper position to robot tool center. When you input grasping pose, you are specifying the pose of the desired gripper position. The default value is 0, which means you are specifying the pose of the tool center of the robot arm when the robot is grasping the object.</li>
     </ul>
   </li>
 </ul>
 
 <p>The default minimum grasp distance and desired distance are set to be 0.2(m) and 0.1(m). The default approach direction is set to be (0, 0, -0.5). You can keep them or modify them with following functions:</p>
 <ul>
-  <li><code class="highlighter-rouge">set_grasp_distance(min_distance, desired_distance)</code> - Set the minmum distance and desired distance the gripper translates before and after grasping.</li>
-  <li><code class="highlighter-rouge">set_grasp_direction(x, y, z)</code> - Set the direction of the gripper approach translation before grasping. Retreat translation distance will set to be the opposite direction of the approach direction.</li>
+  <li><code class="language-plaintext highlighter-rouge">set_grasp_distance(min_distance, desired_distance)</code> - Set the minmum distance and desired distance the gripper translates before and after grasping.</li>
+  <li><code class="language-plaintext highlighter-rouge">set_grasp_direction(x, y, z)</code> - Set the direction of the gripper approach translation before grasping. Retreat translation distance will set to be the opposite direction of the approach direction.</li>
 </ul>
 
 <h3 id="pick-and-place">Pick and Place</h3>
 <ul>
-  <li><code class="highlighter-rouge">pickup(object_name, grasps)</code> - Command the industrial robot to pick up the object with a list of genrated Grasp messages.</li>
-  <li><code class="highlighter-rouge">place(eef_orientation, position[, distance, roll, pitch, yaw])</code> - Command the industrial robot to place the currently holding object to goal_position with desired end effector orientation.
+  <li><code class="language-plaintext highlighter-rouge">pickup(object_name, grasps)</code> - Command the industrial robot to pick up the object with a list of genrated Grasp messages.</li>
+  <li><code class="language-plaintext highlighter-rouge">place(eef_orientation, position[, distance, roll, pitch, yaw])</code> - Command the industrial robot to place the currently holding object to goal_position with desired end effector orientation.
     <ul>
-      <li><code class="highlighter-rouge">eef_orientaion</code> is to clarify the desired end effector orientation.
+      <li><code class="language-plaintext highlighter-rouge">eef_orientaion</code> is to clarify the desired end effector orientation.
         <ul>
-          <li><code class="highlighter-rouge">horizontal</code>: grasp the object with a horizontal gripper orientation. (default value: roll = 0, pitch = 0, yaw = 180°. <code class="highlighter-rouge">pitch</code> is setable.)</li>
-          <li><code class="highlighter-rouge">vertical</code>: grasp the object with a vertical gripper orientation. (default value: roll = 0, pitch = 90°, yaw = 180°. <code class="highlighter-rouge">yaw</code> is setable.)</li>
-          <li><code class="highlighter-rouge">user_defined</code>: grasp the object with a user defined gripper orientation. (default value: roll = 0, pitch = 0, yaw = 180°. <code class="highlighter-rouge">roll</code>,<code class="highlighter-rouge">pitch</code>,<code class="highlighter-rouge">yaw</code> are all setable)</li>
+          <li><code class="language-plaintext highlighter-rouge">horizontal</code>: grasp the object with a horizontal gripper orientation. (default value: roll = 0, pitch = 0, yaw = 180°. <code class="language-plaintext highlighter-rouge">pitch</code> is setable.)</li>
+          <li><code class="language-plaintext highlighter-rouge">vertical</code>: grasp the object with a vertical gripper orientation. (default value: roll = 0, pitch = 90°, yaw = 180°. <code class="language-plaintext highlighter-rouge">yaw</code> is setable.)</li>
+          <li><code class="language-plaintext highlighter-rouge">user_defined</code>: grasp the object with a user defined gripper orientation. (default value: roll = 0, pitch = 0, yaw = 180°. <code class="language-plaintext highlighter-rouge">roll</code>,<code class="language-plaintext highlighter-rouge">pitch</code>,<code class="language-plaintext highlighter-rouge">yaw</code> are all setable)</li>
         </ul>
       </li>
-      <li><code class="highlighter-rouge">position</code> is the position of the end effector when placing the object</li>
-      <li><code class="highlighter-rouge">distance</code> is the distance the robot arm will move in z axis when placing objects. The default value is 0.1(m)</li>
+      <li><code class="language-plaintext highlighter-rouge">position</code> is the position of the end effector when placing the object</li>
+      <li><code class="language-plaintext highlighter-rouge">distance</code> is the distance the robot arm will move in z axis when placing objects. The default value is 0.1(m)</li>
     </ul>
   </li>
 </ul>
@@ -380,7 +380,7 @@ rosdep <span class="nb">install</span> <span class="nt">--from-paths</span> <spa
 
 <p><img src="https://abbcloud.blob.core.windows.net/public/images/b7207bb0-410e-4ea7-bee3-3cbbe94b0a74/i1080px.jpg" alt="irb120" class="mx-auto d-block" /></p>
 
-<p>When you are specifying the pose of the end effector to grasp or place the object, sometimes you will see a warning <code class="highlighter-rouge">***** GOAL POSE IS OUT OF ROBOT WORKSPACE *****</code> which is provided behind our API. However, as you can see, the workspace is complicated, so we only check whether the position is inside the outer sphere, outside of the inner sphere and above the bottom position. No warning doesn’t mean the position is inside the workspace.</p>
+<p>When you are specifying the pose of the end effector to grasp or place the object, sometimes you will see a warning <code class="language-plaintext highlighter-rouge">***** GOAL POSE IS OUT OF ROBOT WORKSPACE *****</code> which is provided behind our API. However, as you can see, the workspace is complicated, so we only check whether the position is inside the outer sphere, outside of the inner sphere and above the bottom position. No warning doesn’t mean the position is inside the workspace.</p>
 
 <p>Even if your specified position of the end effector is inside the workspace, if the orientation is not properly set, you are actually requiring other joints to move out of their workspaces.</p>
 
@@ -456,9 +456,9 @@ Inverse kinematics is given the pose of the end effector, to find possible joint
 </code></pre></div></div>
 <h3 id="ignorable-error-and-warning">Ignorable ERROR and WARNING</h3>
 <ul>
-  <li><code class="highlighter-rouge">No p gain specified for pid.</code></li>
-  <li><code class="highlighter-rouge">Controller is taking too long to execute trajectory</code></li>
-  <li><code class="highlighter-rouge">Controller failed with error GOAL_TOLERANCE_VIOLATED</code></li>
+  <li><code class="language-plaintext highlighter-rouge">No p gain specified for pid.</code></li>
+  <li><code class="language-plaintext highlighter-rouge">Controller is taking too long to execute trajectory</code></li>
+  <li><code class="language-plaintext highlighter-rouge">Controller failed with error GOAL_TOLERANCE_VIOLATED</code></li>
 </ul>
 
 <h2 id="demonstration-video-of-the-solution">Demonstration video of the solution</h2>
@@ -480,12 +480,12 @@ Inverse kinematics is given the pose of the end effector, to find possible joint
       <ul class="pagination blog-pager">
         
         <li class="page-item previous">
-          <a class="page-link" href="/2020-06-25-week4/" data-toggle="tooltip" data-placement="top" title="Week4">&larr; Previous Post</a>
+          <a class="page-link" href="/colab-gsoc2020-Yijia_Wu/2020-06-25-week4/" data-toggle="tooltip" data-placement="top" title="Week4">&larr; Previous Post</a>
         </li>
         
         
         <li class="page-item next">
-          <a class="page-link" href="/2020-07-12-week5_6/" data-toggle="tooltip" data-placement="top" title="Week5 and 6">Next Post &rarr;</a>
+          <a class="page-link" href="/colab-gsoc2020-Yijia_Wu/2020-07-12-week5_6/" data-toggle="tooltip" data-placement="top" title="Week5 and 6">Next Post &rarr;</a>
         </li>
         
       </ul>
@@ -531,7 +531,7 @@ Inverse kinematics is given the pose of the end effector, to find possible joint
         Yijia Wu
         &nbsp;&bull;&nbsp;
       
-      2020
+      2021
 
       
 
@@ -571,7 +571,7 @@ Inverse kinematics is given the pose of the end effector, to find possible joint
   
     <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
     
-      <script src="/assets/js/main.js"></script>
+      <script src="/colab-gsoc2020-Yijia_Wu/assets/js/main.js"></script>
     
   
 

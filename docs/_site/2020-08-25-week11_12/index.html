@@ -13,7 +13,7 @@
   
   
 
-  <link rel="alternate" type="application/rss+xml" title="GSoC 2020 Blog - Yijia Wu - GSoC progress" href="http://localhost:4000/feed.xml">
+  <link rel="alternate" type="application/rss+xml" title="GSoC 2020 Blog - Yijia Wu - GSoC progress" href="http://localhost:4000/colab-gsoc2020-Yijia_Wu/feed.xml">
 
   
 
@@ -48,9 +48,9 @@
 
   
     
-      <link rel="stylesheet" href="/assets/css/bootstrap-social.css">
+      <link rel="stylesheet" href="/colab-gsoc2020-Yijia_Wu/assets/css/bootstrap-social.css">
     
-      <link rel="stylesheet" href="/assets/css/main.css">
+      <link rel="stylesheet" href="/colab-gsoc2020-Yijia_Wu/assets/css/main.css">
     
   
 
@@ -73,12 +73,12 @@
   <meta property="og:type" content="website">
 
   
-  <meta property="og:url" content="http://localhost:4000/2020-08-25-week11_12/">
-  <link rel="canonical" href="http://localhost:4000/2020-08-25-week11_12/">
+  <meta property="og:url" content="http://localhost:4000/colab-gsoc2020-Yijia_Wu/2020-08-25-week11_12/">
+  <link rel="canonical" href="http://localhost:4000/colab-gsoc2020-Yijia_Wu/2020-08-25-week11_12/">
   
 
   
-  <meta property="og:image" content="http://localhost:4000/img/logo.png">
+  <meta property="og:image" content="http://localhost:4000/colab-gsoc2020-Yijia_Wu/img/logo.png">
   
 
 
@@ -96,7 +96,7 @@
   
 
   
-  <meta name="twitter:image" content="http://localhost:4000/img/logo.png">
+  <meta name="twitter:image" content="http://localhost:4000/colab-gsoc2020-Yijia_Wu/img/logo.png">
   
 
   
@@ -111,23 +111,23 @@
     
 
   
-    <nav class="navbar navbar-expand-md navbar-light fixed-top navbar-custom "><a class="navbar-brand" href="http://localhost:4000/">GSoC 2020 Blog - Yijia Wu</a><button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <nav class="navbar navbar-expand-md navbar-light fixed-top navbar-custom "><a class="navbar-brand" href="http://localhost:4000/colab-gsoc2020-Yijia_Wu">GSoC 2020 Blog - Yijia Wu</a><button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
   <div class="collapse navbar-collapse" id="main-navbar">
     <ul class="navbar-nav ml-auto">
           <li class="nav-item">
-            <a class="nav-link" href="https://theroboticsclub.github.io/colab-gsoc2020-Yijia_Wu">Home</a>
+            <a class="nav-link" href="/colab-gsoc2020-Yijia_Wu/">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/aboutme">About Me</a>
+            <a class="nav-link" href="/colab-gsoc2020-Yijia_Wu/aboutme">About Me</a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">About Project</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" href="/aboutproject">Introduction</a>
-                  <a class="dropdown-item" href="/progress">Progress</a>
+                  <a class="dropdown-item" href="/colab-gsoc2020-Yijia_Wu/aboutproject">Introduction</a>
+                  <a class="dropdown-item" href="/colab-gsoc2020-Yijia_Wu/progress">Progress</a>
             </div>
           </li>
         </ul>
@@ -136,8 +136,8 @@
   
     <div class="avatar-container">
       <div class="avatar-img-border">
-        <a href="http://localhost:4000/">
-          <img alt="Navbar avatar" class="avatar-img" src="/img/logo.png" />
+        <a href="http://localhost:4000/colab-gsoc2020-Yijia_Wu">
+          <img alt="Navbar avatar" class="avatar-img" src="/colab-gsoc2020-Yijia_Wu/img/logo.png" />
         </a>
       </div>
     </div>
@@ -189,16 +189,16 @@
         <h3 id="navigation">Navigation</h3>
 <p>Navigation part is implemented by following steps.</p>
 <ol>
-  <li>A map of the world is prebuilt using <code class="highlighter-rouge">gmapping</code> package. If we want to change the world, a new map need to be generated and saved.</li>
-  <li>The <code class="highlighter-rouge">amcl</code> package is used to localize the robot. The odometry message of the robot will be published in <code class="highlighter-rouge">/odom</code> topic which contains the pose between robot <code class="highlighter-rouge">base_link</code> and <code class="highlighter-rouge">odom</code> frame.</li>
-  <li>The <code class="highlighter-rouge">move_base</code> package will use both global planning and local planning to plan a path to the goal position, and drive the robot to achieve it.</li>
+  <li>A map of the world is prebuilt using <code class="language-plaintext highlighter-rouge">gmapping</code> package. If we want to change the world, a new map need to be generated and saved.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">amcl</code> package is used to localize the robot. The odometry message of the robot will be published in <code class="language-plaintext highlighter-rouge">/odom</code> topic which contains the pose between robot <code class="language-plaintext highlighter-rouge">base_link</code> and <code class="language-plaintext highlighter-rouge">odom</code> frame.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">move_base</code> package will use both global planning and local planning to plan a path to the goal position, and drive the robot to achieve it.</li>
 </ol>
 
 <p>Three API are provided to implement robot navigation similar to what we use in <a href="https://jderobot.github.io/RoboticsAcademy/exercises/MobileRobots/amazon_warehouse/">Amazon Warehouse</a> exercise:</p>
 <ul>
-  <li>self.client.get_target_pose(target_name): get the goal pose of the robot to stop in front of conveyor with target_name. The goal pose for each stop position is specified in <code class="highlighter-rouge">navigation.yaml</code> file.</li>
+  <li>self.client.get_target_pose(target_name): get the goal pose of the robot to stop in front of conveyor with target_name. The goal pose for each stop position is specified in <code class="language-plaintext highlighter-rouge">navigation.yaml</code> file.</li>
   <li>self.client.send_goal_to_client(pose): send the goal pose to move_base client.</li>
-  <li>self.client.get_result_from_client(): get navigation result from client. If the result is <code class="highlighter-rouge">True</code>, navigation is finished.</li>
+  <li>self.client.get_result_from_client(): get navigation result from client. If the result is <code class="language-plaintext highlighter-rouge">True</code>, navigation is finished.</li>
 </ul>
 
 <p>The collision model of the conveyors are changed to be detected by lasers as obstacles. I also tested that when new obstacles are added into the world without marked in the map, if laser can detect it, the navigation package will also take it into consideration when planning path.</p>
@@ -213,7 +213,7 @@
   <li>Pick up object
     <ul>
       <li>Move the robot arm to home position for pick and place task.</li>
-      <li>Get robot pose from <code class="highlighter-rouge">/odom</code> topic and caculate the relative pose between object and robot.</li>
+      <li>Get robot pose from <code class="language-plaintext highlighter-rouge">/odom</code> topic and caculate the relative pose between object and robot.</li>
       <li>Spawn the model of objects and conveyor into planning scene.</li>
       <li>Move to some distance above the object, move down and grasp the object.</li>
       <li>Delete the model of objects and conveyor in planning scene.</li>
@@ -223,7 +223,7 @@
   <li>Place object
     <ul>
       <li>Move the robot arm to home position for pick and place task.</li>
-      <li>Get robot pose from <code class="highlighter-rouge">/odom</code> topic and transform the place target position from world frame to robot frame.</li>
+      <li>Get robot pose from <code class="language-plaintext highlighter-rouge">/odom</code> topic and transform the place target position from world frame to robot frame.</li>
       <li>Spawn the model of conveyor into planning scene.</li>
       <li>Move to some distance above the object, move down and grasp the object.</li>
       <li>Delete the model of conveyor in planning scene.</li>
@@ -278,12 +278,12 @@
       <ul class="pagination blog-pager">
         
         <li class="page-item previous">
-          <a class="page-link" href="/2020-08-09-week10/" data-toggle="tooltip" data-placement="top" title="Week10">&larr; Previous Post</a>
+          <a class="page-link" href="/colab-gsoc2020-Yijia_Wu/2020-08-09-week10/" data-toggle="tooltip" data-placement="top" title="Week10">&larr; Previous Post</a>
         </li>
         
         
         <li class="page-item next">
-          <a class="page-link" href="/2020-08-28-draft_of_documentation_of_third_exercise/" data-toggle="tooltip" data-placement="top" title="Draft of document of third exercise">Next Post &rarr;</a>
+          <a class="page-link" href="/colab-gsoc2020-Yijia_Wu/2020-08-28-draft_of_documentation_of_third_exercise/" data-toggle="tooltip" data-placement="top" title="Draft of document of third exercise">Next Post &rarr;</a>
         </li>
         
       </ul>
@@ -329,7 +329,7 @@
         Yijia Wu
         &nbsp;&bull;&nbsp;
       
-      2020
+      2021
 
       
 
@@ -369,7 +369,7 @@
   
     <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
     
-      <script src="/assets/js/main.js"></script>
+      <script src="/colab-gsoc2020-Yijia_Wu/assets/js/main.js"></script>
     
   
 

@@ -9,13 +9,13 @@ description: GSoC progress
 # Your name to show in the footer
 author: Yijia Wu
 
-url: "https://theroboticsclub.github.io/colab-gsoc2020-Yijia_Wu"
-#baseurl: "/colab-gsoc2020-Yijia_Wu"
+url: "https://theroboticsclub.github.io"
+baseurl: "/colab-gsoc2020-Yijia_Wu"
 
 # --- List of links in the navigation bar --- #
 
 navbar-links:
-  Home: "https://theroboticsclub.github.io/colab-gsoc2020-Yijia_Wu"
+  Home: "/"
   About Me: "aboutme"
   About Project: 
     - Introduction: "aboutproject"

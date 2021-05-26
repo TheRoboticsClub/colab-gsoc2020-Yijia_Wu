@@ -13,7 +13,7 @@
   
   
 
-  <link rel="alternate" type="application/rss+xml" title="GSoC 2020 Blog - Yijia Wu - GSoC progress" href="http://localhost:4000/feed.xml">
+  <link rel="alternate" type="application/rss+xml" title="GSoC 2020 Blog - Yijia Wu - GSoC progress" href="http://localhost:4000/colab-gsoc2020-Yijia_Wu/feed.xml">
 
   
 
@@ -48,9 +48,9 @@
 
   
     
-      <link rel="stylesheet" href="/assets/css/bootstrap-social.css">
+      <link rel="stylesheet" href="/colab-gsoc2020-Yijia_Wu/assets/css/bootstrap-social.css">
     
-      <link rel="stylesheet" href="/assets/css/main.css">
+      <link rel="stylesheet" href="/colab-gsoc2020-Yijia_Wu/assets/css/main.css">
     
   
 
@@ -73,12 +73,12 @@
   <meta property="og:type" content="website">
 
   
-  <meta property="og:url" content="http://localhost:4000/2020-08-31-conclusion/">
-  <link rel="canonical" href="http://localhost:4000/2020-08-31-conclusion/">
+  <meta property="og:url" content="http://localhost:4000/colab-gsoc2020-Yijia_Wu/2020-08-31-conclusion/">
+  <link rel="canonical" href="http://localhost:4000/colab-gsoc2020-Yijia_Wu/2020-08-31-conclusion/">
   
 
   
-  <meta property="og:image" content="http://localhost:4000/img/logo.png">
+  <meta property="og:image" content="http://localhost:4000/colab-gsoc2020-Yijia_Wu/img/logo.png">
   
 
 
@@ -96,7 +96,7 @@
   
 
   
-  <meta name="twitter:image" content="http://localhost:4000/img/logo.png">
+  <meta name="twitter:image" content="http://localhost:4000/colab-gsoc2020-Yijia_Wu/img/logo.png">
   
 
   
@@ -111,23 +111,23 @@
     
 
   
-    <nav class="navbar navbar-expand-md navbar-light fixed-top navbar-custom "><a class="navbar-brand" href="http://localhost:4000/">GSoC 2020 Blog - Yijia Wu</a><button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <nav class="navbar navbar-expand-md navbar-light fixed-top navbar-custom "><a class="navbar-brand" href="http://localhost:4000/colab-gsoc2020-Yijia_Wu">GSoC 2020 Blog - Yijia Wu</a><button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
   <div class="collapse navbar-collapse" id="main-navbar">
     <ul class="navbar-nav ml-auto">
           <li class="nav-item">
-            <a class="nav-link" href="https://theroboticsclub.github.io/colab-gsoc2020-Yijia_Wu">Home</a>
+            <a class="nav-link" href="/colab-gsoc2020-Yijia_Wu/">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/aboutme">About Me</a>
+            <a class="nav-link" href="/colab-gsoc2020-Yijia_Wu/aboutme">About Me</a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">About Project</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" href="/aboutproject">Introduction</a>
-                  <a class="dropdown-item" href="/progress">Progress</a>
+                  <a class="dropdown-item" href="/colab-gsoc2020-Yijia_Wu/aboutproject">Introduction</a>
+                  <a class="dropdown-item" href="/colab-gsoc2020-Yijia_Wu/progress">Progress</a>
             </div>
           </li>
         </ul>
@@ -136,8 +136,8 @@
   
     <div class="avatar-container">
       <div class="avatar-img-border">
-        <a href="http://localhost:4000/">
-          <img alt="Navbar avatar" class="avatar-img" src="/img/logo.png" />
+        <a href="http://localhost:4000/colab-gsoc2020-Yijia_Wu">
+          <img alt="Navbar avatar" class="avatar-img" src="/colab-gsoc2020-Yijia_Wu/img/logo.png" />
         </a>
       </div>
     </div>
@@ -204,9 +204,9 @@
 
 <p><a href="https://github.com/JdeRobot/IndustrialRobotics">Update in Industrial Robot Repo</a>:</p>
 <ul>
-  <li><code class="highlighter-rouge">assets</code>: worlds and Gazebo models</li>
-  <li><code class="highlighter-rouge">industrial_robots</code>: robot simulation packages,</li>
-  <li><code class="highlighter-rouge">rqt_industrial_robots</code>: rqt-based GUI for three exercise</li>
+  <li><code class="language-plaintext highlighter-rouge">assets</code>: worlds and Gazebo models</li>
+  <li><code class="language-plaintext highlighter-rouge">industrial_robots</code>: robot simulation packages,</li>
+  <li><code class="language-plaintext highlighter-rouge">rqt_industrial_robots</code>: rqt-based GUI for three exercise</li>
 </ul>
 
 <p><a href="https://github.com/JdeRobot/RoboticsAcademy">Update in JdeRobot Robotics Academy Repo</a>: worlds, launch files, script files of three exercises</p>
@@ -244,7 +244,7 @@
 <ol>
   <li>
     <p><strong>Improve grasping stability:</strong><br />
-Currently, I am using modified <code class="highlighter-rouge">gazebo_grasp_fix</code> plugin for mechanical gripper and <code class="highlighter-rouge">gazebo_ros_vacuum_gripper</code> for vacuum gripper. The modified version <code class="highlighter-rouge">gazebo_grasp_fix</code> plugin can slightly improve the possibility to grasp object, but we can still usually see the object oscillating while grasping. The <code class="highlighter-rouge">gazebo_ros_vacuum_gripper</code> plugin is still unstable to use in manipulation unless grasping small and light object as it only provides force but doesn’t fix the object with the gripper as <code class="highlighter-rouge">gazebo_grasp_fix</code> plugin, so adding fixing object and gripper link functionality to this plugin might help a lot.</p>
+Currently, I am using modified <code class="language-plaintext highlighter-rouge">gazebo_grasp_fix</code> plugin for mechanical gripper and <code class="language-plaintext highlighter-rouge">gazebo_ros_vacuum_gripper</code> for vacuum gripper. The modified version <code class="language-plaintext highlighter-rouge">gazebo_grasp_fix</code> plugin can slightly improve the possibility to grasp object, but we can still usually see the object oscillating while grasping. The <code class="language-plaintext highlighter-rouge">gazebo_ros_vacuum_gripper</code> plugin is still unstable to use in manipulation unless grasping small and light object as it only provides force but doesn’t fix the object with the gripper as <code class="language-plaintext highlighter-rouge">gazebo_grasp_fix</code> plugin, so adding fixing object and gripper link functionality to this plugin might help a lot.</p>
   </li>
   <li>
     <p><strong>More complex world and objects:</strong><br />
@@ -280,7 +280,7 @@ In ROS2, the navigation package Navigation2 and motion planning library MoveIt2 
       <ul class="pagination blog-pager">
         
         <li class="page-item previous">
-          <a class="page-link" href="/2020-08-28-draft_of_documentation_of_third_exercise/" data-toggle="tooltip" data-placement="top" title="Draft of document of third exercise">&larr; Previous Post</a>
+          <a class="page-link" href="/colab-gsoc2020-Yijia_Wu/2020-08-28-draft_of_documentation_of_third_exercise/" data-toggle="tooltip" data-placement="top" title="Draft of document of third exercise">&larr; Previous Post</a>
         </li>
         
         
@@ -327,7 +327,7 @@ In ROS2, the navigation package Navigation2 and motion planning library MoveIt2 
         Yijia Wu
         &nbsp;&bull;&nbsp;
       
-      2020
+      2021
 
       
 
@@ -367,7 +367,7 @@ In ROS2, the navigation package Navigation2 and motion planning library MoveIt2 
   
     <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
     
-      <script src="/assets/js/main.js"></script>
+      <script src="/colab-gsoc2020-Yijia_Wu/assets/js/main.js"></script>
     
   
 

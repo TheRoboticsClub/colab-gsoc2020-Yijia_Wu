@@ -13,7 +13,7 @@
   
   
 
-  <link rel="alternate" type="application/rss+xml" title="GSoC 2020 Blog - Yijia Wu - GSoC progress" href="http://localhost:4000/feed.xml">
+  <link rel="alternate" type="application/rss+xml" title="GSoC 2020 Blog - Yijia Wu - GSoC progress" href="http://localhost:4000/colab-gsoc2020-Yijia_Wu/feed.xml">
 
   
 
@@ -48,9 +48,9 @@
 
   
     
-      <link rel="stylesheet" href="/assets/css/bootstrap-social.css">
+      <link rel="stylesheet" href="/colab-gsoc2020-Yijia_Wu/assets/css/bootstrap-social.css">
     
-      <link rel="stylesheet" href="/assets/css/main.css">
+      <link rel="stylesheet" href="/colab-gsoc2020-Yijia_Wu/assets/css/main.css">
     
   
 
@@ -73,12 +73,12 @@
   <meta property="og:type" content="website">
 
   
-  <meta property="og:url" content="http://localhost:4000/2020-08-02-week9/">
-  <link rel="canonical" href="http://localhost:4000/2020-08-02-week9/">
+  <meta property="og:url" content="http://localhost:4000/colab-gsoc2020-Yijia_Wu/2020-08-02-week9/">
+  <link rel="canonical" href="http://localhost:4000/colab-gsoc2020-Yijia_Wu/2020-08-02-week9/">
   
 
   
-  <meta property="og:image" content="http://localhost:4000/img/logo.png">
+  <meta property="og:image" content="http://localhost:4000/colab-gsoc2020-Yijia_Wu/img/logo.png">
   
 
 
@@ -96,7 +96,7 @@
   
 
   
-  <meta name="twitter:image" content="http://localhost:4000/img/logo.png">
+  <meta name="twitter:image" content="http://localhost:4000/colab-gsoc2020-Yijia_Wu/img/logo.png">
   
 
   
@@ -111,23 +111,23 @@
     
 
   
-    <nav class="navbar navbar-expand-md navbar-light fixed-top navbar-custom "><a class="navbar-brand" href="http://localhost:4000/">GSoC 2020 Blog - Yijia Wu</a><button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <nav class="navbar navbar-expand-md navbar-light fixed-top navbar-custom "><a class="navbar-brand" href="http://localhost:4000/colab-gsoc2020-Yijia_Wu">GSoC 2020 Blog - Yijia Wu</a><button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
   <div class="collapse navbar-collapse" id="main-navbar">
     <ul class="navbar-nav ml-auto">
           <li class="nav-item">
-            <a class="nav-link" href="https://theroboticsclub.github.io/colab-gsoc2020-Yijia_Wu">Home</a>
+            <a class="nav-link" href="/colab-gsoc2020-Yijia_Wu/">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/aboutme">About Me</a>
+            <a class="nav-link" href="/colab-gsoc2020-Yijia_Wu/aboutme">About Me</a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">About Project</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" href="/aboutproject">Introduction</a>
-                  <a class="dropdown-item" href="/progress">Progress</a>
+                  <a class="dropdown-item" href="/colab-gsoc2020-Yijia_Wu/aboutproject">Introduction</a>
+                  <a class="dropdown-item" href="/colab-gsoc2020-Yijia_Wu/progress">Progress</a>
             </div>
           </li>
         </ul>
@@ -136,8 +136,8 @@
   
     <div class="avatar-container">
       <div class="avatar-img-border">
-        <a href="http://localhost:4000/">
-          <img alt="Navbar avatar" class="avatar-img" src="/img/logo.png" />
+        <a href="http://localhost:4000/colab-gsoc2020-Yijia_Wu">
+          <img alt="Navbar avatar" class="avatar-img" src="/colab-gsoc2020-Yijia_Wu/img/logo.png" />
         </a>
       </div>
     </div>
@@ -188,9 +188,9 @@
       <article role="main" class="blog-post">
         <h3 id="convert-pointcloud-to-image">Convert Pointcloud to image</h3>
 
-<p>The <code class="highlighter-rouge">pcl_ros</code> package provides a <code class="highlighter-rouge">convert_pointcloud_to_image</code> node to directly convert Pointcloud2 message to Image message, but it requires organized pointcloud which means each point in pointcloud corresponding to one image pixel. However, what we need to convert is filtered pointcloud which only contains points related to some features: color or shape. Finally I wrote two converters to convert <code class="highlighter-rouge">PointXYZRGB</code> format pointcloud to rgb image and <code class="highlighter-rouge">PointXYZ</code> format pointcloud to depth image.</p>
+<p>The <code class="language-plaintext highlighter-rouge">pcl_ros</code> package provides a <code class="language-plaintext highlighter-rouge">convert_pointcloud_to_image</code> node to directly convert Pointcloud2 message to Image message, but it requires organized pointcloud which means each point in pointcloud corresponding to one image pixel. However, what we need to convert is filtered pointcloud which only contains points related to some features: color or shape. Finally I wrote two converters to convert <code class="language-plaintext highlighter-rouge">PointXYZRGB</code> format pointcloud to rgb image and <code class="language-plaintext highlighter-rouge">PointXYZ</code> format pointcloud to depth image.</p>
 
-<p>The original pointcloud from kinect camera and color-filtered pointcloud are <code class="highlighter-rouge">PointXYZRGB</code> format pointcloud. The final pointcloud from shape segmentation filter is <code class="highlighter-rouge">PointXYZ</code> format pointcloud. Currently, I run all the filter including color filter and shape segmentation filter at the same time, so it would be too slow to do all the convertions. To get a better visualiztaion result, I only convert the final version pointclouds which pass both color and shape filter to image message, and they can be visualized in our GUI. User can choose which topic they would like to see with the combo boxs.</p>
+<p>The original pointcloud from kinect camera and color-filtered pointcloud are <code class="language-plaintext highlighter-rouge">PointXYZRGB</code> format pointcloud. The final pointcloud from shape segmentation filter is <code class="language-plaintext highlighter-rouge">PointXYZ</code> format pointcloud. Currently, I run all the filter including color filter and shape segmentation filter at the same time, so it would be too slow to do all the convertions. To get a better visualiztaion result, I only convert the final version pointclouds which pass both color and shape filter to image message, and they can be visualized in our GUI. User can choose which topic they would like to see with the combo boxs.</p>
 
 <p><img src="https://raw.githubusercontent.com/TheRoboticsClub/colab-gsoc2020-Yijia_Wu/master/docs/img/pointcloud2img.png" alt="pointcloud2img" class="mx-auto d-block" /></p>
 
@@ -206,7 +206,7 @@
 <ul>
   <li><strong>Changing collision model from sphere and cylnder to box can help a lot.</strong> It is what I have done last week. Without this modification, it is even hard to grasp the objects up. I also tried to make the collsion model thinner, which doesn’t help.</li>
   <li>Changing path planning solver might help. Trac-IK solver seems to have higher success rate in planning trajectory, but I also get much more controller failure with the path planned by this solver. These failures are still unsolveable to me.</li>
-  <li>Wait for improvement in MoveIt or try MoveIt2 to get better planning performance. There is a related ongoing GSoC project called <a href="https://github.com/ros-planning/moveit/issues/2092"><code class="highlighter-rouge">Motion planning with general end-effector constraints in MoveIt</code></a>. I am looking forward to the result of it.</li>
+  <li>Wait for improvement in MoveIt or try MoveIt2 to get better planning performance. There is a related ongoing GSoC project called <a href="https://github.com/ros-planning/moveit/issues/2092"><code class="language-plaintext highlighter-rouge">Motion planning with general end-effector constraints in MoveIt</code></a>. I am looking forward to the result of it.</li>
   <li>Improve vacuum gripper plugin. If the plugin can provide a similar functionality to attach the object link to end effector link like the grasp plugin, we don’t need to worry about slipping or droping any more.</li>
 </ul>
 
@@ -270,7 +270,7 @@
   </li>
 </ul>
 
-<p>Inside <a href="https://github.com/JdeRobot/IndustrialRobotics">IndustrialRobot repo</a>, the <code class="highlighter-rouge">exercise_one</code> and <code class="highlighter-rouge">exercise_two</code> folders contains important dependency code for each exercise. The <code class="highlighter-rouge">industrial_robot</code> folder contains Gazebo models shared by exercises and final version launch file to start exercises. The <code class="highlighter-rouge">rqt_industrial_robot</code> folder contains code related to GUI.</p>
+<p>Inside <a href="https://github.com/JdeRobot/IndustrialRobotics">IndustrialRobot repo</a>, the <code class="language-plaintext highlighter-rouge">exercise_one</code> and <code class="language-plaintext highlighter-rouge">exercise_two</code> folders contains important dependency code for each exercise. The <code class="language-plaintext highlighter-rouge">industrial_robot</code> folder contains Gazebo models shared by exercises and final version launch file to start exercises. The <code class="language-plaintext highlighter-rouge">rqt_industrial_robot</code> folder contains code related to GUI.</p>
 
 <p>The exercise folder and documentations of exercises will be placed with other exercises in <a href="https://github.com/JdeRobot/RoboticsAcademy">JdeRobot Accademy repo</a>.</p>
 
@@ -292,12 +292,12 @@
       <ul class="pagination blog-pager">
         
         <li class="page-item previous">
-          <a class="page-link" href="/2020-08-02-draft_of_documentation_of_second_exercise/" data-toggle="tooltip" data-placement="top" title="Draft of document of second exercise">&larr; Previous Post</a>
+          <a class="page-link" href="/colab-gsoc2020-Yijia_Wu/2020-08-02-draft_of_documentation_of_second_exercise/" data-toggle="tooltip" data-placement="top" title="Draft of document of second exercise">&larr; Previous Post</a>
         </li>
         
         
         <li class="page-item next">
-          <a class="page-link" href="/2020-08-09-week10/" data-toggle="tooltip" data-placement="top" title="Week10">Next Post &rarr;</a>
+          <a class="page-link" href="/colab-gsoc2020-Yijia_Wu/2020-08-09-week10/" data-toggle="tooltip" data-placement="top" title="Week10">Next Post &rarr;</a>
         </li>
         
       </ul>
@@ -343,7 +343,7 @@
         Yijia Wu
         &nbsp;&bull;&nbsp;
       
-      2020
+      2021
 
       
 
@@ -383,7 +383,7 @@
   
     <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
     
-      <script src="/assets/js/main.js"></script>
+      <script src="/colab-gsoc2020-Yijia_Wu/assets/js/main.js"></script>
     
   
 
